@@ -1,0 +1,98 @@
+*{
+  box-sizing: border-box; /* ✅ 不讓 padding 撐大寬度 */
+  position: relative; 
+}
+
+html,body{
+  height: 100vh; /* 佔滿視窗高度 */
+  margin: 0;     /* 去除預設的 margin */
+  padding: 0;    /* 去除預設的 padding */
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto ,'Helvetica Neue', sans-serif;
+  background-color: #f0f2f5;
+  color: #333;
+}
+
+#root {
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+/*  */
+.app-wrapper {
+  display: flex;
+  flex-direction: column;
+  /* justify-content: space-around; */
+  /* align-items: center; */
+  padding: 20px;
+  border: 1px solid #000;
+  border-radius: 10px;
+  box-shadow:1px 2px 6px  rgba(0,0,0,0.5) ;
+  width: 800px;
+  height: 700px;
+}
+
+/* -------------------- *\ 
+      nav 區塊
+\* -------------------- */
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+.search{
+  position: absolute;
+  display: flex;        /* ✅ 讓內部的 i 和 input 橫向排列 */
+  align-items: center;  /* ✅ 垂直置中 */
+  gap: 8px;             /* ✅ 增加 i 和 input 的間距 */
+  top: 0;
+  right: 0;
+  cursor: pointer;
+  z-index:500;
+}
+.search > input[type="text"] {
+  font-size: 14px;
+  width: 0px;
+  border-radius: 5px;
+  padding: 6px 12px;         /* ✅ padding 設 0 */
+  border: none;              /* ✅ 移除邊框 */
+  background: transparent;   /* ✅ 背景透明 */
+  box-shadow: none;          /* ✅ 移除陰影 */
+  color: transparent;        /* ✅ 避免游標顯示 */
+  border: none;
+  outline: none;
+  transition: width 0.4s; /* ✅ 增加過渡效果 */
+}
+.search > input[type="text"].open{
+  padding: 6px 12px;
+  width: 120px;
+  color: #333;          /* ✅ 讓文字恢復顯示 */
+  background-color: white;
+}
+.location-btn {
+  padding: 6px 12px;
+  background-color: #ccc;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.location-btn:hover {
+  background-color: #3a6fd1;
+}
+
+/* -------------------- *\ 
+    current weather 區塊
+\* -------------------- */
+.current-weather {
+  padding: 5px;
+  border-radius: 10px;
+}
+.cityName {
+  font-size: 48px;
+  font-weight: 650;
+  color: #333;
+}
