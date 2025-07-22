@@ -27,8 +27,9 @@ html,body{
   border: 1px solid #000;
   border-radius: 10px;
   box-shadow:1px 2px 6px  rgba(0,0,0,0.5) ;
-  width: 800px;
-  height: 700px;
+  width: 1200px;
+  max-width: 1300px;
+  height: 800px;
 }
 
 /* -------------------- *\ 
@@ -67,7 +68,7 @@ html,body{
   padding: 6px 12px;
   width: 120px;
   color: #333;          /* ✅ 讓文字恢復顯示 */
-  background-color: white;
+  /* background-color: white; */
 }
 .location-btn {
   padding: 6px 12px;
@@ -83,6 +84,13 @@ html,body{
 .location-btn:hover {
   background-color: #3a6fd1;
 }
+.collectionBtn {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  left: 47%;
+
+}
 
 /* -------------------- *\ 
     current weather 區塊
@@ -95,4 +103,37 @@ html,body{
   font-size: 48px;
   font-weight: 650;
   color: #333;
+}
+
+/* -------------------- *\ 
+    collection 區塊
+\* -------------------- */
+.favorites {
+  margin-top: 20px;
+  text-align: left;
+  border: 1px solid #000;
+  width: 300px;
+  padding:0px 8px 0px 8px;
+}
+.favorites .title{
+  font-size: 24px;
+  margin: 12px;
+}
+.favorite-item {
+  display: flex;
+  align-items: center;
+  margin-left: 8px;
+  margin-bottom: 8px;
+}
+.favorite-item button {
+  padding: 4px 8px;
+  font-size: 12px;
+  cursor: pointer;
+}
+.collectionCity{
+  line-height: 48px;
+  margin: 0px 8px;
+}
+.favorite-item .temp{
+  font-size: 20px;
 }

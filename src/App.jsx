@@ -1,5 +1,9 @@
 import { useState, useEffect } from 'react'
 import './App.css'
+// import Search from './components/Search';
+
+
+
 
 const API_KEY = import.meta.env.VITE_WEATHER_API_KEY; // 使用環境變數來存儲API金鑰 
 
@@ -7,11 +11,14 @@ const API_KEY = import.meta.env.VITE_WEATHER_API_KEY; // 使用環境變數來�
 
 function App() {
   
- 
+  
   const [searchStart, setSearchStart] = useState(false);
   const [weather, setWeather] = useState(null)
   const [city, setCity] = useState('');
-  const [query, setQuery] = useState('Taipei');
+  const [query, setQuery] = useState('banqiao');
+  const [favorites, setFavorites] = useState([]);
+
+
 
   const handleGetLocation = () => {
     if ('geolocation' in navigator) {
@@ -33,6 +40,19 @@ function App() {
     }
   };
   
+  const addFavorite = () => {
+    if (!favorites.some(f => f.name === weather.name)) {
+      const newFavorite = {
+        name: weather.name,
+        temp: weather.main.temp
+      };
+      setFavorites([...favorites, newFavorite]);
+    }
+  };
+  const removeFavorite = (cityName) => {
+    const newFavorites = favorites.filter((c) => c.name !== cityName);
+    setFavorites(newFavorites);
+  }
 
   useEffect(() => {
     fetch(`https://api.openweathermap.org/data/2.5/weather?q=Taipei&appid=${API_KEY}&units=metric`)
@@ -73,6 +93,14 @@ function App() {
     }
   }, []);
   
+  useEffect(() => {
+    const saved = JSON.parse(localStorage.getItem('favorites')) || [];
+    setFavorites(saved);
+  }, []);
+  
+  useEffect(() => {
+    localStorage.setItem('favorites', JSON.stringify(favorites));
+  }, [favorites]);
   
 
 
@@ -85,7 +113,6 @@ function App() {
         <div className='container'>
           <div className='search'>
             <i onClick={() => setSearchStart(!searchStart)} className="fa-solid fa-magnifying-glass"></i>
-            {/* <input className={searchStart ? 'open' : '' } type='text' placeholder='Search'/> */}
             <input
               className={searchStart ? 'open' : ''}
               type='text'
@@ -103,11 +130,28 @@ function App() {
           <button className="location-btn" onClick={handleGetLocation}>
             📍 Current Location
           </button>
-
-
+          <button className='collectionBtn' onClick={addFavorite}>📌</button> 
         </div>
 
-        
+        <div className="favorites">
+          <p className='title'>📍 收藏地區</p>
+          {favorites.length === 0 ? (
+            <p>尚未收藏任何地區</p>
+          ) : (
+            favorites.map(city => (
+              <div key={city.name} className="favorite-item">
+                <span className='collectionCity'>{city.name}</span>
+                <div className='collectionTemp'>
+                  <p className='temp'> {city.temp}°C</p>
+                    <button onClick={() => setQuery(city.name)}>查看</button>
+                    <button onClick={() => removeFavorite(city.name)}>刪除</button>
+
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
 
 
         {/* 🌤️ current weather區塊 */}
