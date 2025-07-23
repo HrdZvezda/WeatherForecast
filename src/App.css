@@ -24,22 +24,42 @@ html,body{
   /* justify-content: space-around; */
   /* align-items: center; */
   padding: 20px;
-  border: 1px solid #000;
+  /* border: 1px solid #000; */
   border-radius: 10px;
   box-shadow:1px 2px 6px  rgba(0,0,0,0.5) ;
   width: 1200px;
   max-width: 1300px;
   height: 800px;
 }
-
+.main{
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  margin-top: 20px; 
+  flex-grow: 1;
+  border: 1px solid #000;
+}
+.main .weather{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
+  justify-content: space-between;
+}
 /* -------------------- *\ 
       nav 區塊
 \* -------------------- */
-.container {
-  display: flex;
+.Nav {
+  display: inline-block;
   justify-content: space-between;
   align-items: center;
   width: 100%;
+  /* border: 1px solid #000; */
+}
+.btn{
+  display: flex;
+  justify-content: flex-start; /* 按鈕靠左 */
+  margin: 0px 5px;
 }
 .search{
   position: absolute;
@@ -70,50 +90,95 @@ html,body{
   color: #333;          /* ✅ 讓文字恢復顯示 */
   /* background-color: white; */
 }
+@keyframes shake {
+  0%   { transform: translateX(0); }
+  20%  { transform: translateX(-5px); }
+  40%  { transform: translateX(5px); }
+  60%  { transform: translateX(-5px); }
+  80%  { transform: translateX(5px); }
+  100% { transform: translateX(0); }
+}
+.input-error {
+  border: 2px solid red !important;
+  background-color: #fff;
+  color: #333;
+}
+.shake{
+  animation: shake 0.3s ease-in-out;
+}
+
 .location-btn {
+  margin-right: 5px;
   padding: 6px 12px;
   background-color: #ccc;
   color: white;
   border: none;
-  border-radius: 6px;
+  border-radius: 5px;
   cursor: pointer;
   font-size: 14px;
   transition: background-color 0.2s;
 }
-
 .location-btn:hover {
   background-color: #3a6fd1;
 }
 .collectionBtn {
-  position: absolute;
-  display: flex;
-  align-items: center;
-  left: 47%;
-
+  padding: 6px 12px;
+  display: inline;
+  background-color: #ccc;
+  color: white;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+.collectionBtn:hover {
+  background-color: #3a6fd1;
 }
 
 /* -------------------- *\ 
     current weather 區塊
 \* -------------------- */
 .current-weather {
+  flex-grow: 1;        /* 撐滿剩餘空間 */
+  min-width: 0;        /* 避免溢出 */
   padding: 5px;
-  border-radius: 10px;
+  overflow-y: auto;
 }
 .cityName {
   font-size: 48px;
   font-weight: 650;
   color: #333;
+  margin-bottom: 0;
 }
+/* -------------------- *\ 
+    Forecsat 區塊
+\* -------------------- */
+.forecast {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px;
+  background-color: #f8f8f8;
+  border-radius: 10px;
+  margin-top: 20px;
+}
+.forecast-item {
+  text-align: center;
+  font-size: 14px;
+  width: 80px;
+}
+
 
 /* -------------------- *\ 
     collection 區塊
 \* -------------------- */
 .favorites {
-  margin-top: 20px;
   text-align: left;
-  border: 1px solid #000;
-  width: 300px;
-  padding:0px 8px 0px 8px;
+  /* border: 1px solid #000; */
+  width: 250px;
+  flex-shrink: 0;     /* 不要被壓縮 */
+  overflow-y: auto;
+  max-height: 700px; 
 }
 .favorites .title{
   font-size: 24px;
@@ -122,18 +187,43 @@ html,body{
 .favorite-item {
   display: flex;
   align-items: center;
-  margin-left: 8px;
+  justify-content: space-between;
   margin-bottom: 8px;
+  height: 80px;
 }
 .favorite-item button {
-  padding: 4px 8px;
+  padding: 2px 8px;
   font-size: 12px;
   cursor: pointer;
+  background-color: #f0f2f5;
 }
 .collectionCity{
-  line-height: 48px;
-  margin: 0px 8px;
-}
-.favorite-item .temp{
   font-size: 20px;
+  margin: 0px 8px;
+  
 }
+.collectionRight {
+  display: flex;
+  flex-direction: column;
+  align-items: center;     /* ✅ 水平置中 */
+  justify-content: center; /* 垂直置中 */
+}
+.collectionRight .temp{
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  margin: 4px;
+}
+
+/* -------------------- *\ 
+    Time 區塊
+\* -------------------- */
+.time h4 {
+  font-size: 0.75rem; /* 約等於 text-xs */
+  margin-top: 4px;
+  margin: 0;
+}
+
+
+
+
