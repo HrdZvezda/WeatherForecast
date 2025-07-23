@@ -154,19 +154,7 @@ html,body{
 /* -------------------- *\ 
     Forecsat 區塊
 \* -------------------- */
-.forecast {
-  display: flex;
-  justify-content: space-between;
-  padding: 12px;
-  background-color: #f8f8f8;
-  border-radius: 10px;
-  margin-top: 20px;
-}
-.forecast-item {
-  text-align: center;
-  font-size: 14px;
-  width: 80px;
-}
+
 
 
 /* -------------------- *\ 

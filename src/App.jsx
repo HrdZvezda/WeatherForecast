@@ -3,7 +3,8 @@ import './App.css'
 import HeaderWithTime from './components/CurrentTime.jsx';
 import Search from './components/Search.jsx';
 import Collection from './components/Collection.jsx';
-import useForecast from './components/Forecast.jsx';
+import useForecast from './components/Forecast/Forecast.jsx';
+import ForecastDisplay from './components/Forecast/UIForecast.jsx';
 
 
 const API_KEY = import.meta.env.VITE_WEATHER_API_KEY; // 使用環境變數來存儲API金鑰 
@@ -22,6 +23,9 @@ function App() {
   const [hasLoadedFavorites, setHasLoadedFavorites] = useState(false)
   const forecast = useForecast(query, API_KEY);
 
+  useEffect(() => {
+    console.log("query 更新：", query);
+  }, [query]);  
 
   const handleGetLocation = () => {
     if ('geolocation' in navigator) {
@@ -173,7 +177,7 @@ function App() {
               {weather ? (
                 <>
                   <h1 className='cityName'>{weather.name}</h1>
-                  <h2> {weather.main.temp}°</h2>
+                  <h2>{weather.main.temp.toFixed(1)}°</h2>
                   <HeaderWithTime />
                 </>
               ) : error ? (
@@ -184,27 +188,7 @@ function App() {
             </div>
 
             {/* 🔮 未來預報區塊 */}
-            <div className="forecast">
-              {forecast.length > 0 ? (
-                forecast.map((day, index) => {
-                  const date = new Date(day.dt * 1000);
-                  const weekday = date.toLocaleDateString("en-US", { weekday: "short" });
-                  const icon = day.weather[0].icon;
-                  const iconUrl = `https://openweathermap.org/img/wn/${icon}.png`;
-                  const temp = Math.round(day.temp.day);
-
-                  return (
-                    <div key={index} className="forecast-item">
-                      {weekday}<br />
-                      <img src={iconUrl} alt="icon" />
-                      <div>{temp}°C</div>
-                    </div>
-                  );
-                })
-              ) : (
-                <p>Loading forecast...</p>
-              )}
-            </div>
+            <ForecastDisplay forecast={forecast} />
           </div>
 
         </div>
