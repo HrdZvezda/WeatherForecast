@@ -2,10 +2,11 @@ import { useState, useEffect } from 'react'
 import './App.css'
 import HeaderWithTime from './components/CurrentTime.jsx';
 import Search from './components/Search.jsx';
-import Collection from './components/Collection.jsx';
+import Collection from './components/collection/Collection.jsx';
 import useForecast from './components/Forecast/Forecast.jsx';
 import ForecastDisplay from './components/Forecast/UIForecast.jsx';
-
+import useHourlyForecast from './components/Forecast/HourlyForecast.jsx';
+import HourlyForecastDisplay from './components/Forecast/UIHourlyForecast.jsx';
 
 const API_KEY = import.meta.env.VITE_WEATHER_API_KEY; // 使用環境變數來存儲API金鑰 
 
@@ -22,6 +23,8 @@ function App() {
   const [favorites, setFavorites] = useState([]);
   const [hasLoadedFavorites, setHasLoadedFavorites] = useState(false)
   const forecast = useForecast(query, API_KEY);
+  const hourlyForecast = useHourlyForecast(query, API_KEY);
+
 
   useEffect(() => {
     console.log("query 更新：", query);
@@ -187,8 +190,25 @@ function App() {
               )}
             </div>
 
-            {/* 🔮 未來預報區塊 */}
-            <ForecastDisplay forecast={forecast} />
+            <div>
+              
+              {/* 5Days Forecast */}
+              <ForecastDisplay forecast={forecast} 
+              style={`
+                
+              `}/>
+              {/* Hourly Forecast */}
+              <HourlyForecastDisplay data={hourlyForecast}/>
+
+              {/* Feelslike */}
+
+              {/* Uv */}
+
+              {/* Rainly */}
+
+              {/* Winds */}
+
+            </div>
           </div>
 
         </div>
