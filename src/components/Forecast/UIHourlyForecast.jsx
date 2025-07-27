@@ -26,15 +26,16 @@ const HourlyForecastDisplay = ({ data, cityName }) => {
   const weatherAlert = generateWeatherAlert();
 
   return (
-    <div style={{
+    <section style={{
       backgroundColor: '#4A5568',
       borderRadius: '12px',
       padding: '12px',
       color: 'white',
-      marginTop: '16px',
+      marginBottom: '10px',
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-      maxWidth: '100%',
-      height: 'auto'
+      width:'100%',
+      overflow:'scroll',
+      height: 'auto',
     }}>
       {/* 天氣警告訊息 */}
       {weatherAlert && (
@@ -50,7 +51,7 @@ const HourlyForecastDisplay = ({ data, cityName }) => {
 
       {/* 小時預報滾動區域 */}
       <div style={{
-        overflowX: 'auto',
+        overflowX: 'scroll',
         scrollbarWidth: 'none',
         msOverflowStyle: 'none'
       }}>
@@ -165,7 +166,7 @@ const HourlyForecastDisplay = ({ data, cityName }) => {
           display: none;
         }
       `}</style>
-    </div>
+    </section>
   );
 };
 

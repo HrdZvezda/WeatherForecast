@@ -8,12 +8,9 @@ import ForecastDisplay from './components/Forecast/UIForecast.jsx';
 import useHourlyForecast from './components/Forecast/HourlyForecast.jsx';
 import HourlyForecastDisplay from './components/Forecast/UIHourlyForecast.jsx';
 
-const API_KEY = import.meta.env.VITE_WEATHER_API_KEY; // 使用環境變數來存儲API金鑰 
-
-
+const API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
 
 function App() {
-  
   const [searchStart, setSearchStart] = useState(false);
   const [shake, setShake] = useState(false);
   const [error, setError] = useState("");
@@ -24,7 +21,6 @@ function App() {
   const [hasLoadedFavorites, setHasLoadedFavorites] = useState(false)
   const forecast = useForecast(query, API_KEY);
   const hourlyForecast = useHourlyForecast(query, API_KEY);
-
 
   useEffect(() => {
     console.log("query 更新：", query);
@@ -38,7 +34,7 @@ function App() {
             lat: position.coords.latitude,
             lon: position.coords.longitude
           };
-          setQuery(coords); // 這裡會觸發 useEffect 去抓 API
+          setQuery(coords);
         },
         (error) => {
           alert('無法取得您的位置');
@@ -55,7 +51,8 @@ function App() {
       .then(res => res.json())
       .then(data => {
         console.log(data);
-        setWeather(data);})
+        setWeather(data);
+      })
   }, [])
 
   useEffect(() => {
@@ -65,7 +62,7 @@ function App() {
           lat: position.coords.latitude,
           lon: position.coords.longitude
         };
-        setQuery(coords); // 將座標傳入 query
+        setQuery(coords);
       });
     }
   }, []);
@@ -84,20 +81,20 @@ function App() {
         const data = await res.json();
         if (res.ok) {
           setWeather(data);
-          setError("");              // ✅ 清除錯誤
-          setCity("");              // ✅ 成功後才清空輸入框
+          setError("");
+          setCity("");
         } else {
           setWeather(null);
           setError("❗ 查無此地區，請重新輸入");
-          setShake(true); // 加入 shake
-          setTimeout(() => setShake(false), 300); // 300ms 與動畫時間一致
+          setShake(true);
+          setTimeout(() => setShake(false), 300);
         }
       } catch (err) {
         console.error("API 錯誤：", err);
         setWeather(null);
         setError("❗ 查無此地區，請重新輸入");
-        setShake(true); // 加入 shake
-        setTimeout(() => setShake(false), 300); // 300ms 與動畫時間一致
+        setShake(true);
+        setTimeout(() => setShake(false), 300);
       }
     };
     fetchWeather();
@@ -113,9 +110,10 @@ function App() {
       setFavorites([...favorites, newFavorite]);
     }
   };
+  
   const removeFavorite = (cityName) => {
     const newFavorites = favorites.filter(c => c.name !== cityName);
-    setFavorites(newFavorites); // ✅ 更新狀態就會觸發 localStorage 更新
+    setFavorites(newFavorites);
   };
 
   useEffect(() => {
@@ -131,6 +129,7 @@ function App() {
       setHasLoadedFavorites(true);
     }
   }, []);
+  
   useEffect(() => {
     if (hasLoadedFavorites) {
       localStorage.setItem('favorites', JSON.stringify(favorites));
@@ -138,13 +137,11 @@ function App() {
   }, [favorites, hasLoadedFavorites]);
   
   return (
-    <>
-    {/*  */}
-      <div className="app-wrapper">
+    <div className="app-wrapper">
 
-        {/* nav */}
-        <div className='Nav'>
-          <Search 
+      {/* Navigation */}
+      <div className='Nav'>
+        <Search 
           city={city}
           setCity={setCity}
           setQuery={setQuery}
@@ -152,35 +149,37 @@ function App() {
           setSearchStart={setSearchStart}
           error={error}
           shake={shake}
-          />
-          <div className='btn'>
-            <button className="location-btn" onClick={handleGetLocation}>
-              📍 Current Location
-            </button>
-            <button className='collectionBtn' onClick={addFavorite}>
-              📌 Collection
-            </button> 
-          </div>
+        />
+        <div className='btn'>
+          <button className="location-btn" onClick={handleGetLocation}>
+            📍 Current Location
+          </button>
+          <button className='collectionBtn' onClick={addFavorite}>
+            📌 Collection
+          </button> 
         </div>
+      </div>
 
-        <div className='main'>
-          {/* 🌤️ favorites區塊 */}
-          <Collection 
+      <div className='main row'>
+        {/* Favorites Section */}
+        <Collection 
           weather={weather}
           setQuery={setQuery}
           favorites={favorites}
           setFavorites={setFavorites}
           removeFavorite={removeFavorite}
-          />
+        />
+          
+        <div className='weather col-18'>
+          {/* Weather Content */}
+          <div className="weather-content">
             
-          <div className='weather'>
-
-            {/* 🌤️ current weather區塊 */}
-            <div className="current-weather">
+            {/* Current Weather */}
+            <section className="current-weather col-18">
               {weather ? (
                 <>
                   <h1 className='cityName'>{weather.name}</h1>
-                  <h2>{weather.main.temp.toFixed(1)}°</h2>
+                  <h2 className='current-temp'>{Math.round(weather.main.temp)}°</h2>
                   <HeaderWithTime />
                 </>
               ) : error ? (
@@ -188,33 +187,60 @@ function App() {
               ) : (
                 <p>Loading...</p>
               )}
-            </div>
+            </section>
 
-            <div>
+            <div className='weather-container'>
               
-              {/* 5Days Forecast */}
-              <ForecastDisplay forecast={forecast} 
-              style={`
-                
-              `}/>
+              {/* 5 Day Forecast */}
+              <div className="forecast-section col-6">
+                <ForecastDisplay forecast={forecast} />
+              </div>
+
               {/* Hourly Forecast */}
-              <HourlyForecastDisplay data={hourlyForecast}/>
+              <div className="hourly-section col-12">
+                <HourlyForecastDisplay 
+                data={hourlyForecast} 
+                cityName={weather?.name} 
+                />
+                
+                {/* Weather Details Grid */}
+                <div className="weather-details col-12">
+                  {/* Feels Like */}
+                  <div className="weather-card col-6">
+                    <h3>體感溫度</h3>
+                    {weather && (
+                      <p>{Math.round(weather.main.feels_like)}°</p>
+                    )}
+                  </div>
 
-              {/* Feelslike */}
+                  {/* UV Index */}
+                  <div className="weather-card col-6">
+                    <h3>UV指數</h3>
+                    <p>中等</p>
+                  </div>
 
-              {/* Uv */}
+                  {/* Rain Chance */}
+                  <div className="weather-card col-6">
+                    <h3>降雨機率</h3>
+                    {weather && (
+                      <p>{Math.round((weather.clouds?.all || 0) / 2)}%</p>
+                    )}
+                  </div>
 
-              {/* Rainly */}
-
-              {/* Winds */}
-
+                  {/* Wind */}
+                  <div className="weather-card col-6">
+                    <h3>風速</h3>
+                    {weather && (
+                      <p>{(weather.wind?.speed * 3.6).toFixed(1)} km/h</p>
+                    )}
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-
         </div>
-
       </div>
-    </>
+    </div>
   );
 }
 

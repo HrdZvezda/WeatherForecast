@@ -17,35 +17,86 @@ html,body{
   padding: 2rem;
   text-align: center;
 }
+
 /*  */
 .app-wrapper {
-  display: flex;
-  flex-direction: column;
-  /* justify-content: space-around; */
-  /* align-items: center; */
   padding: 20px;
-  /* border: 1px solid #000; */
   border-radius: 10px;
-  box-shadow:1px 2px 6px  rgba(0,0,0,0.5) ;
+  box-shadow: 1px 2px 6px rgba(0,0,0,0.5);
   width: 1200px;
   max-width: 1300px;
-  height: 800px;
+  /* height: 800px;
+  overflow: hidden; */
 }
+
 .main{
-  display: flex;
-  flex-direction: row;
+  display: grid;
+  grid-template-columns: 1fr 3fr ;
+  grid-template-rows: 1fr; 
   width: 100%;
   margin-top: 20px; 
-  flex-grow: 1;
-  border: 1px solid #000;
+  gap: 10px; 
+  align-items: stretch; /* 讓所有子元素拉伸到相同高度 */
 }
+
 .main .weather{
-  width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center; 
-  justify-content: space-between;
+  height: 100%; 
 }
+
+/* 天氣內容區域重新布局 */
+.weather-content {
+  flex: 1; /* 使用 flex: 1 而不是 width: 100% */
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+}
+
+.current-weather {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  /* border: 1px solid #000; */
+  border-radius: 12px;
+  /* box-shadow: 0 2px 8px rgba(0,0,0,0.6); */
+}
+.hourly-section{
+  display: grid;
+  overflow-y: scroll;
+  border: 1px solid #000;
+  max-height: 90.5%;
+  border-radius: 10px;
+  margin-top: 10px;
+  /* padding: 0px 8px; */
+  /* box-shadow: 0 2px 8px rgba(0,0,0,0.8); */
+}
+.weather-container{
+  grid-column: 1 / -1;
+  display: inline-flex;
+  max-width: 100%;
+  /* border: 1px solid #000; */
+}
+
+.weather-details{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: minmax(100px, auto); ;
+  gap: 8px;
+}
+
+.weather-card {
+  background: #f8f9fa;
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 0 0px 5px rgba(0,0,0,0.2);
+  align-items: center;
+  justify-content: center;
+
+}
+
 /* -------------------- *\ 
       nav 區塊
 \* -------------------- */
@@ -54,42 +105,43 @@ html,body{
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  /* border: 1px solid #000; */
 }
 .btn{
   display: flex;
-  justify-content: flex-start; /* 按鈕靠左 */
+  justify-content: flex-start;
   margin: 0px 5px;
 }
 .search{
   position: absolute;
-  display: flex;        /* ✅ 讓內部的 i 和 input 橫向排列 */
-  align-items: center;  /* ✅ 垂直置中 */
-  gap: 8px;             /* ✅ 增加 i 和 input 的間距 */
+  display: flex;
+  align-items: center;
+  gap: 8px;
   top: 0;
   right: 0;
   cursor: pointer;
-  z-index:500;
+  z-index: 500;
 }
+
 .search > input[type="text"] {
   font-size: 14px;
   width: 0px;
   border-radius: 5px;
-  padding: 6px 12px;         /* ✅ padding 設 0 */
-  border: none;              /* ✅ 移除邊框 */
-  background: transparent;   /* ✅ 背景透明 */
-  box-shadow: none;          /* ✅ 移除陰影 */
-  color: transparent;        /* ✅ 避免游標顯示 */
+  padding: 6px 12px;
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  color: transparent;
   border: none;
   outline: none;
-  transition: width 0.4s; /* ✅ 增加過渡效果 */
+  transition: width 0.4s;
 }
+
 .search > input[type="text"].open{
   padding: 6px 12px;
   width: 120px;
-  color: #333;          /* ✅ 讓文字恢復顯示 */
-  /* background-color: white; */
+  color: #333;
 }
+
 @keyframes shake {
   0%   { transform: translateX(0); }
   20%  { transform: translateX(-5px); }
@@ -98,16 +150,18 @@ html,body{
   80%  { transform: translateX(5px); }
   100% { transform: translateX(0); }
 }
+
 .input-error {
   border: 2px solid red !important;
   background-color: #fff;
   color: #333;
 }
+
 .shake{
   animation: shake 0.3s ease-in-out;
 }
 
-.location-btn {
+.location-btn, .collectionBtn {
   margin-right: 5px;
   padding: 6px 12px;
   background-color: #ccc;
@@ -118,100 +172,115 @@ html,body{
   font-size: 14px;
   transition: background-color 0.2s;
 }
-.location-btn:hover {
-  background-color: #3a6fd1;
-}
-.collectionBtn {
-  padding: 6px 12px;
-  display: inline;
-  background-color: #ccc;
-  color: white;
-  border-radius: 5px;
-  border: none;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.2s;
-}
-.collectionBtn:hover {
+
+.collectionBtn:hover, .location-btn:hover{
   background-color: #3a6fd1;
 }
 
 /* -------------------- *\ 
     current weather 區塊
 \* -------------------- */
-.current-weather {
-  flex-grow: 1;        /* 撐滿剩餘空間 */
-  min-width: 0;        /* 避免溢出 */
-  padding: 5px;
-  overflow-y: auto;
-}
 .cityName {
   font-size: 48px;
   font-weight: 650;
   color: #333;
-  margin-bottom: 0;
+  margin-bottom: 8px;
 }
-/* -------------------- *\ 
-    Forecsat 區塊
-\* -------------------- */
 
-
+.current-temp {
+  font-size: 64px;
+  font-weight: 300;
+  color: #333;
+  margin: 0;
+}
 
 /* -------------------- *\ 
     collection 區塊
 \* -------------------- */
 .favorites {
   text-align: left;
-  /* border: 1px solid #000; */
-  width: 250px;
-  flex-shrink: 0;     /* 不要被壓縮 */
+  width: 280px;
+  border: 1px solid#000;
   overflow-y: auto;
-  max-height: 700px; 
+  max-height: 95%;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.6);
 }
+
 .favorites .title{
   font-size: 24px;
-  margin: 12px;
+  margin: 0 0 16px 0;
+  color: #333;
+  font-weight: 600;
 }
+
 .favorite-item {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto;
   align-items: center;
-  justify-content: space-between;
-  margin-bottom: 8px;
-  height: 80px;
+  gap: 12px;
+  margin-bottom: 12px;
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  transition: background-color 0.2s;
+  min-height: 60px; /* 確保一致的高度 */
 }
+
+.favorite-item:hover {
+  background-color: #e9ecef;
+}
+
 .favorite-item button {
-  padding: 2px 8px;
+  padding: 4px 8px;
   font-size: 12px;
   cursor: pointer;
-  background-color: #f0f2f5;
+  /* color: white; */
+  border: none;
+  border-radius: 4px;
+  transition: background-color 0.2s;
 }
+
 .collectionCity{
-  font-size: 20px;
-  margin: 0px 8px;
-  
+  font-size: 18px;
+  margin: 0px 4px;
+  color: #333;
+  white-space: nowrap; /* 防止城市名稱換行 */
+  overflow: hidden;
+  text-overflow: ellipsis; /* 過長時顯示省略號 */
 }
+
 .collectionRight {
   display: flex;
   flex-direction: column;
-  align-items: center;     /* ✅ 水平置中 */
-  justify-content: center; /* 垂直置中 */
+  align-items: center;
+  justify-content: center;
 }
+
 .collectionRight .temp{
   display: flex;
   align-items: center;
   font-size: 16px;
   margin: 4px;
+  color: #222;
+  white-space: nowrap; /* 防止溫度換行 */
 }
 
+.collection-buttons {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  align-items: center;
+  margin-top: 4px;
+  flex-wrap: nowrap; /* 防止按鈕換行 */
+}
 /* -------------------- *\ 
     Time 區塊
 \* -------------------- */
 .time h4 {
-  font-size: 0.75rem; /* 約等於 text-xs */
-  margin-top: 4px;
-  margin: 0;
+  font-size: 0.875rem;
+  margin: 8px 0 0 0;
+  color: #666;
+  font-weight: 400;
 }
-
-
-
-

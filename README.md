@@ -1,9 +1,11 @@
 * WeatherPage
 
 * CurrentLoaction
-* Search
-* Collection
-* 7Days
-* RWD
-* 404
-* Everymin Update
+* Search City
+* Collection add & delete
+* Current Weather
+* 5Days & Hourly Forecast
+* Simple UI
+* Temp & Time
+* Every 5min update
+
