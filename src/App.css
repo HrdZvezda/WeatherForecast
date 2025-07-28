@@ -61,17 +61,17 @@ html,body{
   padding: 12px;
   /* border: 1px solid #000; */
   border-radius: 12px;
-  /* box-shadow: 0 2px 8px rgba(0,0,0,0.6); */
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
 .hourly-section{
   display: grid;
   overflow-y: scroll;
-  border: 1px solid #000;
+  /* border: 1px solid #000; */
   max-height: 90.5%;
   border-radius: 10px;
   margin-top: 10px;
-  /* padding: 0px 8px; */
-  /* box-shadow: 0 2px 8px rgba(0,0,0,0.8); */
+  padding: 4px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
 .weather-container{
   grid-column: 1 / -1;
@@ -200,12 +200,12 @@ html,body{
 .favorites {
   text-align: left;
   width: 280px;
-  border: 1px solid#000;
+  /* border: 1px solid#000; */
   overflow-y: auto;
   max-height: 95%;
   border-radius: 12px;
   padding: 16px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.6);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
 
 .favorites .title{
@@ -283,4 +283,82 @@ html,body{
   margin: 8px 0 0 0;
   color: #666;
   font-weight: 400;
+}
+
+
+/* 新增的按鈕樣式 */
+.refresh-btn, .auto-refresh-btn {
+  margin-right: 5px;
+  padding: 6px 12px;
+  background-color: #ccc;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.refresh-btn:hover {
+  background-color: #28a745;
+}
+
+.auto-refresh-btn:hover {
+  background-color: #3a6fd1;
+}
+
+.auto-refresh-btn.active {
+  background-color: #28a745;
+}
+
+.auto-refresh-btn.active:hover {
+  background-color: #dc3545;
+}
+
+/* 更新資訊顯示區域 */
+.update-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px 0;
+  padding: 8px 12px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  font-size: 12px;
+  color: #666;
+  border: 1px solid #e9ecef;
+}
+
+.last-update {
+  display: flex;
+  align-items: center;
+}
+
+.last-update::before {
+  content: "🕐";
+  margin-right: 4px;
+}
+
+.auto-refresh-status {
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+}
+
+.auto-refresh-status.active {
+  color: #28a745;
+}
+
+.auto-refresh-status.active::before {
+  content: "🟢";
+  margin-right: 4px;
+}
+
+.auto-refresh-status.inactive {
+  color: #dc3545;
+}
+
+.auto-refresh-status.inactive::before {
+  content: "🔴";
+  margin-right: 4px;
 }

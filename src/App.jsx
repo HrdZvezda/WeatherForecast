@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import './App.css'
 import HeaderWithTime from './components/CurrentTime.jsx';
 import Search from './components/Search.jsx';
@@ -19,8 +19,14 @@ function App() {
   const [query, setQuery] = useState('banqiao');
   const [favorites, setFavorites] = useState([]);
   const [hasLoadedFavorites, setHasLoadedFavorites] = useState(false)
+  const [lastUpdate, setLastUpdate] = useState(null);
+  const [isAutoRefresh, setIsAutoRefresh] = useState(true);
+  
   const forecast = useForecast(query, API_KEY);
   const hourlyForecast = useHourlyForecast(query, API_KEY);
+
+  // 使用 useRef 來儲存 interval ID
+  const intervalRef = useRef(null);
 
   useEffect(() => {
     console.log("query 更新：", query);
@@ -45,7 +51,8 @@ function App() {
       alert('您的瀏覽器不支援地理位置功能');
     }
   };
-  
+
+  // 初始載入台北天氣
   useEffect(() => {
     fetch(`https://api.openweathermap.org/data/2.5/weather?q=Taipei&appid=${API_KEY}&units=metric`)
       .then(res => res.json())
@@ -54,7 +61,7 @@ function App() {
         setWeather(data);
       })
   }, [])
-
+  // 初始獲取位置
   useEffect(() => {
     if ('geolocation' in navigator) {
       navigator.geolocation.getCurrentPosition((position) => {
@@ -66,40 +73,41 @@ function App() {
       });
     }
   }, []);
-  
-  useEffect(() => {
-    const fetchWeather = async () => {
-      try {
-        let url = "";
-        if (typeof query === "string") {
-          url = `https://api.openweathermap.org/data/2.5/weather?q=${query}&appid=${API_KEY}&units=metric`;
-        } else {
-          const { lat, lon } = query;
-          url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`;
-        }
-        const res = await fetch(url);
-        const data = await res.json();
-        if (res.ok) {
-          setWeather(data);
-          setError("");
-          setCity("");
-        } else {
-          setWeather(null);
-          setError("❗ 查無此地區，請重新輸入");
-          setShake(true);
-          setTimeout(() => setShake(false), 300);
-        }
-      } catch (err) {
-        console.error("API 錯誤：", err);
+
+  // 獲取天氣資料的函數
+  const fetchWeatherData = useCallback(async (currentQuery = query) => {
+    try {
+      let url = "";
+      if (typeof currentQuery === "string") {
+        url = `https://api.openweathermap.org/data/2.5/weather?q=${currentQuery}&appid=${API_KEY}&units=metric`;
+      } else {
+        const { lat, lon } = currentQuery;
+        url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`;
+      }
+      const res = await fetch(url);
+      const data = await res.json();
+      if (res.ok) {
+        setWeather(data);
+        setError("");
+        setCity("");
+        setLastUpdate(new Date());
+        console.log("天氣資料已更新:", new Date().toLocaleTimeString());
+      } else {
         setWeather(null);
         setError("❗ 查無此地區，請重新輸入");
         setShake(true);
         setTimeout(() => setShake(false), 300);
       }
-    };
-    fetchWeather();
-  }, [query]);
-  
+    } catch (err) {
+      console.error("API 錯誤：", err);
+      setWeather(null);
+      setError("❗ 查無此地區，請重新輸入");
+      setShake(true);
+      setTimeout(() => setShake(false), 300);
+    }
+  }, [query, API_KEY]);
+
+  //add & delete
   const addFavorite = () => {
     if (!weather) return;
     if (!favorites.some(f => f.name === weather.name)) {
@@ -110,7 +118,6 @@ function App() {
       setFavorites([...favorites, newFavorite]);
     }
   };
-  
   const removeFavorite = (cityName) => {
     const newFavorites = favorites.filter(c => c.name !== cityName);
     setFavorites(newFavorites);
@@ -136,6 +143,53 @@ function App() {
     }
   }, [favorites, hasLoadedFavorites]);
   
+  // 當 query 改變時獲取天氣資料
+  useEffect(() => {
+    fetchWeatherData();
+  }, [query, fetchWeatherData]);
+  
+  // 設置?分鐘自動更新
+  useEffect(() => {
+    if (isAutoRefresh) {
+      // 清除之前的 interval
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+      
+      // 設置新的 interval，每5分鐘(300000毫秒)更新一次
+      intervalRef.current = setInterval(() => {
+        console.log("自動更新天氣資料...");
+        fetchWeatherData();
+      }, 180000); // 5分鐘 = 5 * 60 * 1000 毫秒
+    }
+
+    // 清理函數
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [query, isAutoRefresh]); // 當 query 或 isAutoRefresh 改變時重新設置
+
+  // 組件卸載時清理 interval
+  useEffect(() => {
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, []);
+
+  // 手動刷新功能
+  // const handleManualRefresh = () => {
+  //   console.log("手動刷新天氣資料...");
+  //   fetchWeatherData();
+  // };
+  // // 切換自動更新功能
+  // const toggleAutoRefresh = () => {
+  //   setIsAutoRefresh(!isAutoRefresh);
+  // };
+
   return (
     <div className="app-wrapper">
 
@@ -157,8 +211,29 @@ function App() {
           <button className='collectionBtn' onClick={addFavorite}>
             📌 Collection
           </button> 
+          {/* <button className='refresh-btn' onClick={handleManualRefresh}>
+            🔄 Refresh
+          </button>
+          <button 
+            className={`auto-refresh-btn ${isAutoRefresh ? 'active' : ''}`} 
+            onClick={toggleAutoRefresh}
+          >
+            {isAutoRefresh ? '⏸️ 停止自動更新' : '▶️ 開始自動更新'}
+          </button> */}
         </div>
       </div>
+
+      {/* 顯示最後更新時間和自動更新狀態
+      <div className="update-info">
+        {lastUpdate && (
+          <span className="last-update">
+            最後更新: {lastUpdate.toLocaleTimeString()}
+          </span>
+        )}
+        <span className={`auto-refresh-status ${isAutoRefresh ? 'active' : 'inactive'}`}>
+          自動更新: {isAutoRefresh ? '開啟' : '關閉'}
+        </span>
+      </div> */}
 
       <div className='main row'>
         {/* Favorites Section */}

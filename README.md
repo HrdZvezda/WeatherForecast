@@ -7,5 +7,5 @@
 * 5Days & Hourly Forecast
 * Simple UI
 * Temp & Time
-* Every 5min update
+* Every 3min update
 

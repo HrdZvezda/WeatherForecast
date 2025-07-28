@@ -73,7 +73,7 @@ const ForecastDisplay = ({ forecast }) => {
       
       <style jsx>{`
         .forecast {
-          border:1px solid #000;
+          /* border:1px solid #000; */
           background: #f8f9fa;
           border-radius: 12px;
           max-height: 90.5%;
@@ -81,7 +81,7 @@ const ForecastDisplay = ({ forecast }) => {
           margin-top: 10px;
           margin-right: 8px;
           margin-left: 2px;
-          /* box-shadow: 0 2px 8px rgba(0,0,0,0.6); */
+          box-shadow: 0 2px 8px rgba(0,0,0,0.2);
           overflow-y: auto;
           overflow-x: hidden;
           scrollbar-width: none;
