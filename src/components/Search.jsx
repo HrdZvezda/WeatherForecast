@@ -1,4 +1,3 @@
-// src/components/Search.jsx
 import React from 'react';
 
 const Search = ({ city, setCity, setQuery, searchStart, setSearchStart, error, shake }) => {
