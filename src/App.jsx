@@ -63,7 +63,6 @@ function App() {
     searchStart, 
     setSearchStart, 
     triggerShake,
-    triggerSearchShake
   } = useUIState()
   
   
@@ -144,6 +143,7 @@ function App() {
     console.log("query 更新：", query)
   }, [query])
   
+
   // ===== Render Helpers =====
   const renderCurrentWeather = () => {
     if (weatherLoading) {
@@ -190,8 +190,7 @@ function App() {
           setSearchStart={setSearchStart}
           error={weatherError}
           shake={shake}
-          shakeType={shakeType} // 新增
-          onSearchError={handleSearchError} // 新增
+
         />
         
         <div className='btn'>
@@ -282,7 +281,7 @@ function App() {
           position: 'fixed', 
           bottom: '10px', 
           right: '10px', 
-          background: 'rgba(0,0,0,0.6)', 
+          background: 'rgba(0,0,0,0.8)', 
           color: 'white', 
           padding: '10px',
           borderRadius: '5px',

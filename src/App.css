@@ -36,7 +36,7 @@ html,body{
   width: 100%;
   margin-top: 20px; 
   gap: 10px; 
-  align-items: stretch; /* 讓所有子元素拉伸到相同高度 */
+  align-items:start;
 }
 
 .main .weather{
@@ -197,10 +197,10 @@ html,body{
 /* -------------------- *\ 
     collection 區塊
 \* -------------------- */
-.favorites {
+/* .favorites {
   text-align: left;
   width: 280px;
-  /* border: 1px solid#000; */
+  border: 1px solid#000;
   overflow-y: auto;
   max-height: 95%;
   border-radius: 12px;
@@ -225,7 +225,7 @@ html,body{
   background: #f8f9fa;
   border-radius: 8px;
   transition: background-color 0.2s;
-  min-height: 60px; /* 確保一致的高度 */
+  min-height: 60px; 確保一致的高度
 }
 
 .favorite-item:hover {
@@ -236,7 +236,7 @@ html,body{
   padding: 4px 8px;
   font-size: 12px;
   cursor: pointer;
-  /* color: white; */
+  color: white;
   border: none;
   border-radius: 4px;
   transition: background-color 0.2s;
@@ -246,9 +246,9 @@ html,body{
   font-size: 18px;
   margin: 0px 4px;
   color: #333;
-  white-space: nowrap; /* 防止城市名稱換行 */
+  white-space: nowrap; 防止城市名稱換行
   overflow: hidden;
-  text-overflow: ellipsis; /* 過長時顯示省略號 */
+  text-overflow: ellipsis; 過長時顯示省略號
 }
 
 .collectionRight {
@@ -264,7 +264,7 @@ html,body{
   font-size: 16px;
   margin: 4px;
   color: #222;
-  white-space: nowrap; /* 防止溫度換行 */
+  white-space: nowrap; 防止溫度換行
 }
 
 .collection-buttons {
@@ -273,8 +273,271 @@ html,body{
   justify-content: center;
   align-items: center;
   margin-top: 4px;
-  flex-wrap: nowrap; /* 防止按鈕換行 */
+  flex-wrap: nowrap; 防止按鈕換行
+} */
+
+/* -------------------- *\ 
+    collection 區塊 - 更新版本
+\* -------------------- */
+
+/* -------------------- *\ 
+    collection 區塊 - 更新版本
+\* -------------------- */
+
+.favorites {
+  text-align: left;
+  width: 280px;
+  max-height: 100%; /* 設定整體最大高度 */
+  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  background: white;
+  display: flex;
+  flex-direction: column;
 }
+
+/* 收藏標題區域 */
+.favorites-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  cursor: pointer;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background-color 0.2s ease;
+  user-select: none;
+}
+
+.favorites-header:hover {
+  background-color: #f8f9fa;
+}
+
+.favorites .title {
+  font-size: 20px;
+  margin: 0;
+  color: #333;
+  font-weight: 600;
+}
+
+.favorites-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.favorites-count {
+  font-size: 14px;
+  color: #666;
+  background: #f0f0f0;
+  padding: 2px 8px;
+  border-radius: 12px;
+  min-width: 20px;
+  text-align: center;
+}
+
+.toggle-icon {
+  color: #666;
+  transition: transform 0.3s ease;
+}
+
+.toggle-icon.expanded {
+  transform: rotate(0deg);
+}
+
+.toggle-icon.collapsed {
+  transform: rotate(-90deg);
+}
+
+/* 收藏內容區域 */
+.favorites-content {
+  /* transition: max-height 0.2s ease; */
+  position: relative;
+}
+
+.favorites-content.expanded {
+  height: 100%; /* 增加最大高度以容納更多項目 */
+  opacity: 1;
+  overflow-y: scroll; /* 允許垂直滾動 */
+  overflow-x: hidden; /* 隱藏水平滾動 */
+}
+
+.favorites-content.collapsed {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+}
+
+/* 滾動漸變效果 */
+.favorites-content.expanded::after {
+  content: '';
+  position: sticky;
+  bottom: 0;
+  display: block;
+  height: 20px;
+  background: linear-gradient(transparent, white);
+  pointer-events: none;
+  margin-top: -20px;
+}
+
+/* 自定義滾動條樣式 */
+.favorites-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.favorites-content::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.favorites-content::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+  transition: background 0.2s ease;
+}
+
+.favorites-content::-webkit-scrollbar-thumb:hover {
+  background: #a1a1a1;
+}
+
+/* Firefox 滾動條樣式 */
+.favorites-content {
+  scrollbar-width: thin;
+  scrollbar-color: #c1c1c1 #f1f1f1;
+}
+
+/* 空收藏狀態 */
+.empty-favorites {
+  padding: 20px 16px;
+  text-align: center;
+  color: #666;
+}
+
+.empty-favorites p {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+}
+
+.empty-favorites small {
+  font-size: 12px;
+  color: #999;
+  line-height: 1.4;
+}
+
+/* 收藏項目樣式調整 */
+.favorite-item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 12px;
+  margin: 0; 
+  padding: 12px 16px; 
+  background: white;
+  border-bottom: 1px solid #f0f0f0; 
+  transition: background-color 0.2s;
+  min-height: 60px;
+  cursor: pointer;
+}
+
+.favorite-item:last-child {
+  border-bottom: none; /* 最後一項不顯示分隔線 */
+}
+
+.favorite-item:hover {
+  background-color: #f8f9fa;
+}
+
+/* 其他現有樣式保持不變 */
+.collectionCity {
+  font-size: 16px; 
+  margin: 0px 4px;
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.collectionRight {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.collectionRight .temp {
+  display: flex;
+  align-items: center;
+  font-size: 18px; 
+  font-weight: 600; 
+  margin: 4px;
+  color: #222;
+  white-space: nowrap;
+}
+
+.collection-buttons {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  align-items: center;
+  margin-top: 4px;
+  flex-wrap: nowrap;
+}
+
+.favorite-item button {
+  padding: 4px 8px;
+  font-size: 11px;
+  cursor: pointer;
+  color: #666;
+  background: #f0f0f0;
+  border: none;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.favorite-item button:hover {
+  background-color: #ff4757;
+  color: white;
+}
+
+/* 收藏項目資訊區域 */
+.favorite-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0; /* 讓文字可以被截斷 */
+}
+
+.favorite-time {
+  font-size: 11px;
+  color: #999;
+  margin: 0;
+}
+
+.favorite-time h4 {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 400;
+  color: #999;
+}
+
+/* 動畫增強 */
+.favorites-header {
+  position: relative;
+}
+.favorites-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: #007bff;
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+.favorites-header:hover::after {
+  width: 30px;
+}
+
 /* -------------------- *\ 
     Time 區塊
 \* -------------------- */
@@ -283,82 +546,4 @@ html,body{
   margin: 8px 0 0 0;
   color: #666;
   font-weight: 400;
-}
-
-
-/* 新增的按鈕樣式 */
-.refresh-btn, .auto-refresh-btn {
-  margin-right: 5px;
-  padding: 6px 12px;
-  background-color: #ccc;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.2s;
-}
-
-.refresh-btn:hover {
-  background-color: #28a745;
-}
-
-.auto-refresh-btn:hover {
-  background-color: #3a6fd1;
-}
-
-.auto-refresh-btn.active {
-  background-color: #28a745;
-}
-
-.auto-refresh-btn.active:hover {
-  background-color: #dc3545;
-}
-
-/* 更新資訊顯示區域 */
-.update-info {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 10px 0;
-  padding: 8px 12px;
-  background-color: #f8f9fa;
-  border-radius: 8px;
-  font-size: 12px;
-  color: #666;
-  border: 1px solid #e9ecef;
-}
-
-.last-update {
-  display: flex;
-  align-items: center;
-}
-
-.last-update::before {
-  content: "🕐";
-  margin-right: 4px;
-}
-
-.auto-refresh-status {
-  display: flex;
-  align-items: center;
-  font-weight: 500;
-}
-
-.auto-refresh-status.active {
-  color: #28a745;
-}
-
-.auto-refresh-status.active::before {
-  content: "🟢";
-  margin-right: 4px;
-}
-
-.auto-refresh-status.inactive {
-  color: #dc3545;
-}
-
-.auto-refresh-status.inactive::before {
-  content: "🔴";
-  margin-right: 4px;
 }

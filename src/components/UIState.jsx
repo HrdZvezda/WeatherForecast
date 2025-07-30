@@ -15,23 +15,11 @@ export function useUIState() {
     }, APP_CONFIG.SHAKE_DURATION)
   }
   
-  // 專門為搜尋錯誤設計的震動
-  const triggerSearchShake = () => {
-    triggerShake('search-error')
-  }
-  
-  // 專門為輸入無效設計的震動
-  const triggerInputShake = () => {
-    triggerShake('input-error')
-  }
-  
   return {
     shake,
     shakeType,
     searchStart,
     setSearchStart,
     triggerShake,
-    triggerSearchShake,
-    triggerInputShake
   }
 }
