@@ -2,7 +2,6 @@ export const APP_CONFIG = {
     API_KEY: import.meta.env.VITE_WEATHER_API_KEY,
     AUTO_REFRESH_INTERVAL: 180000, // 3分鐘
     DEFAULT_CITY: 'banqiao',
-    SHAKE_DURATION: 300,
     
     // API URLs
     WEATHER_BASE_URL: 'https://api.openweathermap.org/data/2.5',

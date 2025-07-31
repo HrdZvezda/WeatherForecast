@@ -8,25 +8,20 @@ html,body{
   margin: 0;     /* 去除預設的 margin */
   padding: 0;    /* 去除預設的 padding */
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto ,'Helvetica Neue', sans-serif;
-  background-color: #f0f2f5;
+  background-color: #454040d9;
   color: #333;
 }
 
 #root {
-  margin: 0 auto;
-  padding: 2rem;
+  margin:  auto;
   text-align: center;
 }
 
 /*  */
 .app-wrapper {
   padding: 20px;
-  border-radius: 10px;
-  box-shadow: 1px 2px 6px rgba(0,0,0,0.5);
-  width: 1200px;
-  max-width: 1300px;
-  /* height: 800px;
-  overflow: hidden; */
+  width: 100vw;
+  max-height: 100vh;
 }
 
 .main{
@@ -100,24 +95,18 @@ html,body{
 /* -------------------- *\ 
       nav 區塊
 \* -------------------- */
-.Nav {
-  display: inline-block;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-}
-.btn{
-  display: flex;
-  justify-content: flex-start;
-  margin: 0px 5px;
-}
+
 .search{
-  position: absolute;
   display: flex;
   align-items: center;
-  gap: 8px;
-  top: 0;
-  right: 0;
+  padding-left: 10px;
+  margin-right: 10px;
+  background: transparent;
+  border: 1px solid white;
+  border-radius: 9999px;
+  color: white;
+  cursor: pointer;
+  transition: background 0.3s ease;
   cursor: pointer;
   z-index: 500;
 }
@@ -136,30 +125,18 @@ html,body{
   transition: width 0.4s;
 }
 
+.search:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  transition: all 0.7s;
+}
+
 .search > input[type="text"].open{
   padding: 6px 12px;
   width: 120px;
-  color: #333;
+  color: #333;  
 }
 
-@keyframes shake {
-  0%   { transform: translateX(0); }
-  20%  { transform: translateX(-5px); }
-  40%  { transform: translateX(5px); }
-  60%  { transform: translateX(-5px); }
-  80%  { transform: translateX(5px); }
-  100% { transform: translateX(0); }
-}
-
-.input-error {
-  border: 2px solid red !important;
-  background-color: #fff;
-  color: #333;
-}
-
-.shake{
-  animation: shake 0.3s ease-in-out;
-}
 
 .location-btn, .collectionBtn {
   margin-right: 5px;
@@ -195,99 +172,13 @@ html,body{
 }
 
 /* -------------------- *\ 
-    collection 區塊
-\* -------------------- */
-/* .favorites {
-  text-align: left;
-  width: 280px;
-  border: 1px solid#000;
-  overflow-y: auto;
-  max-height: 95%;
-  border-radius: 12px;
-  padding: 16px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-}
-
-.favorites .title{
-  font-size: 24px;
-  margin: 0 0 16px 0;
-  color: #333;
-  font-weight: 600;
-}
-
-.favorite-item {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 12px;
-  padding: 12px;
-  background: #f8f9fa;
-  border-radius: 8px;
-  transition: background-color 0.2s;
-  min-height: 60px; 確保一致的高度
-}
-
-.favorite-item:hover {
-  background-color: #e9ecef;
-}
-
-.favorite-item button {
-  padding: 4px 8px;
-  font-size: 12px;
-  cursor: pointer;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  transition: background-color 0.2s;
-}
-
-.collectionCity{
-  font-size: 18px;
-  margin: 0px 4px;
-  color: #333;
-  white-space: nowrap; 防止城市名稱換行
-  overflow: hidden;
-  text-overflow: ellipsis; 過長時顯示省略號
-}
-
-.collectionRight {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.collectionRight .temp{
-  display: flex;
-  align-items: center;
-  font-size: 16px;
-  margin: 4px;
-  color: #222;
-  white-space: nowrap; 防止溫度換行
-}
-
-.collection-buttons {
-  display: flex;
-  gap: 6px;
-  justify-content: center;
-  align-items: center;
-  margin-top: 4px;
-  flex-wrap: nowrap; 防止按鈕換行
-} */
-
-/* -------------------- *\ 
-    collection 區塊 - 更新版本
-\* -------------------- */
-
-/* -------------------- *\ 
     collection 區塊 - 更新版本
 \* -------------------- */
 
 .favorites {
   text-align: left;
   width: 280px;
-  max-height: 100%; /* 設定整體最大高度 */
+  height: 50vh; 
   overflow: hidden;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.2);
@@ -506,18 +397,8 @@ html,body{
   min-width: 0; /* 讓文字可以被截斷 */
 }
 
-.favorite-time {
-  font-size: 11px;
-  color: #999;
-  margin: 0;
-}
 
-.favorite-time h4 {
-  margin: 0;
-  font-size: 11px;
-  font-weight: 400;
-  color: #999;
-}
+
 
 /* 動畫增強 */
 .favorites-header {

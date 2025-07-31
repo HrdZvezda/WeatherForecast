@@ -1,11 +1,13 @@
 * WeatherPage
 
-* CurrentLoaction
-* Search City
+<!-- Navbar -->
+* Logo
+* Time 
+* Search
 * Collection add & delete
+
+* CurrentLoaction
 * Current Weather
 * 5Days & Hourly Forecast
-* Simple UI
-* Temp & Time
 * Every 3min update
 

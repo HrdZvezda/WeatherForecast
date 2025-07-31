@@ -37,7 +37,6 @@ const Collection = ({ favorites, setQuery, removeFavorite }) => {
         {favorites.length === 0 ? (
           <div className="empty-favorites">
             <p>尚未收藏任何地區</p>
-            <small>點擊右上角的 📌 Collection 來收藏城市</small>
           </div>
         ) : (
           favorites.map(city => (

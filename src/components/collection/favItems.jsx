@@ -24,9 +24,6 @@ const FavoriteItem = ({ city, onSelect, onRemove }) => {
     <div className="favorite-item" onClick={handleSelect}>
       <div className="favorite-info">
         <div className="collectionCity">{city.name}</div>
-        <div className="favorite-time">
-          <HeaderWithTime />
-        </div>
       </div>
       
       <div className="collectionRight">

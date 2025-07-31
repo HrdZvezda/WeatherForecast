@@ -12,20 +12,31 @@ const useCurrentTime = () => {
   return time;
 };
 
-const HeaderWithTime = ({ locationName }) => {
-    const time = useCurrentTime();
+const HeaderWithTime = ({ className = '' , style = {}}) => {
+  const time = useCurrentTime();
   
-    const formatTime = (date) =>
-      date.toLocaleTimeString("zh-TW", {
-        hour: "2-digit",
-        minute: "2-digit",
-      });
+    // 分開取 hour:minute 與 AM/PM
+  const hourMinute = time.toLocaleTimeString("en", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  }).replace(/ (AM|PM)$/, '');
+
+  const meridiem = time.toLocaleTimeString("en", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  }).match(/AM|PM/)[0];
+
   
-    return (
-      <div className="time">
-        <h4>{formatTime(time)}</h4>
-      </div>
-    );
-  };
+  return (
+    <div className={`time ${ className } `} style = {style}>
+      <h4>
+        <span className="big">{hourMinute}</span>
+        <span className="small"> {meridiem}</span>
+        </h4>
+    </div>
+  );
+};
 
 export default HeaderWithTime;

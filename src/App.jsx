@@ -5,7 +5,7 @@ import './App.css'
 import HeaderWithTime from './components/CurrentTime.jsx'
 import Search from './components/Search.jsx'
 import Collection from './components/collection/Collection.jsx'
-import ErrorMessage from './components/ErrorMsg.jsx'
+import NavgationBar from './components/Nav.jsx'
 
 // Forecast Components
 import useForecast from './components/Forecast/Forecast.jsx'
@@ -24,7 +24,7 @@ import useGetlocation from './components/GetLocation.jsx'
 import { useWeatherData } from './components/WeatherData.jsx'
 import { useFavorites } from './components/Favorites.jsx'
 import { useAutoRefresh } from './components/AutoRefresh.jsx'
-import { useUIState } from './components/UIState.jsx'
+
 
 // Utils & Config
 import { APP_CONFIG } from './components/Constant.jsx'
@@ -55,16 +55,6 @@ function App() {
     isFavorite, 
     hasLoaded: favoritesLoaded 
   } = useFavorites()
-  
-  // UI State Management
-  const { 
-    shake, 
-    shakeType,
-    searchStart, 
-    setSearchStart, 
-    triggerShake,
-  } = useUIState()
-  
   
   // Location Hook
   const { 
@@ -104,19 +94,6 @@ function App() {
     }
   }
   
-  const handleWeatherError = () => {
-    clearWeatherError()
-    triggerShake()
-  }
-  
-  const handleSearchError = (errorType) => {
-    clearWeatherError()
-    if (errorType === 'CITY_NOT_FOUND') {
-      triggerSearchShake() // 使用專門的搜尋震動
-    } else {
-      triggerShake('api-error')
-    }
-  }
 
   // ===== Effects =====
   // Fetch weather data when query changes
@@ -131,12 +108,6 @@ function App() {
     }
   }, [location])
   
-  // Handle weather errors with shake animation
-  useEffect(() => {
-    if (weatherError) {
-      triggerShake()
-    }
-  }, [weatherError, triggerShake])
   
   // Debug logging
   useEffect(() => {
@@ -159,7 +130,6 @@ function App() {
         <>
           <h1 className='cityName'>{weather.name}</h1>
           <h2 className='current-temp'>{formatTemperature(weather.main.temp)}</h2>
-          <HeaderWithTime />
         </>
       )
     }
@@ -177,22 +147,21 @@ function App() {
   // ===== Main Render =====
   return (
     <div className="app-wrapper">
-      {/* Error Message Display */}
-      <ErrorMessage error={locationError} onClose={clearLocationError} />
 
       {/* Navigation */}
-      <nav className='Nav'>
+
+      <NavgationBar
+        weather={weather}
+        isFavorite={isFavorite}
+        handleAddFavorite={handleAddFavorite}
+      >
         <Search 
           city={city}
           setCity={setCity}
           setQuery={setQuery}
-          searchStart={searchStart}
-          setSearchStart={setSearchStart}
           error={weatherError}
-          shake={shake}
-
         />
-        
+      </NavgationBar>
         <div className='btn'>
           <button 
             className="location-btn" 
@@ -201,16 +170,8 @@ function App() {
           >
             {locationLoading ? "🔄 定位中..." : "📍 Current Location"}
           </button>
-          
-          <button 
-            className='collectionBtn' 
-            onClick={handleAddFavorite}
-            disabled={!weather || isFavorite(weather?.name)}
-          >
-            {isFavorite(weather?.name) ? "✅ 已收藏" : "📌 Collection"}
-          </button> 
+        
         </div>
-      </nav>
 
       <main className='main row'>
         {/* Favorites Section */}
