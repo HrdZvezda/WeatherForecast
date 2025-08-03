@@ -3,9 +3,10 @@ import './App.css'
 
 // Components
 import HeaderWithTime from './components/CurrentTime.jsx'
-import Search from './components/Search.jsx'
-import Collection from './components/collection/Collection.jsx'
-import NavgationBar from './components/Nav.jsx'
+import Search from './components/Navbar/Search.jsx'
+import Collection from './components/Navbar/Collection.jsx'
+import NavgationBar from './components/Navbar/NAV.jsx'
+
 
 // Forecast Components
 import useForecast from './components/Forecast/Forecast.jsx'
@@ -22,19 +23,22 @@ import useWindSpeed from './components/WeatherCard/WindSpeed.jsx'
 // Custom Hooks
 import useGetlocation from './components/GetLocation.jsx'
 import { useWeatherData } from './components/WeatherData.jsx'
-import { useFavorites } from './components/Favorites.jsx'
+import { useFavorites } from './components/Navbar/Collection.jsx'
 import { useAutoRefresh } from './components/AutoRefresh.jsx'
 
 
 // Utils & Config
 import { APP_CONFIG } from './components/Constant.jsx'
 import { formatTemperature } from './components/Helpers.jsx'
+import WeatherIcon from './components/Bg-Icon/WeatherIcon.jsx'
 
 function App() {
   // ===== State Management =====
   const [city, setCity] = useState('')
   const [query, setQuery] = useState(APP_CONFIG.DEFAULT_CITY)
   const [isAutoRefresh, setIsAutoRefresh] = useState(true)
+  const [hasInitialized, setHasInitialized] = useState(false)
+
   
   // ===== Custom Hooks =====
   // Weather Data Management
@@ -81,10 +85,28 @@ function App() {
     [query],
     isAutoRefresh
   )
+
+  // 一進入網頁就自動定位
+  useEffect(() => {
+    console.log("App 初始化，開始自動定位...")
+    
+    // 檢查是否有地理位置 API
+    if ('geolocation' in navigator) {
+      getLocation() // 自動獲取位置
+    } else {
+      console.warn("瀏覽器不支援地理位置，使用預設城市")
+      setQuery(APP_CONFIG.DEFAULT_CITY)
+    }
+    
+    setHasInitialized(true)
+  }, [getLocation]) // 只在組件初始化時執行
+  
   
   // ===== Event Handlers =====
   const handleGetLocation = () => {
+    console.log("按下定位按鈕")
     clearLocationError()
+    clearWeatherError()
     getLocation()
   }
   
@@ -93,21 +115,49 @@ function App() {
       addFavorite(weather)
     }
   }
-  
+  const handleRemoveFavorite = (cityName) => {
+    removeFavorite(cityName)
+  }
 
   // ===== Effects =====
   // Fetch weather data when query changes
   useEffect(() => {
-    fetchWeather(query)
+    console.log("query 變化，準備獲取天氣:", query)
+    if (query) {
+      fetchWeather(query)
+    }
   }, [query, fetchWeather])
   
   // Set query when location is obtained
   useEffect(() => {
-    if (location) {
+    console.log("location 更新:", location)
+    if (location && (location.lat && location.lon)) {
+      console.log("設置 query 為坐標:", location)
       setQuery(location)
     }
   }, [location])
   
+  // 處理定位失敗，回退到預設城市
+  useEffect(() => {
+    if (locationError && hasInitialized && !query) {
+      console.log("定位失敗，使用預設城市:", APP_CONFIG.DEFAULT_CITY)
+      setQuery(APP_CONFIG.DEFAULT_CITY)
+    }
+  }, [locationError, hasInitialized, query])
+
+  // 定位錯誤調試
+  useEffect(() => {
+    if (locationError) {
+      console.error("定位錯誤:", locationError)
+    }
+  }, [locationError])
+
+  // 天氣錯誤調試
+  useEffect(() => {
+    if (weatherError) {
+      console.error("天氣錯誤:", weatherError)
+    }
+  }, [weatherError])
   
   // Debug logging
   useEffect(() => {
@@ -117,120 +167,108 @@ function App() {
 
   // ===== Render Helpers =====
   const renderCurrentWeather = () => {
+    // 顯示初始化狀態
+    if (!hasInitialized || (locationLoading && !query)) {
+      return <p>🔍 正在獲取您的位置...</p>
+    }
+    
     if (weatherLoading) {
       return <p>Loading...</p>
     }
     
     if (weatherError) {
-      return <p>{weatherError}</p>
+      return <p style={{color: 'red'}}>❌ 錯誤: {weatherError}</p>
     }
     
-    if (weather) {
+    if (weather) { 
+      const weatherType = weather.weather[0].main
+      
       return (
         <>
-          <h1 className='cityName'>{weather.name}</h1>
+          <h1 className='cityName'>
+            {weather.name}
+            {/* 顯示是否為定位結果 */}
+            {typeof query === 'object' && (
+              <span style={{fontSize: '0.5em', color: '#666'}}></span>
+            )}
+          </h1>
           <h2 className='current-temp'>{formatTemperature(weather.main.temp)}</h2>
         </>
       )
     }
     
-    return <p>Loading...</p>
+    return <p>⏳ 初始化中...</p>
   }
   
-  const renderWeatherCard = (title, value) => (
-    <div className="weather-card col-6">
-      <h3>{title}</h3>
-      <p>{value}</p>
-    </div>
-  )
   
   // ===== Main Render =====
   return (
+    <>
     <div className="app-wrapper">
-
+      
       {/* Navigation */}
-
       <NavgationBar
         weather={weather}
         isFavorite={isFavorite}
         handleAddFavorite={handleAddFavorite}
-      >
+        handleRemoveFavorite={handleRemoveFavorite}
+        handleGetLocation={handleGetLocation}
+        locationLoading={locationLoading}
+        >
         <Search 
           city={city}
           setCity={setCity}
           setQuery={setQuery}
           error={weatherError}
-        />
-      </NavgationBar>
-        <div className='btn'>
-          <button 
-            className="location-btn" 
-            onClick={handleGetLocation}
-            disabled={locationLoading}
-          >
-            {locationLoading ? "🔄 定位中..." : "📍 Current Location"}
-          </button>
-        
-        </div>
-
-      <main className='main row'>
-        {/* Favorites Section */}
-        <aside>
-          <Collection 
-            weather={weather}
-            setQuery={setQuery}
-            favorites={favorites}
-            setFavorites={() => {}} // 由 hook 管理，不需要直接設置
-            removeFavorite={removeFavorite}
           />
-        </aside>
+      </NavgationBar>
+
+      <main className='main'>
           
-        <section className='weather col-18'>
+        <section className='weather'>
           {/* Weather Content */}
           <div className="weather-content">
             
+            {/* 5 Day Forecast */}
+            <ForecastDisplay forecast={forecast} />
+            
             {/* Current Weather Display */}
-            <section className="current-weather col-18">
+            <section className="current-weather">
               {renderCurrentWeather()}
             </section>
 
             <div className='weather-container'>
               
-              {/* 5 Day Forecast */}
-              <section className="forecast-section col-6">
-                <ForecastDisplay forecast={forecast} />
-              </section>
-
               {/* Hourly Forecast & Weather Details */}
-              <section className="hourly-section col-12">
+              {/* <section className="hourly-section">
                 <HourlyForecastDisplay 
-                  data={hourlyForecast} 
-                  cityName={weather?.name} 
+                data={hourlyForecast} 
+                cityName={weather?.name} 
                 />
                 
-                {/* Weather Details Grid */}
-                <div className="weather-details col-12">
-                  {renderWeatherCard(
-                    "體感溫度", 
-                    formatTemperature(feelsLike)
+                Weather Details Grid
+                <div className="weather-details">
+                {renderWeatherCard(
+                  "體感溫度", 
+                  formatTemperature(feelsLike)
                   )}
                   
                   {renderWeatherCard(
                     "UV指數", 
                     uvIndex !== null ? uvIndex : "載入中..."
-                  )}
-                  
-                  {renderWeatherCard(
-                    "降雨機率", 
-                    rainChance !== null ? `${rainChance}%` : "載入中..."
-                  )}
-                  
-                  {renderWeatherCard(
-                    "風速", 
-                    windSpeed !== null ? `${windSpeed} km/h` : "無資料"
-                  )}
-                </div>
-              </section>
+                    )}
+                    
+                    {renderWeatherCard(
+                      "降雨機率", 
+                      rainChance !== null ? `${rainChance}%` : "載入中..."
+                      )}
+                      
+                      {renderWeatherCard(
+                        "風速", 
+                        windSpeed !== null ? `${windSpeed} km/h` : "無資料"
+                        )}
+                        </div>
+                        </section> */}
             </div>
           </div>
         </section>
@@ -248,13 +286,16 @@ function App() {
           borderRadius: '5px',
           fontSize: '12px'
         }}>
-          <div>最後更新: {lastUpdate?.toLocaleTimeString()}</div>
+          <div>最後更新: {lastUpdate?.toLocaleTimeString() || '未更新'}</div>
           <div>自動更新: {isAutoRefresh ? '開啟' : '關閉'}</div>
           <div>收藏數量: {favorites.length}</div>
-          <div>當前查詢: {query}</div>
+          <div>定位狀態: {locationLoading ? '定位中' : location ? '已定位' : '未定位'}</div>
+          <div>天氣載入: {weatherLoading ? '載入中' : '完成'}</div>
+          <div>錯誤: {locationError || weatherError || '無'}</div>
         </div>
       )}
     </div>
+  </>
   )
 }
 

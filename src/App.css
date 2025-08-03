@@ -12,69 +12,84 @@ html,body{
   color: #333;
 }
 
+body {
+  background: linear-gradient(to right, #171718, #747576);
+  /* background: transparent !important; */
+  background-size: 200% 200%;
+  /* animation: wave 8s ease-in-out infinite; */
+}
+
+@keyframes wave {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
 #root {
   margin:  auto;
   text-align: center;
 }
 
-/*  */
+/* 主要視窗 */
 .app-wrapper {
-  padding: 20px;
   width: 100vw;
-  max-height: 100vh;
+  height: 100vh;
+  position: relative;
 }
 
 .main{
-  display: grid;
-  grid-template-columns: 1fr 3fr ;
-  grid-template-rows: 1fr; 
   width: 100%;
-  margin-top: 20px; 
-  gap: 10px; 
-  align-items:start;
-}
-
-.main .weather{
+  height: 100vh; /* 佔滿整個視窗高度 */
   display: flex;
-  flex-direction: column;
-  height: 100%; 
+  justify-content: center;
+  align-items: stretch; /* 讓內容延伸到邊界 */
+  padding: 0; /* 移除 padding 讓內容完全佔滿 */
+  margin: 0; /* 確保沒有邊距 */
 }
 
-/* 天氣內容區域重新布局 */
+/* 天氣內容區域 - 佔滿主容器 */
+.weather {
+  width: 100%;
+  height: 100%;
+}
+
 .weather-content {
-  flex: 1; /* 使用 flex: 1 而不是 width: 100% */
   display: grid;
-  grid-template-rows: auto auto 1fr auto;
+  grid-template-rows: 1fr auto; 
+  width: 100%;
+  height: 100vh; /* 佔滿整個視窗高度 */
 }
 
+/* Current Weather 區域 - 從頂部開始，佔據上半部分 */
 .current-weather {
   grid-column: 1 / -1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 12px;
-  /* border: 1px solid #000; */
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  padding: 20px 12px 12px; /* 移除上方過多的 padding */
+  min-height: 50vh; /* 至少佔據一半視窗高度 */
+  color: white;
 }
+
+/* Weather Container - 下半部分 */
+.weather-container{
+  grid-column: 1 / -1;
+  display: flex;
+  max-width: 100%;
+  height: 50vh; /* 佔據下半部分 */
+  padding: 0px;
+}
+
 .hourly-section{
   display: grid;
   overflow-y: scroll;
   /* border: 1px solid #000; */
-  max-height: 90.5%;
+  width: 100%;
   border-radius: 10px;
   margin-top: 10px;
-  padding: 4px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  /* padding: 4px; */
+  /* box-shadow: 0 2px 8px rgba(0,0,0,0.2); */
 }
-.weather-container{
-  grid-column: 1 / -1;
-  display: inline-flex;
-  max-width: 100%;
-  /* border: 1px solid #000; */
-}
-
 .weather-details{
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -102,7 +117,7 @@ html,body{
   padding-left: 10px;
   margin-right: 10px;
   background: transparent;
-  border: 1px solid white;
+  /* border: 1px solid white; */
   border-radius: 9999px;
   color: white;
   cursor: pointer;
@@ -113,6 +128,7 @@ html,body{
 
 .search > input[type="text"] {
   font-size: 14px;
+  color: #fff;
   width: 0px;
   border-radius: 5px;
   padding: 6px 12px;
@@ -137,23 +153,6 @@ html,body{
   color: #333;  
 }
 
-
-.location-btn, .collectionBtn {
-  margin-right: 5px;
-  padding: 6px 12px;
-  background-color: #ccc;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.2s;
-}
-
-.collectionBtn:hover, .location-btn:hover{
-  background-color: #3a6fd1;
-}
-
 /* -------------------- *\ 
     current weather 區塊
 \* -------------------- */
@@ -171,14 +170,17 @@ html,body{
   margin: 0;
 }
 
-/* -------------------- *\ 
-    collection 區塊 - 更新版本
-\* -------------------- */
+
+.collection-float {
+  position: fixed;
+  top: 100px;
+  right: 24px;
+  z-index: 999;
+}
 
 .favorites {
   text-align: left;
   width: 280px;
-  height: 50vh; 
   overflow: hidden;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.2);
@@ -397,9 +399,6 @@ html,body{
   min-width: 0; /* 讓文字可以被截斷 */
 }
 
-
-
-
 /* 動畫增強 */
 .favorites-header {
   position: relative;
@@ -417,14 +416,4 @@ html,body{
 }
 .favorites-header:hover::after {
   width: 30px;
-}
-
-/* -------------------- *\ 
-    Time 區塊
-\* -------------------- */
-.time h4 {
-  font-size: 0.875rem;
-  margin: 8px 0 0 0;
-  color: #666;
-  font-weight: 400;
 }

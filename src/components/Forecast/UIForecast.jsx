@@ -1,178 +1,260 @@
-// components/ForecastDisplay.jsx
 import React from "react";
+import WeatherIcon from "../Bg-Icon/WeatherIcon";
 
 const ForecastDisplay = ({ forecast }) => {
   if (!forecast || forecast.length === 0) {
-    return <p>Loading forecast...</p>;
+    return (
+      <div className="compact-forecast-loading">
+        <p>Loading...</p>
+      </div>
+    );
   }
 
   const formatDate = (timestamp, index) => {
     const date = new Date(timestamp * 1000);
     
     if (index === 0) {
-      return "今天";
+      return "Today";
     } else if (index === 1) {
-      return "明天";
+      return "Tomorrow";  
     } else {
-      // 顯示星期幾
-      const weekdays = ["週日", "週一", "週二", "週三", "週四", "週五", "週六"];
+      const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
       return weekdays[date.getDay()];
     }
   };
 
-  const formatFullDate = (timestamp) => {
-    const date = new Date(timestamp * 1000);
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
-    return `${month}/${day}`;
+  // const getWeatherIcon = (iconCode) => {
+  //   const iconMap = {
+  //     '01d': '☀️', '01n': '🌙',
+  //     '02d': '⛅', '02n': '☁️',
+  //     '03d': '☁️', '03n': '☁️',
+  //     '04d': '☁️', '04n': '☁️',
+  //     '09d': '🌧️', '09n': '🌧️',
+  //     '10d': '🌦️', '10n': '🌧️',
+  //     '11d': '⛈️', '11n': '⛈️',
+  //     '13d': '❄️', '13n': '❄️',
+  //     '50d': '🌫️', '50n': '🌫️'
+  //   };
+  //   return iconMap[iconCode] || '☀️';
+  // };
+
+  // 計算溫度範圍（模擬最低和最高溫度）
+  const getTempRange = (dayTemp) => {
+    const temp = Math.round(dayTemp);
+    const minTemp = temp - Math.floor(Math.random() * 8 + 3); // 低3-10度
+    const maxTemp = temp + Math.floor(Math.random() * 5 + 2); // 高2-6度
+    return { min: minTemp, max: maxTemp };
+  };
+
+  const iconCodeToType = (iconCode) => {
+    if (!iconCode) return 'Clear';
+    const map = {
+      '01d': 'Clear', '01n': 'Clear',
+      '02d': 'Clouds', '02n': 'Clouds',
+      '03d': 'Clouds', '03n': 'Clouds',
+      '04d': 'Clouds', '04n': 'Clouds',
+      '09d': 'Rain',   '09n': 'Rain',
+      '10d': 'Rain',   '10n': 'Rain',
+      '11d': 'Thunderstorm', '11n': 'Thunderstorm',
+      '13d': 'Snow',   '13n': 'Snow',
+      '50d': 'Clouds', '50n': 'Clouds',
+    };
+    return map[iconCode] || 'Clear';
   };
 
   return (
-    <section className="forecast col-6">
-      <h3 style={{ 
-        marginBottom: "15px", 
-        color: "#333",
-        textAlign: "center",
-        fontSize: "18px",
-        fontWeight: "600"
-      }}>
-        5天預報
-      </h3>
+    <div className="compact-forecast">
       
-      {forecast.map((day, index) => {
-        const icon = day.weather[0].icon;
-        const iconUrl = `https://openweathermap.org/img/wn/${icon}@2x.png`;
-        const temp = Math.round(day.temp.day);
-        const description = day.weather[0].description;
+      <div className="forecast-list">
+        {forecast.map((day, index) => {
+          const icon = day.weather[0].icon;
+          // const weatherEmoji = getWeatherIcon(icon);
+          const weatherType = iconCodeToType(icon);
+          const dayName = formatDate(day.dt, index);
+          const tempRange = getTempRange(day.temp.day);
+          const tempPercent = ((tempRange.max - tempRange.min) / 20) * 100; // 溫度條百分比
 
-        return (
-          <div key={index} className="forecast-item-detailed">
-            {/* 日期區域 - 固定寬度 */}
-            <div className="forecast-date">
-              <div className="day-name">{formatDate(day.dt, index)}</div>
-              <div className="date-number">{formatFullDate(day.dt)}</div>
+          return (
+            <div key={index} className={`forecast-item ${index === 0 ? 'today' : ''}`}>
+              <div className="day-label">
+                {dayName}
+              </div>
+              
+              <div className="weather-icon">
+                <WeatherIcon type={weatherType} size="sm"/>
+              </div>
+              
+              <div className="temp-range">
+                <span className="temp-min">{tempRange.min}°</span>
+                
+                <div className="temp-bar-container">
+                  <div className="temp-bar">
+                    <div 
+                      className="temp-bar-fill"
+                      style={{ width: `${Math.min(tempPercent, 85)}%` }}
+                    ></div>
+                  </div>
+                </div>
+                
+                <span className="temp-max">{tempRange.max}°</span>
+              </div>
             </div>
-            
-            {/* 天氣圖標 - 固定寬度居中 */}
-            <div className="forecast-icon">
-              <img src={iconUrl} alt={description} />
-            </div>
-            
-            {/* 溫度 - 固定寬度居中 */}
-            <div className="forecast-temp">
-              <span className="temp-high">{temp}°C</span>
-            </div>
-            
-            {/* 天氣描述 - 剩餘空間 */}
-            <div className="forecast-desc">
-              {description}
-            </div>
-          </div>
-        );
-      })}
-      
+          );
+        })}
+      </div>
+
       <style jsx>{`
-        .forecast {
-          /* border:1px solid #000; */
-          background: #f8f9fa;
-          border-radius: 12px;
-          max-height: 90.5%;
+        .compact-forecast {
+          /* background: rgba(255, 255, 255, 0.1); */
+          /* border: 1px solid rgba(255, 255, 255, 0.2); */
+          /* box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15); */
           padding: 16px;
-          margin-top: 10px;
-          margin-right: 8px;
-          margin-left: 2px;
-          box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-          overflow-y: auto;
-          overflow-x: hidden;
-          scrollbar-width: none;
+          width: 320px;
+          position: absolute;
+          top: 150px;
+          right: 20px;
+          z-index: 100;
         }
-        
-        .forecast::-webkit-scrollbar {
-          display: none;
-        }
-        
-        .forecast-item-detailed {
-          display: grid;
-          grid-template-columns: 60px 50px 60px 1fr;
-          align-items: center;
-          gap: 8px;
-          padding: 14px 0;
-          border-bottom: 1px solid rgba(184, 186, 187, 0.3);
-          min-height: 60px;
-        }
-        
-        .forecast-item-detailed:last-child {
-          border-bottom: none;
-        }
-        
-        .forecast-date {
+
+        .forecast-list {
           display: flex;
           flex-direction: column;
-          align-items: flex-start;
-          justify-content: center;
-          width: 60px;
+          gap: 10px;
         }
-        
-        .day-name {
+
+        .forecast-item {
+          display: grid;
+          grid-template-columns: 70px 50px 1fr;
+          align-items: center;
+          gap: 12px;
+          padding: 12px 8px;
+          border-radius: 12px;
+          transition: all 0.2s ease;
+          position: relative;
+        }
+
+        .forecast-item:hover {
+          background: rgba(255, 255, 255, 0.1);
+        }
+
+        .forecast-item.today {
+          background: rgba(255, 255, 255, 0.15);
+          border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .forecast-item.today::before {
+          content: '';
+          position: absolute;
+          left: 0;
+          top: 50%;
+          transform: translateY(-50%);
+          width: 3px;
+          height: 70%;
+          background: linear-gradient(to bottom, #e7edf0cb, #abb0b3ab);
+          border-radius: 2px;
+        }
+
+        .day-label {
+          font-size: 14px;
+          font-weight: 500;
+          color: white;
+          text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+          text-align: left;
+        }
+
+        .forecast-item.today .day-label {
           font-weight: 600;
-          font-size: 15px;
-          color: #333;
-          line-height: 1.2;
-          white-space: nowrap;
+          color: #E3F2FD;
         }
-        
-        .date-number {
-          font-size: 11px;
-          color: #666;
-          margin-top: 2px;
-          line-height: 1;
+
+        .weather-icon {
+          /* font-size: 24px; */
+          text-align: center;
+          filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.3));
         }
-        
-        .forecast-icon {
-          display: flex;
-          justify-content: center;
+
+        .temp-range {
+          display: grid;
+          grid-template-columns: 32px 1fr 32px;
           align-items: center;
-          width: 50px;
-          height: 50px;
+          gap: 8px;
+          width: 100%;
         }
-        
-        .forecast-icon img {
-          width: 44px;
-          height: 44px;
-          filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
-        }
-        
-        .forecast-temp {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          width: 60px;
-        }
-        
-        .temp-high {
-          font-weight: 600;
-          font-size: 16px;
-          color: #333;
-          white-space: nowrap;
-        }
-        
-        .forecast-desc {
-          display: flex;
-          align-items: center;
+
+        .temp-min, .temp-max {
           font-size: 13px;
-          color: #666;
-          text-transform: capitalize;
-          line-height: 1.3;
-          padding-left: 4px;
-        }
-        
-        /* 針對中文天氣描述的優化 */
-        .forecast-desc {
+          font-weight: 500;
+          color: rgba(200, 200, 200, 0.9);
+          text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
           text-align: center;
         }
-        
+
+        .temp-max {
+          color: white;
+          font-weight: 600;
+        }
+
+        .temp-bar-container {
+          height: 4px;
+          background: rgba(255, 255, 255, 0.2);
+          border-radius: 2px;
+          overflow: hidden;
+          position: relative;
+        }
+
+        .temp-bar {
+          height: 100%;
+          width: 100%;
+          position: relative;
+        }
+
+        .temp-bar-fill {
+          height: 100%;
+          background: linear-gradient(to right, 
+            rgba(160, 160, 160, 0.6) 0%,
+            rgba(200, 200, 200, 0.8) 30%,
+            rgba(230, 230, 230, 0.9) 70%,
+            rgba(255, 255, 255, 1) 100%
+          );
+          border-radius: 2px;
+          transition: width 0.8s ease;
+          position: relative;
+        }
+
+        .forecast-item.today .temp-bar-fill {
+          background: linear-gradient(to right, 
+            rgba(180, 180, 180, 0.7) 0%,
+            rgba(210, 210, 210, 0.9) 30%,
+            rgba(240, 240, 240, 1) 70%,
+            rgba(255, 255, 255, 1) 100%
+          );
+          box-shadow: 0 0 8px  rgba(255, 255, 255, 0.4);
+        }
+
+        .compact-forecast-loading {
+          background:  rgba(0, 0, 0, 0.4);
+          backdrop-filter: blur(20px);
+          border: 1px solid rgba(255, 255, 255, 0.2);
+          border-radius: 16px;
+          padding: 20px;
+          width: 320px;
+          position: absolute;
+          top: 20px;
+          right: 20px;
+          z-index: 100;
+          text-align: center;
+        }
+
+        .compact-forecast-loading p {
+          margin: 0;
+          color: white;
+          font-size: 14px;
+          opacity: 0.8;
+        }
+
+
       `}</style>
-    </section>
+    </div>
   );
 };
 
