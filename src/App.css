@@ -170,14 +170,11 @@ body {
   margin: 0;
 }
 
+/* -------------------- *\ 
+    collection 區塊 - 更新版本
+\* -------------------- */
 
-.collection-float {
-  position: fixed;
-  top: 100px;
-  right: 24px;
-  z-index: 999;
-}
-
+/* 
 .favorites {
   text-align: left;
   width: 280px;
@@ -189,7 +186,7 @@ body {
   flex-direction: column;
 }
 
-/* 收藏標題區域 */
+
 .favorites-header {
   display: flex;
   justify-content: space-between;
@@ -241,17 +238,17 @@ body {
   transform: rotate(-90deg);
 }
 
-/* 收藏內容區域 */
+
 .favorites-content {
-  /* transition: max-height 0.2s ease; */
+
   position: relative;
 }
 
 .favorites-content.expanded {
-  height: 100%; /* 增加最大高度以容納更多項目 */
+  height: 100%; 
   opacity: 1;
-  overflow-y: scroll; /* 允許垂直滾動 */
-  overflow-x: hidden; /* 隱藏水平滾動 */
+  overflow-y: scroll; 
+  overflow-x: hidden; 
 }
 
 .favorites-content.collapsed {
@@ -260,7 +257,7 @@ body {
   overflow: hidden;
 }
 
-/* 滾動漸變效果 */
+
 .favorites-content.expanded::after {
   content: '';
   position: sticky;
@@ -272,7 +269,7 @@ body {
   margin-top: -20px;
 }
 
-/* 自定義滾動條樣式 */
+
 .favorites-content::-webkit-scrollbar {
   width: 6px;
 }
@@ -292,13 +289,13 @@ body {
   background: #a1a1a1;
 }
 
-/* Firefox 滾動條樣式 */
+
 .favorites-content {
   scrollbar-width: thin;
   scrollbar-color: #c1c1c1 #f1f1f1;
 }
 
-/* 空收藏狀態 */
+
 .empty-favorites {
   padding: 20px 16px;
   text-align: center;
@@ -316,7 +313,6 @@ body {
   line-height: 1.4;
 }
 
-/* 收藏項目樣式調整 */
 .favorite-item {
   display: grid;
   grid-template-columns: 1fr auto;
@@ -332,14 +328,14 @@ body {
 }
 
 .favorite-item:last-child {
-  border-bottom: none; /* 最後一項不顯示分隔線 */
+  border-bottom: none; 
 }
 
 .favorite-item:hover {
   background-color: #f8f9fa;
 }
 
-/* 其他現有樣式保持不變 */
+
 .collectionCity {
   font-size: 16px; 
   margin: 0px 4px;
@@ -391,15 +387,15 @@ body {
   color: white;
 }
 
-/* 收藏項目資訊區域 */
+
 .favorite-info {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  min-width: 0; /* 讓文字可以被截斷 */
+  min-width: 0; 
 }
 
-/* 動畫增強 */
+
 .favorites-header {
   position: relative;
 }
@@ -416,4 +412,4 @@ body {
 }
 .favorites-header:hover::after {
   width: 30px;
-}
+} */

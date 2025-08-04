@@ -1,7 +1,7 @@
-import { React, useState, useEffect } from "react";
+import { React, useState, useEffect, useRef } from "react";
 import Search from "./Search";
 import HeaderWithTime from '../CurrentTime';
-
+import Collection from "./Collection";
 
 const NavgationBar = ({
     children,
@@ -11,14 +11,14 @@ const NavgationBar = ({
     handleRemoveFavorite,
     handleGetLocation,
     locationLoading,
-    favorites,
-    removeFavorite,
-    setQuery    
+    favorites=[],
+    setQuery,
   }) => {
       
     const [searchStart, setSearchStart] = useState(false);
     const [shake, setShake] = useState(false);
-    const [showCollection, setShowCollection] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
+    const menuRef = useRef(null);
 
     const handleFavoriteToggle = () => {
         if (!weather) return;
@@ -31,19 +31,38 @@ const NavgationBar = ({
             handleAddFavorite();
         }
     };
-    const handleLogoClick = () => {
-        setShowCollection(!showCollection);
-      };
 
+    useEffect(() => {
+        function handleClickOutside(event) {
+          if (menuRef.current && !menuRef.current.contains(event.target)) {
+            setIsOpen(false);
+          }
+        }
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+      }, []);
 
     return(
         <>
             <div className="navbar">
-                <div className="navbar-left">
+                <div className="navbar-left" ref={menuRef}>
                     <div className="nav-logo">
-                        <button className="nav-btn" onClick={handleLogoClick}>
-                            <i class="fa-regular fa-cloud"></i>
+                        <button className="nav-btn" onClick={() => setIsOpen(!isOpen)}>
+                            <i className="fa-regular fa-cloud"></i>
                         </button>
+                        {isOpen && (
+                        <div className="popover">
+                            <Collection 
+                                favorites={favorites}
+                                setQuery={setQuery}
+                                removeFavorite={handleRemoveFavorite}
+                                onSelect={(cityName) => {
+                                    setQuery(cityName);
+                                    setIsOpen(false);
+                                }}
+                            />
+                        </div>
+                    )}
                     </div>
                     <p className="nav-title">
                         <strong><i>Weather</i></strong><br />
@@ -53,7 +72,7 @@ const NavgationBar = ({
                         <HeaderWithTime />
                     </div>
                 </div>
-                
+
                 <div className="navbar-right">
                     {children}
                     <div className='btn'>
@@ -75,6 +94,7 @@ const NavgationBar = ({
                         {isFavorite(weather?.name) ? <i class="fa-solid fa-bookmark"></i> : <i class="fa-regular fa-bookmark"></i> }
                     </button> 
                 </div>
+                
             </div>
             <style>{`
                 .navbar {
@@ -116,6 +136,7 @@ const NavgationBar = ({
                 
 
                 .navbar-left {
+                    position: relative;
                     display: flex;
                     align-items: center;
                     gap: 0px;
@@ -180,6 +201,27 @@ const NavgationBar = ({
                     border: none;
                     transition: all 0.7s;
                 }
+
+
+                .popover {
+                    position: absolute;
+                    top: 70px;
+                    left: 50%;
+                    transform: translateX(-10%);
+                    width: 280px;
+                    max-height: 300px;
+                    overflow-y: auto;
+                    padding: 8px;
+                    border-radius: 16px;
+                    background: rgba(255, 255, 255, 0.15);
+                    backdrop-filter: blur(10px);
+                    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
+                    // border: 1px solid rgba(255, 255, 255, 0.1);
+                    color: #fff;
+                    z-index: 999;
+                    pointer-events: auto; /* 確保可以點擊 */
+                }
+
             `}</style>
         </>
     )

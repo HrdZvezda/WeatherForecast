@@ -22,13 +22,13 @@ import useWindSpeed from './components/WeatherCard/WindSpeed.jsx'
 
 // Custom Hooks
 import useGetlocation from './components/GetLocation.jsx'
-import { useWeatherData } from './components/WeatherData.jsx'
+import { useWeatherData } from './components/Data/WeatherData.jsx'
 import { useFavorites } from './components/Navbar/Collection.jsx'
 import { useAutoRefresh } from './components/AutoRefresh.jsx'
 
 
 // Utils & Config
-import { APP_CONFIG } from './components/Constant.jsx'
+import { APP_CONFIG } from './components/Data/Constant.jsx'
 import { formatTemperature } from './components/Helpers.jsx'
 import WeatherIcon from './components/Bg-Icon/WeatherIcon.jsx'
 
@@ -38,7 +38,7 @@ function App() {
   const [query, setQuery] = useState(APP_CONFIG.DEFAULT_CITY)
   const [isAutoRefresh, setIsAutoRefresh] = useState(true)
   const [hasInitialized, setHasInitialized] = useState(false)
-
+  const [showCollection, setShowCollection] = useState(false)
   
   // ===== Custom Hooks =====
   // Weather Data Management
@@ -57,9 +57,12 @@ function App() {
     addFavorite, 
     removeFavorite, 
     isFavorite, 
-    hasLoaded: favoritesLoaded 
+    // hasLoaded: favoritesLoaded 
   } = useFavorites()
-  
+
+  const handleToggleCollection = () => {
+    setShowCollection(prev => !prev)
+  }
   // Location Hook
   const { 
     location, 
@@ -208,13 +211,15 @@ function App() {
       
       {/* Navigation */}
       <NavgationBar
+        setQuery={setQuery} 
         weather={weather}
+        favorites={favorites}
         isFavorite={isFavorite}
         handleAddFavorite={handleAddFavorite}
         handleRemoveFavorite={handleRemoveFavorite}
         handleGetLocation={handleGetLocation}
         locationLoading={locationLoading}
-        >
+      >
         <Search 
           city={city}
           setCity={setCity}
@@ -222,6 +227,10 @@ function App() {
           error={weatherError}
           />
       </NavgationBar>
+
+      
+      
+
 
       <main className='main'>
           
@@ -240,12 +249,12 @@ function App() {
             <div className='weather-container'>
               
               {/* Hourly Forecast & Weather Details */}
-              {/* <section className="hourly-section">
+              <section className="hourly-section">
                 <HourlyForecastDisplay 
                 data={hourlyForecast} 
                 cityName={weather?.name} 
                 />
-                
+{/*                 
                 Weather Details Grid
                 <div className="weather-details">
                 {renderWeatherCard(
@@ -267,8 +276,8 @@ function App() {
                         "風速", 
                         windSpeed !== null ? `${windSpeed} km/h` : "無資料"
                         )}
-                        </div>
-                        </section> */}
+                </div> */}
+              </section>
             </div>
           </div>
         </section>

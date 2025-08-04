@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { APP_CONFIG } from '../components/Constant'
+import { APP_CONFIG } from './Data/Constant.jsx'
 
 export function useAutoRefresh(callback, dependencies = [], enabled = true) {
   const intervalRef = useRef(null)
