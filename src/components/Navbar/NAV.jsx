@@ -1,6 +1,6 @@
 import { React, useState, useEffect, useRef } from "react";
 import Search from "./Search";
-import HeaderWithTime from '../CurrentTime';
+import HeaderWithTime from '../Data/CurrentTime';
 import Collection from "./Collection";
 
 const NavgationBar = ({

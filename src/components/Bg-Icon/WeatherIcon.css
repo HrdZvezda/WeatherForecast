@@ -3,11 +3,12 @@
     display: inline-block;
     width: 12em;
     height: 10em;
-    /* background: transparent !important; */
-    /* box-shadow: none !important; */
+}
+.icon-xs{
+    font-size: 4px;
 }
 .icon-sm{
-    font-size: 5px;
+    font-size: 6px;
 }
 .icon-mid{
     font-size: 10px;

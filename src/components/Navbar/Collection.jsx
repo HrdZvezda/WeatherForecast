@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import useCurrentTemp from '../CurrentTemp';
-import { LocalStorageManager } from '../LocalStorage';
+import useCurrentTemp from '../Data/CurrentTemp.jsx';
+import { LocalStorageManager } from '../Data/LocalStorage.jsx';
 import { APP_CONFIG } from '../Data/Constant.jsx';
 
 const API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
@@ -25,6 +25,7 @@ export function useFavorites() {
     }
   }, [favorites, hasLoaded]);
 
+  // 添加收藏
   const addFavorite = (weather) => {
     if (!weather || favorites.some(f => f.name === weather.name)) return;
     const newFavorite = {
@@ -34,11 +35,11 @@ export function useFavorites() {
     };
     setFavorites(prev => [...prev, newFavorite]);
   };
-
+  // 移除收藏
   const removeFavorite = (cityName) => {
     setFavorites(prev => prev.filter(f => f.name !== cityName));
   };
-
+  // 檢查是否已收藏
   const isFavorite = (cityName) => {
     return favorites.some(f => f.name === cityName);
   };
@@ -54,7 +55,8 @@ export function useFavorites() {
 
 const FavoriteItem = ({ city, onSelect, onRemove }) => {
   const temp = useCurrentTemp(city.name, API_KEY);
-
+  
+  // 處理選擇城市
   const handleSelect = (e) => {
     // 如果點擊的是刪除按鈕，不要觸發選擇
     if (e.target.closest('.collection-buttons') || e.target.closest('button')) {
@@ -63,7 +65,8 @@ const FavoriteItem = ({ city, onSelect, onRemove }) => {
     console.log('點擊城市:', city.name); 
     onSelect(city.name);
   };
-
+  
+  // 處理刪除按鈕點擊
   const handleRemove = (e) => {
     e.stopPropagation(); // 防止觸發父元素的點擊事件
     e.preventDefault();
@@ -117,14 +120,16 @@ const FavoriteItem = ({ city, onSelect, onRemove }) => {
 
 const Collection = ({ favorites, setQuery, removeFavorite, onSelect }) => {
 
+  // 狀態管理
   const handleCitySelect = (cityName) => {
-    console.log('Collection handleCitySelect 被調用:', cityName); // 調試用
+    console.log('Collection handleCitySelect 被調用:', cityName); 
     setQuery(cityName);
     if (onSelect) {
       onSelect(cityName);
     }
   };
 
+  //點擊展開(如果在展開時 點擊收藏不要關閉 其餘地方關閉)再次點擊關閉
   const toggleExpanded = () => {
     setIsExpanded(!isExpanded);
   };

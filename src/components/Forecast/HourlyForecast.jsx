@@ -30,9 +30,9 @@ const useHourlyForecast = (query, apiKey) => {
           // 生成真正的每小時數據（插值計算）
           const generateHourlyData = () => {
             const hourlyArray = [];
-            const forecastData = data.list.slice(0, 8); // 取前 8 個數據點（24小時）
+            const forecastData = data.list.slice(0, 16); // 取前 8 個數據點（24小時）
             
-            for (let i = 0; i < 12; i++) { // 只顯示接下來12小時
+            for (let i = 0; i < 24; i++) { // 只顯示接下來12小時
               const targetTime = new Date(now);
               
               if (i === 0) {

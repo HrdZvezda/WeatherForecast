@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import './App.css'
 
 // Components
-import HeaderWithTime from './components/CurrentTime.jsx'
+import HeaderWithTime from './components/Data/CurrentTime.jsx'
 import Search from './components/Navbar/Search.jsx'
 import Collection from './components/Navbar/Collection.jsx'
 import NavgationBar from './components/Navbar/NAV.jsx'
@@ -21,15 +21,15 @@ import useUVIndex from './components/WeatherCard/UvIndex.jsx'
 import useWindSpeed from './components/WeatherCard/WindSpeed.jsx'
 
 // Custom Hooks
-import useGetlocation from './components/GetLocation.jsx'
+import useGetlocation from './components/Data/GetLocation.jsx'
 import { useWeatherData } from './components/Data/WeatherData.jsx'
 import { useFavorites } from './components/Navbar/Collection.jsx'
-import { useAutoRefresh } from './components/AutoRefresh.jsx'
+import { useAutoRefresh } from './components/Data/AutoRefresh.jsx'
 
 
 // Utils & Config
 import { APP_CONFIG } from './components/Data/Constant.jsx'
-import { formatTemperature } from './components/Helpers.jsx'
+import { formatTemperature } from './components/Data/Helpers.jsx'
 import WeatherIcon from './components/Bg-Icon/WeatherIcon.jsx'
 
 function App() {
@@ -57,7 +57,6 @@ function App() {
     addFavorite, 
     removeFavorite, 
     isFavorite, 
-    // hasLoaded: favoritesLoaded 
   } = useFavorites()
 
   const handleToggleCollection = () => {
@@ -228,55 +227,21 @@ function App() {
           />
       </NavgationBar>
 
-      
-      
-
-
-      <main className='main'>
-          
+      <main className='main'>  
+        {/* Weather Content */}
         <section className='weather'>
-          {/* Weather Content */}
           <div className="weather-content">
-            
-            {/* 5 Day Forecast */}
             <ForecastDisplay forecast={forecast} />
-            
-            {/* Current Weather Display */}
             <section className="current-weather">
               {renderCurrentWeather()}
             </section>
 
-            <div className='weather-container'>
-              
-              {/* Hourly Forecast & Weather Details */}
+            <div className='weather-container'>              
               <section className="hourly-section">
                 <HourlyForecastDisplay 
                 data={hourlyForecast} 
                 cityName={weather?.name} 
                 />
-{/*                 
-                Weather Details Grid
-                <div className="weather-details">
-                {renderWeatherCard(
-                  "體感溫度", 
-                  formatTemperature(feelsLike)
-                  )}
-                  
-                  {renderWeatherCard(
-                    "UV指數", 
-                    uvIndex !== null ? uvIndex : "載入中..."
-                    )}
-                    
-                    {renderWeatherCard(
-                      "降雨機率", 
-                      rainChance !== null ? `${rainChance}%` : "載入中..."
-                      )}
-                      
-                      {renderWeatherCard(
-                        "風速", 
-                        windSpeed !== null ? `${windSpeed} km/h` : "無資料"
-                        )}
-                </div> */}
               </section>
             </div>
           </div>

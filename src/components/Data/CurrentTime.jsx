@@ -48,7 +48,7 @@ const HeaderWithTime = ({ className = '' , style = {} , showDate = true }) => {
         </h4>
         {showDate && (
           <div className="date-info">
-            <span className="date">| {dateString} </span>
+            <span className="date">{day} {month} </span>
           </div>
         )}
 

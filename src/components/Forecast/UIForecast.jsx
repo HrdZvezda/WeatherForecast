@@ -18,7 +18,8 @@ const ForecastDisplay = ({ forecast }) => {
     } else if (index === 1) {
       return "Tomorrow";  
     } else {
-      const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+      const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
       return weekdays[date.getDay()];
     }
   };
@@ -68,11 +69,14 @@ const ForecastDisplay = ({ forecast }) => {
       <div className="forecast-list">
         {forecast.map((day, index) => {
           const icon = day.weather[0].icon;
-          // const weatherEmoji = getWeatherIcon(icon);
           const weatherType = iconCodeToType(icon);
           const dayName = formatDate(day.dt, index);
           const tempRange = getTempRange(day.temp.day);
           const tempPercent = ((tempRange.max - tempRange.min) / 20) * 100; // 溫度條百分比
+
+          // RWD
+          // 想要讓他縮小時可以 溫度條消失改成最高低溫度上下排 
+          // 再小就變成只顯示某天 然後hover的時候跳出卡片式
 
           return (
             <div key={index} className={`forecast-item ${index === 0 ? 'today' : ''}`}>
@@ -108,7 +112,8 @@ const ForecastDisplay = ({ forecast }) => {
           /* background: rgba(255, 255, 255, 0.1); */
           /* border: 1px solid rgba(255, 255, 255, 0.2); */
           /* box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15); */
-          padding: 16px;
+          padding: 12px;
+          padding-right:0;
           width: 320px;
           position: absolute;
           top: 150px;
