@@ -25,12 +25,13 @@ import useGetlocation from './components/Data/GetLocation.jsx'
 import { useWeatherData } from './components/Data/WeatherData.jsx'
 import { useFavorites } from './components/Navbar/Collection.jsx'
 import { useAutoRefresh } from './components/Data/AutoRefresh.jsx'
-
+import useCurrentTemp from './components/Data/CurrentTemp.jsx'
 
 // Utils & Config
 import { APP_CONFIG } from './components/Data/Constant.jsx'
 import { formatTemperature } from './components/Data/Helpers.jsx'
 import WeatherIcon from './components/Bg-Icon/WeatherIcon.jsx'
+import { WeatherAPI } from './components/Data/WeatherAPI.jsx'
 
 function App() {
   // ===== State Management =====
@@ -39,7 +40,8 @@ function App() {
   const [isAutoRefresh, setIsAutoRefresh] = useState(true)
   const [hasInitialized, setHasInitialized] = useState(false)
   const [showCollection, setShowCollection] = useState(false)
-  
+  const [airQuality, setAirQuality] = useState(null);
+
   // ===== Custom Hooks =====
   // Weather Data Management
   const { 
@@ -80,7 +82,8 @@ function App() {
   // Forecast Data
   const forecast = useForecast(query, APP_CONFIG.API_KEY)
   const hourlyForecast = useHourlyForecast(query, APP_CONFIG.API_KEY)
-  
+  const currentTemp = useCurrentTemp(query, APP_CONFIG.API_KEY)
+
   // ===== Auto Refresh =====
   useAutoRefresh(
     () => fetchWeather(query),
@@ -127,8 +130,32 @@ function App() {
     console.log("query 變化，準備獲取天氣:", query)
     if (query) {
       fetchWeather(query)
+  
+      // 👉 新增：抓空氣品質
+      const getAQI = async () => {
+        let lat, lon;
+        if (typeof query === 'object') {
+          lat = query.lat;
+          lon = query.lon;
+        } else if (weather?.coord) {
+          lat = weather.coord.lat;
+          lon = weather.coord.lon;
+        }
+  
+        if (lat && lon) {
+          const { success, data } = await WeatherAPI.fetchAirQualityByCoords(lat, lon);
+          if (success) {
+            setAirQuality({ aqi: data.list[0].main.aqi });
+          } else {
+            setAirQuality(null);
+          }
+        }
+      };
+  
+      getAQI();
     }
-  }, [query, fetchWeather])
+  }, [query, fetchWeather]);
+  
   
   // Set query when location is obtained
   useEffect(() => {
@@ -231,7 +258,7 @@ function App() {
         {/* Weather Content */}
         <section className='weather'>
           <div className="weather-content">
-            <ForecastDisplay forecast={forecast} />
+            <ForecastDisplay forecast={forecast} currentTemp={currentTemp}/>
             <section className="current-weather">
               {renderCurrentWeather()}
             </section>
@@ -241,6 +268,11 @@ function App() {
                 <HourlyForecastDisplay 
                 data={hourlyForecast} 
                 cityName={weather?.name} 
+                sunData={{
+                  sunrise: weather?.sys?.sunrise,
+                  sunset: weather?.sys?.sunset
+                }}
+                airQuality={airQuality}
                 />
               </section>
             </div>

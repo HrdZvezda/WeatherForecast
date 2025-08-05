@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import WeatherIcon from "../Bg-Icon/WeatherIcon";
+import useCurrentTemp from "../Data/CurrentTemp";
 
-const ForecastDisplay = ({ forecast }) => {
+const ForecastDisplay = ({ forecast, currentTemp }) => {
   if (!forecast || forecast.length === 0) {
     return (
       <div className="compact-forecast-loading">
@@ -24,29 +25,60 @@ const ForecastDisplay = ({ forecast }) => {
     }
   };
 
-  // const getWeatherIcon = (iconCode) => {
-  //   const iconMap = {
-  //     '01d': '☀️', '01n': '🌙',
-  //     '02d': '⛅', '02n': '☁️',
-  //     '03d': '☁️', '03n': '☁️',
-  //     '04d': '☁️', '04n': '☁️',
-  //     '09d': '🌧️', '09n': '🌧️',
-  //     '10d': '🌦️', '10n': '🌧️',
-  //     '11d': '⛈️', '11n': '⛈️',
-  //     '13d': '❄️', '13n': '❄️',
-  //     '50d': '🌫️', '50n': '🌫️'
-  //   };
-  //   return iconMap[iconCode] || '☀️';
-  // };
-
-  // 計算溫度範圍（模擬最低和最高溫度）
-  const getTempRange = (dayTemp) => {
-    const temp = Math.round(dayTemp);
-    const minTemp = temp - Math.floor(Math.random() * 8 + 3); // 低3-10度
-    const maxTemp = temp + Math.floor(Math.random() * 5 + 2); // 高2-6度
-    return { min: minTemp, max: maxTemp };
+   const getTempRange = (dayData) => {
+    let min, max;
+    
+    if (dayData.temp?.min !== undefined && dayData.temp?.max !== undefined) {
+      min = dayData.temp.min;
+      max = dayData.temp.max;
+    } else if (dayData.temp?.day !== undefined) {
+      const dayTemp = dayData.temp.day;
+      const nightTemp = dayData.temp.night || dayTemp - 8;
+      min = Math.min(dayTemp, nightTemp);
+      max = Math.max(dayTemp, nightTemp);
+    } else {
+      // Fallback values
+      min = 20;
+      max = 25;
+    }
+    return {
+      min: Math.round(min),
+      max: Math.round(max)
+    };
   };
-
+  const calculateTempBar = (forecast) => {
+    const allTemps = [];
+    forecast.forEach(day => {
+      const tempRange = getTempRange(day);
+      allTemps.push(tempRange.min, tempRange.max);
+    });
+    const gap = 3;
+    const globalMin = Math.min(...allTemps) - gap;
+    const globalMax = Math.max(...allTemps) + gap;
+    const tempRange = globalMax - globalMin || 10; // Prevent division by zero
+  
+    return forecast.map((day, index) => {
+      const dayTempRange = getTempRange(day);
+      const minTemp = dayTempRange.min;
+      const maxTemp = dayTempRange.max;
+      
+      const startPercent = ((minTemp - globalMin) / tempRange) * 100;
+      const widthPercent = ((maxTemp - minTemp) / tempRange) * 100;
+      
+      const currentTempPercent = (index === 0 && currentTemp != null)
+      ? ((Math.max(globalMin, Math.min(globalMax, currentTemp)) - globalMin) / tempRange) * 100
+      : null;
+      
+      return {
+        min: minTemp,
+        max: maxTemp,
+        startPercent: Math.max(0, startPercent),
+        widthPercent: Math.max(8, widthPercent),
+        currentTempPercent
+      }
+    });
+  };
+  
   const iconCodeToType = (iconCode) => {
     if (!iconCode) return 'Clear';
     const map = {
@@ -62,6 +94,25 @@ const ForecastDisplay = ({ forecast }) => {
     };
     return map[iconCode] || 'Clear';
   };
+  
+  const tempBarData = calculateTempBar(forecast, currentTemp);
+  // console.log('currtemp',currentTemp);
+  
+  const descriptionMap = {
+    'clear sky': 'Clear',
+    'few clouds': 'Few',
+    'scattered clouds': 'Scattered',
+    'broken clouds': 'Broken',
+    'overcast clouds': 'Cloudy',
+    'light rain': 'Light Rain',
+    'moderate rain': 'Rain',
+    'heavy intensity rain': 'Rain+',
+    'light snow': 'Snow',
+    'mist': 'Mist',
+    'fog': 'Fog',
+    'thunderstorm': 'Storm'
+  };
+  
 
   return (
     <div className="compact-forecast">
@@ -71,17 +122,21 @@ const ForecastDisplay = ({ forecast }) => {
           const icon = day.weather[0].icon;
           const weatherType = iconCodeToType(icon);
           const dayName = formatDate(day.dt, index);
-          const tempRange = getTempRange(day.temp.day);
-          const tempPercent = ((tempRange.max - tempRange.min) / 20) * 100; // 溫度條百分比
+          const tempData = tempBarData[index];
 
           // RWD
           // 想要讓他縮小時可以 溫度條消失改成最高低溫度上下排 
           // 再小就變成只顯示某天 然後hover的時候跳出卡片式
+          // 溫度進度條要改進準確
+          // Icon雲朵顏色
 
           return (
             <div key={index} className={`forecast-item ${index === 0 ? 'today' : ''}`}>
               <div className="day-label">
-                {dayName}
+                {dayName}<br/>
+                <span className="weather-desc">
+                  {descriptionMap[day.weather?.[0]?.description] || 
+                  day.weather?.[0]?.main || 'Weather'}</span>
               </div>
               
               <div className="weather-icon">
@@ -89,18 +144,41 @@ const ForecastDisplay = ({ forecast }) => {
               </div>
               
               <div className="temp-range">
-                <span className="temp-min">{tempRange.min}°</span>
+                <span className="temp-min">{tempData.min}°</span>
                 
                 <div className="temp-bar-container">
                   <div className="temp-bar">
                     <div 
                       className="temp-bar-fill"
-                      style={{ width: `${Math.min(tempPercent, 85)}%` }}
+                      style={{ 
+                        left: `${tempData.startPercent}%`,
+                        width: `${tempData.widthPercent}%`
+                      }}
                     ></div>
+
+                    {index === 0 && tempData.currentTempPercent !== null && (
+                      <>
+                        <div 
+                          className="current-temp-dot"
+                          style={{ left: `${tempData.currentTempPercent}%` }}
+                        ></div>
+                        <div 
+                          className="current-temp-line"
+                          style={{ left: `${tempData.currentTempPercent}%` }}
+                        ></div>
+                        <div 
+                          className="current-temp-label"
+                          style={{ left: `${tempData.currentTempPercent}%` }}
+                        >
+                          {Math.round(currentTemp)}°
+                          <div className="current-temp-arrow"></div>
+                        </div>
+                      </>
+                    )}
                   </div>
                 </div>
                 
-                <span className="temp-max">{tempRange.max}°</span>
+                <span className="temp-max">{tempData.max}°</span>
               </div>
             </div>
           );
@@ -109,9 +187,6 @@ const ForecastDisplay = ({ forecast }) => {
 
       <style jsx>{`
         .compact-forecast {
-          /* background: rgba(255, 255, 255, 0.1); */
-          /* border: 1px solid rgba(255, 255, 255, 0.2); */
-          /* box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15); */
           padding: 12px;
           padding-right:0;
           width: 320px;
@@ -172,8 +247,12 @@ const ForecastDisplay = ({ forecast }) => {
           color: #E3F2FD;
         }
 
+        .weather-desc{
+          font-size: 0.7em;
+          color: rgba(255, 255, 255, 0.5);
+
+        }
         .weather-icon {
-          /* font-size: 24px; */
           text-align: center;
           filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.3));
         }
@@ -203,7 +282,7 @@ const ForecastDisplay = ({ forecast }) => {
           height: 4px;
           background: rgba(255, 255, 255, 0.2);
           border-radius: 2px;
-          overflow: hidden;
+          /* overflow: hidden; */
           position: relative;
         }
 
@@ -223,7 +302,7 @@ const ForecastDisplay = ({ forecast }) => {
           );
           border-radius: 2px;
           transition: width 0.8s ease;
-          position: relative;
+          position: absolute;
         }
 
         .forecast-item.today .temp-bar-fill {
@@ -235,6 +314,52 @@ const ForecastDisplay = ({ forecast }) => {
           );
           box-shadow: 0 0 8px  rgba(255, 255, 255, 0.4);
         }
+
+        .current-temp-dot {
+          position: absolute;
+          top: 50%;
+          transform: translate(-50%, -50%);
+          width: 10px;
+          height: 10px;
+          background: hsl(0, 0%, 30%);
+          border: 2px solid hsl(0, 0%, 40%) ;
+          border-radius: 50%;
+          /* box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); */
+          z-index: 10;
+        }
+
+        .current-temp-label {
+          position: absolute;
+          top: -32px;
+          transform: translateX(-50%);
+          background: #ffffff9e;
+          color: black;
+          font-size: 12px;
+          font-weight: bold;
+          padding: 4px 8px;
+          border-radius: 6px;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+          z-index: 10;
+          white-space: nowrap;
+        }
+
+        .current-temp-arrow {
+          position: absolute;
+          top: 100%;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 0;
+          height: 0;
+          border-left: 4px solid transparent;
+          border-right: 4px solid transparent;
+          border-top: 6px solid #ffffff9e;;
+        }
+
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.7; }
+        }
+
 
         .compact-forecast-loading {
           background:  rgba(0, 0, 0, 0.4);

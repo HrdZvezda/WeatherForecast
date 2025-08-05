@@ -13,6 +13,11 @@ export class WeatherAPI {
     return this.makeRequest(url)
   }
   
+  static async fetchAirQualityByCoords(lat, lon) {
+    const url = `https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${API_KEY}`;
+    return this.makeRequest(url);
+  }
+
   static async makeRequest(url) {
     try {
       const response = await fetch(url)

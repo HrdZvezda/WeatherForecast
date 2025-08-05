@@ -2,35 +2,94 @@ import React from "react";
 import WeatherIcon from "../Bg-Icon/WeatherIcon";
 
 
-const HourlyForecastDisplay = ({ data, cityName, sunData }) => {
+const HourlyForecastDisplay = ({ data, cityName, sunData, airQuality }) => {
 
-  console.log('Hourly forecast data length:', data?.length);
-  console.log('Hourly forecast data:', data);
-  console.log('Sun data:', sunData);
+  // console.log('Hourly forecast data length:', data?.length);
+  // console.log('Hourly forecast data:', data);
+  // console.log('Sun data:', sunData);
 
   if (!data || data.length === 0) return <p>Loading hourly forecast...</p>;
 
-  // 生成天氣警告訊息
-  const generateWeatherAlert = () => {
-    const rainHour = data.find(hour => hour.pop > 0.3);
-    const highWind = data.find(hour => hour.wind_speed > 8);
-    
-    if (rainHour && highWind) {
-      const rainTime = new Date(rainHour.dt * 1000).getHours();
-      const windSpeed = Math.round(highWind.wind_speed * 3.6);
-      return `Rainy conditions expected around ${rainTime}PM. Wind gusts are up to ${windSpeed} km/h.`;
-    } else if (rainHour) {
-      const rainTime = new Date(rainHour.dt * 1000).getHours();
-      return `Rainy conditions expected around ${rainTime}PM.`;
-    } else if (highWind) {
-      const windSpeed = Math.round(highWind.wind_speed * 3.6);
-      return `Wind gusts are up to ${windSpeed} km/h.`;
-    }
-    return null;
+  const formatHour = (hour) => {
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    const hour12 = hour % 12 || 12; // 0 -> 12AM, 13 -> 1PM
+    return `${hour12}${ampm}`;
   };
 
-  const weatherAlert = generateWeatherAlert();
+  // 生成天氣警告訊息
+  const generateWeatherAlert = (airQuality) => {
+    const nowHour = new Date().getHours();
+    const alerts = [];
+  
+    // ☔ 降雨
+    const rainHours = data.filter(hour => hour.pop > 0.3);
+    if (rainHours.length > 0) {
+      const start = new Date(rainHours[0].dt * 1000).getHours();
+      const end = new Date(rainHours[rainHours.length - 1].dt * 1000).getHours();
+  
+      if (nowHour > end) {
+        // 過期不顯示
+      } else if (nowHour >= start && nowHour <= end) {
+        alerts.push(`Rain continuing until ${formatHour(end)}.`);
+      } else if (start === end) {
+        alerts.push(`Rain expected around ${formatHour(start)}.`);
+      } else {
+        alerts.push(`Rain expected from ${formatHour(start)} to ${formatHour(end)}.`);
+      }
+    }
+  
+    // 💨 強風
+    const highWind = data.find(hour => hour.wind_speed > 3);
+    if (highWind) {
+      const windSpeed = Math.round(highWind.wind_speed * 3.6);
+      alerts.push(`Wind gusts up to ${windSpeed} km/h.`);
+    }
+  
+    // 🔥 高溫 > 35°C
+    const hot = data.find(hour => hour.temp > 35);
+    if (hot) alerts.push(`High temperatures expected. Stay hydrated.`);
+  
+    // ❄️ 低溫 < 5°C
+    const cold = data.find(hour => hour.temp < 5);
+    if (cold) alerts.push(`Low temperatures expected. Dress warmly.`);
+  
+    // ☀️ 高紫外線
+    const uv = data.find(hour => hour.uvi && hour.uvi > 7);
+    if (uv) alerts.push(`High UV index. Wear sunscreen.`);
+  
+    // ⛈️ 雷暴
+    const thunder = data.find(hour => hour.weather[0].description.toLowerCase().includes("thunder"));
+    if (thunder) alerts.push(`Thunderstorms possible. Stay indoors.`);
+  
+    // 🌫️ 濃霧
+    const fog = data.find(hour => hour.weather[0].description.toLowerCase().includes("fog"));
+    if (fog) alerts.push(`Foggy conditions expected. Drive carefully.`);
+  
+    // 🌫️ 沙塵或霾
+    const dust = data.find(hour =>
+      hour.weather[0].description.toLowerCase().includes("haze") ||
+      hour.weather[0].description.toLowerCase().includes("dust")
+    );
+    if (dust) alerts.push(`Dusty or hazy conditions expected. Consider wearing a mask.`);
+  
+    // 😷 空氣品質（傳入 AQI）
+    if (airQuality && airQuality.aqi) {
+      const aqiLevel = {
+        1: "Air quality is good.",
+        2: "Air quality is fair.",
+        3: "Moderate air quality. Sensitive individuals should limit outdoor activities.",
+        4: "Poor air quality. Consider reducing time outside.",
+        5: "Very poor air quality. Avoid outdoor exposure."
+      };
+      alerts.push(aqiLevel[airQuality.aqi]);
+    }
+  
+    return alerts.length > 0 ? alerts.join(" ") : null;
+  };
+  
+  const weatherAlert = generateWeatherAlert(airQuality);
 
+  // Icon雲朵顏色
   return (
     <section style={{
       borderRadius: '20px',
@@ -52,13 +111,13 @@ const HourlyForecastDisplay = ({ data, cityName, sunData }) => {
         <div style={{
           fontSize: '14px',
           marginBottom: '16px',
-          padding: '12px',
+          padding: '6px',
           borderRadius: '12px',
           backgroundColor: 'rgba(255, 255, 255, 0.1)',
           border: '1px solid rgba(255, 255, 255, 0.2)',
           color: '#e0e0e0'
         }}>
-          ⚠️ {weatherAlert}
+          {weatherAlert}
         </div>
       )}
 
@@ -153,11 +212,12 @@ const HourlyForecastDisplay = ({ data, cityName, sunData }) => {
             const icon = hour.weather[0].icon;
             const weatherType = iconCodeToType(icon);
             const temp = Math.round(hour.temp);
-            const pop = hour.pop > 0.1 ? `${Math.round(hour.pop * 100)}%` : null;
-
+            const pop = hour.pop > 0.3 ? `${Math.round(hour.pop * 100)}%` : null;
+            // console.log(`Hour ${index}: POP = ${hour.pop},Display = ${pop}`);
             return (
               <div
                 key={index}
+                className="forecast-hour-card"
                 style={{
                   textAlign: 'center',
                   minWidth: '80px',
@@ -176,25 +236,14 @@ const HourlyForecastDisplay = ({ data, cityName, sunData }) => {
                   cursor: 'pointer',
                   backdropFilter: 'blur(10px)',
                 }}
-                onMouseEnter={(e) => {
-                  if (!isNow) {
-                    e.target.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
-                    e.target.style.transform = 'scale(1.05)';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (!isNow) {
-                    e.target.style.backgroundColor = 'rgba(255, 255, 255, 0.05)';
-                    e.target.style.transform = 'translateY(0)';
-                  }
-                }}
               >
                 {/* 時間 */}
                 <div style={{
                   fontSize: '12px',
                   fontWeight: isNow ? '700' : '500',
                   color: isNow ? '#ffffff' : '#b0b0b0',
-                  letterSpacing: '0.5px'
+                  letterSpacing: '0.5px',
+                  background: 'transparent'
                 }}>
                   {timeDisplay}
                 </div>
@@ -264,6 +313,7 @@ const HourlyForecastDisplay = ({ data, cityName, sunData }) => {
                     color: '#4a9eff',
                     fontWeight: '600',
                     background: 'transparent',
+                    width: '105%',
                     padding: '2px 6px',
                     borderRadius: '8px',
                     border: '1px solid rgba(74, 158, 255, 0.3)'
@@ -277,21 +327,10 @@ const HourlyForecastDisplay = ({ data, cityName, sunData }) => {
         </div>
       </div>
 
-      {/* 自定義滾動條樣式 */}
       <style jsx>{`
-        div::-webkit-scrollbar {
-          height: 4px;
-        }
-        div::-webkit-scrollbar-track {
-          background: rgba(255, 255, 255, 0.1);
-          border-radius: 2px;
-        }
-        div::-webkit-scrollbar-thumb {
-          background: rgba(255, 255, 255, 0.3);
-          border-radius: 2px;
-        }
-        div::-webkit-scrollbar-thumb:hover {
-          background: rgba(255, 255, 255, 0.5);
+        .forecast-hour-card:hover {
+          background-color: rgba(255, 255, 255, 0.1);
+          transform: scale(1.05);
         }
       `}</style>
     </section>
