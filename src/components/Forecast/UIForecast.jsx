@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import WeatherIcon from "../Bg-Icon/WeatherIcon";
-import useCurrentTemp from "../Data/CurrentTemp";
+
 
 const ForecastDisplay = ({ forecast, currentTemp }) => {
   if (!forecast || forecast.length === 0) {
@@ -16,16 +16,14 @@ const ForecastDisplay = ({ forecast, currentTemp }) => {
     
     if (index === 0) {
       return "Today";
-    } else if (index === 1) {
-      return "Tomorrow";  
-    } else {
-      const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    }  else {
+      const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
       return weekdays[date.getDay()];
     }
   };
 
-   const getTempRange = (dayData) => {
+  const getTempRange = (dayData) => {
     let min, max;
     
     if (dayData.temp?.min !== undefined && dayData.temp?.max !== undefined) {

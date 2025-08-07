@@ -8,15 +8,12 @@ html,body{
   margin: 0;     /* 去除預設的 margin */
   padding: 0;    /* 去除預設的 padding */
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto ,'Helvetica Neue', sans-serif;
-  background-color: #454040d9;
   color: #333;
 }
 
 body {
-  background: linear-gradient(to right, #171718, #747576);
-  /* background: transparent !important; */
+  background: linear-gradient(to right, #7272af, #428fdc);
   background-size: 200% 200%;
-  /* animation: wave 8s ease-in-out infinite; */
 }
 
 @keyframes wave {

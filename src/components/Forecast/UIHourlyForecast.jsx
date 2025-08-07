@@ -8,7 +8,7 @@ const HourlyForecastDisplay = ({ data, cityName, sunData, airQuality }) => {
   // console.log('Hourly forecast data:', data);
   // console.log('Sun data:', sunData);
 
-  if (!data || data.length === 0) return <p>Loading hourly forecast...</p>;
+  // if (!data || data.length === 0) return <p>Loading hourly forecast...</p>;
 
   const formatHour = (hour) => {
     const ampm = hour >= 12 ? 'PM' : 'AM';
@@ -90,6 +90,7 @@ const HourlyForecastDisplay = ({ data, cityName, sunData, airQuality }) => {
   const weatherAlert = generateWeatherAlert(airQuality);
 
   // Icon雲朵顏色
+
   return (
     <section style={{
       borderRadius: '20px',
@@ -214,6 +215,7 @@ const HourlyForecastDisplay = ({ data, cityName, sunData, airQuality }) => {
             const temp = Math.round(hour.temp);
             const pop = hour.pop > 0.3 ? `${Math.round(hour.pop * 100)}%` : null;
             // console.log(`Hour ${index}: POP = ${hour.pop},Display = ${pop}`);
+            
             return (
               <div
                 key={index}

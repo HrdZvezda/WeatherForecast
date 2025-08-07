@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import useCurrentTemp from '../Data/CurrentTemp.jsx';
+import { useCurrentTemp } from '../Data/WeatherData.jsx';
 import { LocalStorageManager } from '../Data/LocalStorage.jsx';
 import { APP_CONFIG } from '../Data/Constant.jsx';
 

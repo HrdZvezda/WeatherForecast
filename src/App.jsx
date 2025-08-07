@@ -1,17 +1,13 @@
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import './App.css'
-
+import VerticalWeekdaySelector from './components/Forecast/ForecastSelect.jsx'
 // Components
 import HeaderWithTime from './components/Data/CurrentTime.jsx'
 import Search from './components/Navbar/Search.jsx'
 import Collection from './components/Navbar/Collection.jsx'
 import NavgationBar from './components/Navbar/NAV.jsx'
 
-
-// Forecast Components
-import useForecast from './components/Forecast/Forecast.jsx'
 import ForecastDisplay from './components/Forecast/UIForecast.jsx'
-import useHourlyForecast from './components/Forecast/HourlyForecast.jsx'
 import HourlyForecastDisplay from './components/Forecast/UIHourlyForecast.jsx'
 
 // Weather Card Components
@@ -22,16 +18,21 @@ import useWindSpeed from './components/WeatherCard/WindSpeed.jsx'
 
 // Custom Hooks
 import useGetlocation from './components/Data/GetLocation.jsx'
-import { useWeatherData } from './components/Data/WeatherData.jsx'
+import { 
+  useWeatherData,
+  useCurrentTemp,
+  useForecast,
+  useHourlyForecast 
+} from './components/Data/WeatherData.jsx'
 import { useFavorites } from './components/Navbar/Collection.jsx'
 import { useAutoRefresh } from './components/Data/AutoRefresh.jsx'
-import useCurrentTemp from './components/Data/CurrentTemp.jsx'
 
 // Utils & Config
 import { APP_CONFIG } from './components/Data/Constant.jsx'
 import { formatTemperature } from './components/Data/Helpers.jsx'
 import WeatherIcon from './components/Bg-Icon/WeatherIcon.jsx'
 import { WeatherAPI } from './components/Data/WeatherAPI.jsx'
+import WeatherCardSelector from './components/WeatherCard/CardSelect.jsx'
 
 function App() {
   // ===== State Management =====
@@ -258,8 +259,18 @@ function App() {
         {/* Weather Content */}
         <section className='weather'>
           <div className="weather-content">
-            <ForecastDisplay forecast={forecast} currentTemp={currentTemp}/>
+            {/* <ForecastDisplay forecast={forecast} currentTemp={currentTemp}/> */}
             <section className="current-weather">
+              <VerticalWeekdaySelector
+               forecastData={forecast}  
+              />
+              <WeatherCardSelector
+                forecastData={forecast} // 確保這個有資料
+                weather={weather} // 當前天氣資料
+                query={query} // 你的查詢參數
+                API_KEY={APP_CONFIG.API_KEY} // 你的 API key
+                initialDay={0}
+              />
               {renderCurrentWeather()}
             </section>
 
