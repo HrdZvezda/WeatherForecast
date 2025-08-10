@@ -9,27 +9,31 @@ const useFeelsLike = (weather) => {
       : null;
   }, [weather]);
 };
-//RainChance
+// 將直接的 fetch 改為使用 WeatherAPI class，保持一致性
 const useRainChance = (query, API_KEY, weather) => {
   const [rainChance, setRainChance] = useState(null);
 
   useEffect(() => {
     async function getRainChance() {
       try {
-        let url = '';
+        let result;
         if (typeof query === "string") {
-          url = `https://api.openweathermap.org/data/2.5/forecast?q=${query}&appid=${API_KEY}&units=metric`;
+          // 改用 WeatherAPI 而非直接 fetch
+          result = await WeatherAPI.fetchForecastByCity(query);
         } else if (query && query.lat && query.lon) {
-          url = `https://api.openweathermap.org/data/2.5/forecast?lat=${query.lat}&lon=${query.lon}&appid=${API_KEY}&units=metric`;
+          result = await WeatherAPI.fetchForecastByCoords(query.lat, query.lon);
         } else {
           setRainChance(null);
           return;
         }
-        const res = await fetch(url);
-        const data = await res.json();
-        const pop = data?.list?.[0]?.pop;
-        if (typeof pop === 'number') {
-          setRainChance(Math.round(pop * 100));
+        
+        if (result.success) {
+          const pop = result.data?.list?.[0]?.pop;
+          if (typeof pop === 'number') {
+            setRainChance(Math.round(pop * 100));
+          } else {
+            setRainChance(weather ? Math.round((weather.clouds?.all || 0) / 2) : null);
+          }
         } else {
           setRainChance(weather ? Math.round((weather.clouds?.all || 0) / 2) : null);
         }

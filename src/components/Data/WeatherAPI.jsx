@@ -18,6 +18,11 @@ export class WeatherAPI {
     return this.makeRequest(url);
   }
 
+  static async fetchForecastByCity(city) {
+    const url = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${API_KEY}&units=metric`;
+    return this.makeRequest(url);
+  }
+
   static async makeRequest(url) {
     try {
       const response = await fetch(url)

@@ -5,6 +5,8 @@
 
 html,body{
   height: 100vh; /* 佔滿視窗高度 */
+  max-width: 100vw;
+  overflow: hidden;
   margin: 0;     /* 去除預設的 margin */
   padding: 0;    /* 去除預設的 padding */
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto ,'Helvetica Neue', sans-serif;

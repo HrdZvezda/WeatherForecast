@@ -1,20 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import './App.css'
-import VerticalWeekdaySelector from './components/Forecast/ForecastSelect.jsx'
 // Components
 import HeaderWithTime from './components/Data/CurrentTime.jsx'
 import Search from './components/Navbar/Search.jsx'
 import Collection from './components/Navbar/Collection.jsx'
 import NavgationBar from './components/Navbar/NAV.jsx'
 
-import ForecastDisplay from './components/Forecast/UIForecast.jsx'
 import HourlyForecastDisplay from './components/Forecast/UIHourlyForecast.jsx'
+import VerticalWeekdaySelector from './components/Forecast/ForecastSelect.jsx'
 
-// Weather Card Components
-import useFeelsLike from './components/WeatherCard/FeelsLike.jsx'
-import useRainChance from './components/WeatherCard/RainChance.jsx'
-import useUVIndex from './components/WeatherCard/UvIndex.jsx'
-import useWindSpeed from './components/WeatherCard/WindSpeed.jsx'
 
 // Custom Hooks
 import useGetlocation from './components/Data/GetLocation.jsx'
@@ -73,12 +67,6 @@ function App() {
     getLocation, 
     clearError: clearLocationError 
   } = useGetlocation()
-  
-  // Weather Card Data
-  const feelsLike = useFeelsLike(weather)
-  const windSpeed = useWindSpeed(weather)
-  const rainChance = useRainChance(query, APP_CONFIG.API_KEY, weather)
-  const uvIndex = useUVIndex(weather)
   
   // Forecast Data
   const forecast = useForecast(query, APP_CONFIG.API_KEY)
@@ -259,11 +247,13 @@ function App() {
         {/* Weather Content */}
         <section className='weather'>
           <div className="weather-content">
-            {/* <ForecastDisplay forecast={forecast} currentTemp={currentTemp}/> */}
+
             <section className="current-weather">
               <VerticalWeekdaySelector
                forecastData={forecast}  
+               currentTemp={currentTemp} 
               />
+
               <WeatherCardSelector
                 forecastData={forecast} // 確保這個有資料
                 weather={weather} // 當前天氣資料
