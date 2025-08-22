@@ -1,12 +1,11 @@
 *{
-  box-sizing: border-box; /* ✅ 不讓 padding 撐大寬度 */
-  position: relative; 
+  box-sizing: border-box;
 }
 
 html,body{
   height: 100vh; /* 佔滿視窗高度 */
   max-width: 100vw;
-  overflow: hidden;
+  overflow-x:auto;
   margin: 0;     /* 去除預設的 margin */
   padding: 0;    /* 去除預設的 padding */
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto ,'Helvetica Neue', sans-serif;
@@ -14,7 +13,7 @@ html,body{
 }
 
 body {
-  background: linear-gradient(to right, #7272af, #428fdc);
+  background: linear-gradient(to right, #a6a6c6, #c8d2dc);
   background-size: 200% 200%;
 }
 
@@ -25,7 +24,6 @@ body {
 }
 #root {
   margin:  auto;
-  text-align: center;
 }
 
 /* 主要視窗 */
@@ -45,57 +43,39 @@ body {
   margin: 0; /* 確保沒有邊距 */
 }
 
-/* 天氣內容區域 - 佔滿主容器 */
-.weather {
-  width: 100%;
-  height: 100%;
-}
-
 .weather-content {
   display: grid;
-  grid-template-rows: 1fr auto; 
-  width: 100%;
-  height: 100vh; /* 佔滿整個視窗高度 */
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  max-width: 1200px;
+  padding: 0px 24px 32px;
+  justify-content: center;
+  margin: 90px auto;
 }
 
-/* Current Weather 區域 - 從頂部開始，佔據上半部分 */
-.current-weather {
-  grid-column: 1 / -1;
+.main-card{
+  background: rgba(255,255,255,0.6);
+  backdrop-filter: blur(16px);
+  border-radius: 24px;
+  padding: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  max-width: 1100px;
+
+}
+
+.left-panel {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 20px 12px 12px; /* 移除上方過多的 padding */
-  min-height: 50vh; /* 至少佔據一半視窗高度 */
-  color: white;
+  gap: 24px;
 }
 
-/* Weather Container - 下半部分 */
-.weather-container{
-  grid-column: 1 / -1;
+.right-panel {
   display: flex;
-  max-width: 100%;
-  height: 50vh; /* 佔據下半部分 */
-  padding: 0px;
+  flex-direction: column;
+  gap: 24px;
 }
 
 
-.weather-details{
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: minmax(100px, auto); ;
-  gap: 8px;
-}
-
-.weather-card {
-  background: #f8f9fa;
-  border-radius: 10px;
-  padding: 16px;
-  box-shadow: 0 0px 5px rgba(0,0,0,0.2);
-  align-items: center;
-  justify-content: center;
-
-}
 
 /* -------------------- *\ 
       nav 區塊
@@ -107,11 +87,10 @@ body {
   padding-left: 10px;
   margin-right: 10px;
   background: transparent;
-  /* border: 1px solid white; */
   border-radius: 9999px;
   color: white;
   cursor: pointer;
-  transition: background 0.3s ease;
+  transition: background 0.1s ease;
   cursor: pointer;
   z-index: 500;
 }
@@ -141,21 +120,4 @@ body {
   padding: 6px 12px;
   width: 120px;
   color: #333;  
-}
-
-/* -------------------- *\ 
-    current weather 區塊
-\* -------------------- */
-.cityName {
-  font-size: 48px;
-  font-weight: 650;
-  color: #333;
-  margin-bottom: 8px;
-}
-
-.current-temp {
-  font-size: 64px;
-  font-weight: 300;
-  color: #333;
-  margin: 0;
 }

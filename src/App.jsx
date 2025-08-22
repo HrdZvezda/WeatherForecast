@@ -3,12 +3,13 @@ import './App.css'
 // Components
 import HeaderWithTime from './components/Data/CurrentTime.jsx'
 import Search from './components/Navbar/Search.jsx'
-import Collection from './components/Navbar/Collection.jsx'
+import Collection from './components/WeatherCard/Collection.jsx'
 import NavgationBar from './components/Navbar/NAV.jsx'
 
 import HourlyForecastDisplay from './components/Forecast/UIHourlyForecast.jsx'
-import VerticalWeekdaySelector from './components/Forecast/ForecastSelect.jsx'
-
+import VerticalWeekdaySelector from './components/Forecast/ForecastFiveDay.jsx'
+import MainCurrentCard from './components/WeatherCard/MainWeather.jsx'
+import ForecastFiveDay from './components/Forecast/ForecastFiveDay.jsx'
 
 // Custom Hooks
 import useGetlocation from './components/Data/GetLocation.jsx'
@@ -18,7 +19,7 @@ import {
   useForecast,
   useHourlyForecast 
 } from './components/Data/WeatherData.jsx'
-import { useFavorites } from './components/Navbar/Collection.jsx'
+import { useFavorites } from './components/WeatherCard/Collection.jsx'
 import { useAutoRefresh } from './components/Data/AutoRefresh.jsx'
 
 // Utils & Config
@@ -26,7 +27,8 @@ import { APP_CONFIG } from './components/Data/Constant.jsx'
 import { formatTemperature } from './components/Data/Helpers.jsx'
 import WeatherIcon from './components/Bg-Icon/WeatherIcon.jsx'
 import { WeatherAPI } from './components/Data/WeatherAPI.jsx'
-import WeatherCardSelector from './components/WeatherCard/CardSelect.jsx'
+import WeatherCardSelector from './components/WeatherCard/WeatherHighlights.jsx'
+
 
 function App() {
   // ===== State Management =====
@@ -120,7 +122,6 @@ function App() {
     if (query) {
       fetchWeather(query)
   
-      // 👉 新增：抓空氣品質
       const getAQI = async () => {
         let lat, lon;
         if (typeof query === 'object') {
@@ -183,106 +184,84 @@ function App() {
   }, [query])
   
 
-  // ===== Render Helpers =====
-  const renderCurrentWeather = () => {
-    // 顯示初始化狀態
-    if (!hasInitialized || (locationLoading && !query)) {
-      return <p>🔍 正在獲取您的位置...</p>
-    }
-    
-    if (weatherLoading) {
-      return <p>Loading...</p>
-    }
-    
-    if (weatherError) {
-      return <p style={{color: 'red'}}>❌ 錯誤: {weatherError}</p>
-    }
-    
-    if (weather) { 
-      const weatherType = weather.weather[0].main
-      
-      return (
-        <>
-          <h1 className='cityName'>
-            {weather.name}
-            {/* 顯示是否為定位結果 */}
-            {typeof query === 'object' && (
-              <span style={{fontSize: '0.5em', color: '#666'}}></span>
-            )}
-          </h1>
-          <h2 className='current-temp'>{formatTemperature(weather.main.temp)}</h2>
-        </>
-      )
-    }
-    
-    return <p>⏳ 初始化中...</p>
-  }
   
   
   // ===== Main Render =====
   return (
     <>
+    {/* Navigation */}
+    <NavgationBar
+      setQuery={setQuery} 
+      weather={weather}
+      favorites={favorites}
+      isFavorite={isFavorite}
+      handleAddFavorite={handleAddFavorite}
+      handleRemoveFavorite={handleRemoveFavorite}
+      handleGetLocation={handleGetLocation}
+      locationLoading={locationLoading}
+    >
+      <Search 
+        city={city}
+        setCity={setCity}
+        setQuery={setQuery}
+        error={weatherError}
+        />
+    </NavgationBar>
     <div className="app-wrapper">
       
-      {/* Navigation */}
-      <NavgationBar
-        setQuery={setQuery} 
-        weather={weather}
-        favorites={favorites}
-        isFavorite={isFavorite}
-        handleAddFavorite={handleAddFavorite}
-        handleRemoveFavorite={handleRemoveFavorite}
-        handleGetLocation={handleGetLocation}
-        locationLoading={locationLoading}
-      >
-        <Search 
-          city={city}
-          setCity={setCity}
-          setQuery={setQuery}
-          error={weatherError}
-          />
-      </NavgationBar>
-
       <main className='main'>  
-        {/* Weather Content */}
+       {/* Weather Content */}
         <section className='weather'>
           <div className="weather-content">
 
-            <section className="current-weather">
-              <VerticalWeekdaySelector
-               forecastData={forecast}  
-               currentTemp={currentTemp} 
-              />
+            {/* 左邊區塊：今日天氣、五天預報、小時預報 */}
+            <div className="left-panel">
+              <div className="main-card">
+                <MainCurrentCard weather={weather} />
+                <ForecastFiveDay forecast={forecast} />
+              </div>  
 
-              <WeatherCardSelector
-                forecastData={forecast} // 確保這個有資料
-                weather={weather} // 當前天氣資料
-                query={query} // 你的查詢參數
-                API_KEY={APP_CONFIG.API_KEY} // 你的 API key
-                initialDay={0}
-              />
-              {renderCurrentWeather()}
-            </section>
-
-            <div className='weather-container'>              
-              <section className="hourly-section">
-                <HourlyForecastDisplay 
-                data={hourlyForecast} 
-                cityName={weather?.name} 
-                sunData={{
-                  sunrise: weather?.sys?.sunrise,
-                  sunset: weather?.sys?.sunset
-                }}
-                airQuality={airQuality}
-                />
-              </section>
+              <div>
+                <div style={{ position: 'relative'}}>
+                  <HourlyForecastDisplay 
+                    data={hourlyForecast} 
+                    cityName={weather?.name} 
+                    sunData={{
+                      sunrise: weather?.sys?.sunrise,
+                      sunset: weather?.sys?.sunset
+                    }}
+                    airQuality={airQuality}
+                  />
+                </div>
+              </div>
             </div>
+
+            {/* 右邊區塊：今日重點 + 收藏 */}
+            <div className="right-panel">
+              <Collection 
+                favorites={favorites}
+                setQuery={setQuery}
+                removeFavorite={handleRemoveFavorite}
+                onSelect={(cityName) => setQuery(cityName)}
+              />
+              <WeatherCardSelector
+                forecastData={forecast}
+                weather={weather}
+                query={query}
+                API_KEY={APP_CONFIG.API_KEY}
+                initialDay={0}
+                hourlyData={hourlyForecast}
+              />
+
+            </div>
+
           </div>
         </section>
+
       </main>
       
       {/* Debug Info (開發時用) */}
-      {process.env.NODE_ENV === 'development' && (
+      {/* {process.env.NODE_ENV === 'development' && (
         <div className="debug-info" style={{ 
           position: 'fixed', 
           bottom: '10px', 
@@ -300,7 +279,7 @@ function App() {
           <div>天氣載入: {weatherLoading ? '載入中' : '完成'}</div>
           <div>錯誤: {locationError || weatherError || '無'}</div>
         </div>
-      )}
+      )} */}
     </div>
   </>
   )

@@ -1,7 +1,6 @@
 import { React, useState, useEffect, useRef } from "react";
 import Search from "./Search";
 import HeaderWithTime from '../Data/CurrentTime';
-import Collection from "./Collection";
 
 const NavgationBar = ({
     children,
@@ -47,26 +46,11 @@ const NavgationBar = ({
             <div className="navbar">
                 <div className="navbar-left" ref={menuRef}>
                     <div className="nav-logo">
-                        <button className="nav-btn" onClick={() => setIsOpen(!isOpen)}>
-                            <i className="fa-regular fa-cloud"></i>
-                        </button>
-                        {isOpen && (
-                        <div className="popover">
-                            <Collection 
-                                favorites={favorites}
-                                setQuery={setQuery}
-                                removeFavorite={handleRemoveFavorite}
-                                onSelect={(cityName) => {
-                                    setQuery(cityName);
-                                    setIsOpen(false);
-                                }}
-                            />
-                        </div>
-                    )}
+                        <i className="fa-regular fa-cloud"></i>
                     </div>
                     <p className="nav-title">
-                        <strong><i>Weather</i></strong><br />
-                        <strong><i>Forecast</i></strong>
+                       <i className='title-top'>Weather</i><br />
+                       <i className='title-btm'>Forecast</i>
                     </p>
                     <div className="nav-time">
                         <HeaderWithTime />
@@ -99,7 +83,7 @@ const NavgationBar = ({
             <style>{`
                 .navbar {
                     position: absolute;
-                    top: 32px;
+                    top: 12px;
                     left: 50%;
                     transform: translateX(-50%);
                     width: calc(100% - 64px); 
@@ -107,7 +91,7 @@ const NavgationBar = ({
                     display: flex;
                     justify-content: space-between;
                     align-items: center;
-                    padding: 2px 32px;
+                    padding: 0px 32px;
                     border-radius: 9999px;
                     max-width: 960px;
 
@@ -123,26 +107,21 @@ const NavgationBar = ({
                 }
 
                 .nav-title {
-                    font-size: 20px;
-                    font-weight: bold;
-                    line-height: 1.1;
+                    margin: 12px;
+                    font-size: 16px;
+                    font-weight:600;
+                    line-height: 1;
                     color: white;
-                    margin-right: 16px;
-                }
-                .nav-title br + strong {
-                    margin-left: 4ch; /* 4 個字寬的縮排 */
-                    display: inline-block;
                 }
                 
+                .nav-title .title-btm{
+                    margin-left: 2ch;
+                }
 
                 .navbar-left {
                     position: relative;
                     display: flex;
                     align-items: center;
-                    gap: 0px;
-                }
-                .navbar-left p {
-                    font-size: 18px;
                 }
 
                 .navbar-right {
@@ -151,24 +130,16 @@ const NavgationBar = ({
                     gap: 0px;
                 }
 
-                .nav-btn {
+                .nav-logo {
                     width: 40px;
                     height: 40px;
                     display: flex;
                     justify-content: center;
                     align-items: center;
                     padding: 2px 2px;
-                    background: rgba(255, 255, 255, 0.1);
-                    // border: 1px solid white;
+                    background: rgba(255, 255, 255, 0.3);
                     border-radius: 12px;
                     color: white;
-                    cursor: pointer;
-                    transition: all 0.3s ease;
-                }
-                .nav-btn:hover {
-                    background: rgba(255, 255, 255, 0.2);   
-                    border: none;
-                    transition: all 0.7s;
                 }
 
                 .nav-btn-outline {
@@ -200,26 +171,6 @@ const NavgationBar = ({
                     background: rgba(255, 255, 255, 0.2);
                     border: none;
                     transition: all 0.7s;
-                }
-
-
-                .popover {
-                    position: absolute;
-                    top: 70px;
-                    left: 50%;
-                    transform: translateX(-10%);
-                    width: 280px;
-                    max-height: 300px;
-                    overflow-y: auto;
-                    padding: 8px;
-                    border-radius: 16px;
-                    background: rgba(255, 255, 255, 0.15);
-                    backdrop-filter: blur(10px);
-                    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
-                    // border: 1px solid rgba(255, 255, 255, 0.1);
-                    color: #fff;
-                    z-index: 999;
-                    pointer-events: auto; /* 確保可以點擊 */
                 }
 
             `}</style>

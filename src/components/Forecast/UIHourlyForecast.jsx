@@ -97,15 +97,14 @@ const HourlyForecastDisplay = ({ data, cityName, sunData, airQuality }) => {
       padding: '16px',
       color: 'white',
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-      width: '100vw',
+      width: '100%',
       overflowX: 'hidden',
       display: 'flex',
       flexDirection: 'column',
-      bottom: '0',
       position: 'absolute',
-      // backgroundColor: '#1a1a1a',
+      backgroundColor: '#1a1a1a',
       // boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
-      // border: '1px solid rgba(255, 255, 255, 0.1)',
+      border: '1px solid #000',
     }}>
       {/* 天氣警告訊息 */}
       {weatherAlert && (
@@ -116,7 +115,8 @@ const HourlyForecastDisplay = ({ data, cityName, sunData, airQuality }) => {
           borderRadius: '12px',
           backgroundColor: 'rgba(255, 255, 255, 0.1)',
           border: '1px solid rgba(255, 255, 255, 0.2)',
-          color: '#e0e0e0'
+          color: '#e0e0e0',
+          textAlign: 'center',
         }}>
           {weatherAlert}
         </div>
@@ -259,7 +259,7 @@ const HourlyForecastDisplay = ({ data, cityName, sunData, airQuality }) => {
                   height: '40px',
                   background: 'transparent'
                 }}>
-                  <WeatherIcon type={weatherType} size="xs" 
+                  <WeatherIcon type={weatherType} size="sm" 
                     style={{ 
                       width: '36px', 
                       height: '36px',

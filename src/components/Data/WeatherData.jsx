@@ -88,7 +88,7 @@ export const useCurrentTemp = (city, apiKey) => {
 
 // Forecast Hook
 export const useForecast = (query, apiKey) => {
-  const [forecast, setForecast] = useState([]);
+  const [forecast, setForecast] = useState(null);
 
   useEffect(() => {
     const fetchForecast = async () => {
@@ -110,37 +110,15 @@ export const useForecast = (query, apiKey) => {
         const data = await res.json();
         console.log("5-day Forecast API 回傳：", data);
 
-        if (res.ok && data.list) {
-          // 處理 5-day forecast 數據，每天取中午12點左右的數據
-          const dailyForecasts = [];
-          const processedDates = new Set();
-
-          data.list.forEach(item => {
-            const date = new Date(item.dt * 1000);
-            const dateString = date.toDateString();
-            const hour = date.getHours();
-            
-            // 只取每天第一筆資料，避免重複
-            if (!processedDates.has(dateString)) {
-              dailyForecasts.push({
-                dt: item.dt,
-                temp: {
-                  day: item.main.temp // 使用當前溫度作為日間溫度
-                },
-                weather: item.weather
-              });
-              processedDates.add(dateString);
-            }
-          });
-
-          setForecast(dailyForecasts.slice(0, 5)); // 取前5天
+        if (res.ok && Array.isArray(data.list)) {
+          setForecast(data.list);
         } else {
           console.error("預報 API 錯誤：", data);
-          setForecast([]);
+          setForecast(null);
         }
       } catch (error) {
         console.error("預報 API 錯誤：", error);
-        setForecast([]);
+        setForecast(null);
       }
     };
 
