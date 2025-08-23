@@ -6,7 +6,8 @@ const Forecast5Day_CSS = `
     display:grid;
     grid-auto-flow:column;
     grid-auto-columns: calc((100% - 36px) / 4);
-    gap:12px;
+    gap:10px;
+    padding: 6px;
     margin: 24px 0px 0px 0px;
     overflow-x:auto;
     -webkit-overflow-scrolling:touch;
@@ -20,15 +21,20 @@ const Forecast5Day_CSS = `
     text-align:center;
     padding:16px; 
     border-radius:16px;
-    background:rgba(255,255,255,0.4); 
-    backdrop-filter:blur(8px);
-    border:1px solid rgba(255,255,255,0.2); 
-    }
-  .f5-week{ font-size:14px; color:#6b7280; margin-bottom:12px; font-weight:500; }
+    backdrop-filter:blur(10px); 
+    border:1px solid rgba(255,255,255,.3);
+
+    transition:all .25s ease;
+  }
+  .f5-card:hover{
+    border-color: rgba(59,130,246,.5);
+    transform: translateY(-2px);
+  }
+  .f5-week{ font-size:14px; color:hsl(220, 9%, 70%); margin-bottom:12px; font-weight:500; }
   .f5-icon{ font-size:32px; display:flex; justify-content:center; margin-bottom:10px; }
-  .f5-tmax{ font-size:18px; font-weight:600; color:#1f2937; margin-bottom:4px; }
-  .f5-tmin{ font-size:13px; color:#6b7280; margin-bottom:8px; }
-  .f5-desc{ font-size:12px; color:#6b7280; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .f5-tmax{ font-size:18px; font-weight:600; color:hsl(220, 10%, 90%); margin-bottom:4px; }
+  .f5-tmin{ font-size:13px; color:hsl(220, 9%, 60%); margin-bottom:8px; }
+  .f5-desc{ font-size:12px; color:hsl(220, 9%, 60%); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 `;
 
 const toIconType = (main, icon) => {
@@ -125,8 +131,8 @@ export default function ForecastFiveDay({ forecast }) {
       <div className="w-full mt-8 f5-row">
         {days.map((d, i) => (
           <div
-            key={d.dt || i}
-            className="f5-card"
+          key={d.dt || i}
+          className="f5-card"
           >
             <p className="f5-week">{labelFor(d.dt)}</p>
             <div className="f5-icon">

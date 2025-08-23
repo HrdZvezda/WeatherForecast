@@ -101,7 +101,7 @@ const FavoriteCard = ({ city, onSelect, onRemove }) => {
 
       <div className="fav-temp">
         <span className="fav-temp-val">{showTemp}</span>
-        <span className="fav-temp-unit">°</span>
+        <span className="fav-temp-unit">°c</span>
       </div>
 
       <div className="fav-desc">{textDesc || '—'}</div>
@@ -120,11 +120,10 @@ const Collection = ({ favorites = [], setQuery, removeFavorite, onSelect }) => {
       {/* 卡片式收藏區塊樣式 */}
       <style>{`
         .favorites-wrap{
-          border:1px solid rgba(255,255,255,.28);
-          background: linear-gradient(180deg, rgba(255,255,255,.24), rgba(255,255,255,.10));
           backdrop-filter: blur(10px);
-          border-radius: 18px;
+          border-radius: 16px;
           overflow: hidden;
+          box-shadow: 0 10px 30px rgba(0,0,0,0.15);
         }
 
         /* Header */
@@ -132,10 +131,9 @@ const Collection = ({ favorites = [], setQuery, removeFavorite, onSelect }) => {
           display:flex; align-items:center; justify-content:space-between;
           padding:14px 16px;
           position:sticky; top:0; z-index:1;
-          background: linear-gradient(180deg, rgba(255,255,255,.28), rgba(255,255,255,.10));
           border-bottom:1px solid rgba(255,255,255,.22);
         }
-        .favorites-title{ font-size:18px; font-weight:800; color:#e5e7eb; margin:0; letter-spacing:.2px; }
+        .favorites-title{ font-size:18px; font-weight:800; color:hsl(220, 9%, 70%); margin:0; letter-spacing:.2px; }
         .favorites-count{
           min-width:42px; height:28px; padding:0 12px;
           display:inline-flex; align-items:center; justify-content:center;
@@ -146,7 +144,7 @@ const Collection = ({ favorites = [], setQuery, removeFavorite, onSelect }) => {
         }
         
         .favorites-toggle{
-          font-size:12px; color:#cbd5e1; cursor:pointer; padding:4px 8px; border-radius:8px;
+          font-size:12px; color:hsl(220, 9%, 70%); cursor:pointer; padding:4px 8px; border-radius:8px;
           transition: background .15s ease;
         }
         .favorites-toggle:hover{ background: rgba(255,255,255,.1); }
@@ -160,7 +158,7 @@ const Collection = ({ favorites = [], setQuery, removeFavorite, onSelect }) => {
           gap:14px;
           grid-auto-columns: calc((100% - 28px)/3); /* 一次 3 張 */
           overflow-x:auto;
-          padding:2px 2px 8px;
+          padding:2px 8px 4px;
           -webkit-overflow-scrolling: touch;
           scroll-snap-type:x mandatory;
           scrollbar-width: none;           /* Firefox */
@@ -172,29 +170,19 @@ const Collection = ({ favorites = [], setQuery, removeFavorite, onSelect }) => {
         /* 每張卡在滑動時貼齊開頭 */
         .fav-card{ scroll-snap-align: start; }
 
-        /* RWD：1200↓ 顯示 2 張；640↓ 顯示 1 張 */
-        @media (max-width:1200px){
-          .favorites-scroll{ grid-auto-columns: calc((100% - 14px)/2); }
-        }
-        @media (max-width:640px){
-          .favorites-scroll{ grid-auto-columns: 100%; }
-        }
-
-
         /* 單張卡片 */
         .fav-card{
-          display:flex; flex-direction:column;
-          padding:14px; border-radius:16px;
-          background: rgba(255,255,255,.40);
-          border:1px solid rgba(255,255,255,.35);
-          transition: transform .18s ease, box-shadow .18s ease, background .18s ease, border-color .18s ease;
-          min-height: 164px;
-          cursor: pointer;
+          border-radius:20px; 
+          padding:20px; 
+          min-height:200px; 
+          min-width:150px;
+          backdrop-filter:blur(10px); 
+          border:1px solid rgba(255,255,255,.3);
+          transition:all .25s ease;
         }
         .fav-card:hover{
+          border-color: rgba(59,130,246,.5);
           transform: translateY(-2px);
-          background: rgba(255,255,255,.46);
-          border-color: rgba(255,255,255,.55);
         }
         .fav-card-top{
           display:flex; align-items:center; justify-content:space-between;
@@ -203,7 +191,7 @@ const Collection = ({ favorites = [], setQuery, removeFavorite, onSelect }) => {
         .fav-remove{
           width:28px; height:28px; border-radius:999px; line-height:1; font-size:16px; font-weight:800;
           display:inline-flex; align-items:center; justify-content:center;
-          color:#64748b; background: rgba(255,255,255,.85);
+          color:hsl(220, 9%, 70%); background: rgba(255,255,255,.85);
           border:1px solid rgba(0,0,0,.06);
           cursor:pointer; transition: all .15s ease;
         }
@@ -211,18 +199,19 @@ const Collection = ({ favorites = [], setQuery, removeFavorite, onSelect }) => {
 
         .fav-city{
           margin-top:10px;
-          font-size:15px; font-weight:800; color:#222a39;
+          font-size:15px; font-weight:800; color:hsl(220, 9%, 80%);
           white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
         }
         .fav-temp{
-          display:flex; align-items:baseline; gap:4px; margin-top:6px;
+          display:flex; align-items:baseline; gap:4px; margin-top:10px;
         }
-        .fav-temp-val{ font-size:28px; font-weight:800; color:#1f2937; line-height:1; }
-        .fav-temp-unit{ font-size:14px; color:#6b7280; line-height:1; }
+        .fav-temp-val{ font-size:28px; font-weight:800; color:hsl(220, 10%, 90%); line-height:1; }
+        .fav-temp-unit{ font-size:14px; color:hsl(220, 9%, 70%); line-height:1; }
 
         .fav-desc{
-          margin-top:auto; text-align:left;
-          font-size:12px; color:#6b7280; text-transform:capitalize;
+          margin-top:10px; text-align:left;
+          margin-bottom: 0px;
+          font-size:12px; color:hsl(220, 9%, 70%); text-transform:capitalize;
         }
 
         /* 空狀態 */

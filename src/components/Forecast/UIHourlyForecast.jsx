@@ -102,9 +102,8 @@ const HourlyForecastDisplay = ({ data, cityName, sunData, airQuality }) => {
       display: 'flex',
       flexDirection: 'column',
       position: 'absolute',
-      backgroundColor: '#1a1a1a',
-      // boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
-      border: '1px solid #000',
+      boxShadow: '0 4px 16px rgba(0,0,0,.1)',
+
     }}>
       {/* 天氣警告訊息 */}
       {weatherAlert && (

@@ -261,7 +261,7 @@ function App() {
       </main>
       
       {/* Debug Info (開發時用) */}
-      {/* {process.env.NODE_ENV === 'development' && (
+      {process.env.NODE_ENV === 'development' && (
         <div className="debug-info" style={{ 
           position: 'fixed', 
           bottom: '10px', 
@@ -279,7 +279,7 @@ function App() {
           <div>天氣載入: {weatherLoading ? '載入中' : '完成'}</div>
           <div>錯誤: {locationError || weatherError || '無'}</div>
         </div>
-      )} */}
+      )}
     </div>
   </>
   )

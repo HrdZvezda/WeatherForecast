@@ -4,9 +4,14 @@ import { Thermometer, Wind, CloudRain, Droplets, Sun, Eye, Gauge, BarChart3 } fr
 
 const WH_CSS = `
   .wh-card{
-    border-radius:20px; padding:20px; min-height:200px; min-width:150px;
-    backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,.3);
-    box-shadow:0 4px 16px rgba(0,0,0,.1); transition:all .25s ease;
+    border-radius:20px; 
+    padding:20px; 
+    min-height:200px; 
+    min-width:150px;
+    backdrop-filter:blur(10px); 
+    border:1px solid rgba(255,255,255,.3);
+    box-shadow:0 4px 16px rgba(0,0,0,.1); 
+    transition:all .25s ease;
   }
   .wh-card.is-active{
     border-color: rgba(59,130,246,.5);
@@ -15,11 +20,11 @@ const WH_CSS = `
   }
   .wh-grid{ display:grid; grid-template-rows:auto 1fr auto; height:100%; }
   .wh-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; gap:5px; }
-  .wh-title{ color:#6b7280; font-size:14px; font-weight:500; }
+  .wh-title{ color:hsl(220, 9%, 70%); font-size:14px; font-weight:500; }
   .wh-mid{ display:flex; align-items:center; justify-content:center; gap:6px; line-height:1; }
-  .wh-val{ font-size:28px; font-weight:700; color:#1f2937; }
-  .wh-unit{ font-size:12px; color:#6b7280; }
-  .wh-desc{ text-align:center; opacity:.65; padding-bottom:2px; font-size:12px; color:#6b7280; }
+  .wh-val{ font-size:28px; font-weight:700; color:hsl(220, 10%, 90%); }
+  .wh-unit{ font-size:12px; color:hsl(220, 9%, 70%); }
+  .wh-desc{ text-align:center; opacity:.65; padding-bottom:2px; font-size:12px; color:hsl(220, 9%, 70%); }
 `;
 
 
@@ -412,12 +417,13 @@ const WeatherCardSelector = ({
         width: '100%',
         maxWidth: '1200px',
         margin: '0 auto',
-        border:'1px solid #000',  
+        boxShadow:'0 10px 30px rgba(0,0,0,.15)',
+        borderRadius: '16px',
       }}>
         <h2 style={{
           fontSize: '2rem',
           fontWeight: 'bold',
-          color: 'white',
+          color: 'hsl(220, 9%, 80%)',
           marginBottom: '16px',
           textAlign: 'start'
         }}>Today's Highlights</h2>
