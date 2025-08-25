@@ -74,12 +74,7 @@ const WH_CSS = `
   @media (max-width: 730px) {
     .wh-card {
       height:190px; 
-      // width:135px
     }
-    .wh-card.is-active{
-      box-shadow:0 1px 8px rgba(0,0,0,.2);
-    }
-
   }
     
 

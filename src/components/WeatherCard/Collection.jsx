@@ -129,30 +129,53 @@ const Collection = ({ favorites = [], setQuery, removeFavorite, onSelect }) => {
 
         /* Header */
         .favorites-header{
-          display:flex; align-items:center; justify-content:space-between;
+          display:flex; 
+          align-items:center; 
+          justify-content:space-between;
           padding:14px 16px;
-          position:sticky; top:0; z-index:1;
+          position:sticky; 
+          top:0; 
+          z-index:1;
           border-bottom:1px solid rgba(255,255,255,.22);
         }
-        .favorites-title{ font-size:18px; font-weight:800; color:hsl(220, 9%, 70%); margin:0; letter-spacing:.2px; }
+        .favorites-title{ 
+          font-size:18px; 
+          font-weight:800; 
+          color:hsl(220, 9%, 70%); 
+          margin:0; 
+          letter-spacing:.2px; 
+        }
         .favorites-count{
-          min-width:42px; height:28px; padding:0 12px;
-          display:inline-flex; align-items:center; justify-content:center;
-          font-size:14px; font-weight:800; color:#111827;
+          min-width:42px; 
+          height:28px; 
+          padding:0 12px;
+          display:inline-flex; 
+          align-items:center; 
+          justify-content:center;
+          font-size:14px; 
+          font-weight:800; 
+          color:#111827;
           background: linear-gradient(180deg,#fff,#f3f4f6);
           border:1px solid rgba(0,0,0,.08);
           border-radius:999px;
         }
         
         .favorites-toggle{
-          font-size:12px; color:hsl(220, 9%, 70%); cursor:pointer; padding:4px 8px; border-radius:8px;
+          font-size:12px; 
+          color:hsl(220, 9%, 70%); 
+          cursor:pointer; 
+          padding:4px 8px; 
+          border-radius:8px;
           transition: background .15s ease;
         }
-        .favorites-toggle:hover{ background: rgba(255,255,255,.1); }
+        .favorites-toggle:hover{ 
+          background: rgba(255,255,255,.1); 
+        }
 
-        .favorites-body{ padding:14px; }
+        .favorites-body{ 
+          padding:14px; 
+        }
 
-        /* 橫向滑動容器（隱藏捲動條） */
         .favorites-scroll{
           display:grid;
           grid-auto-flow: column;
@@ -166,13 +189,11 @@ const Collection = ({ favorites = [], setQuery, removeFavorite, onSelect }) => {
           scrollbar-width: none;           /* Firefox */
           -ms-overflow-style: none;        /* IE/Edge */
         }
-        .favorites-scroll::-webkit-scrollbar{ display:none; } /* Chrome/Safari */
-        .fav-card{ scroll-snap-align:start; }
-
-        /* 每張卡在滑動時貼齊開頭 */
-        .fav-card{ scroll-snap-align: start; }
-
-        /* 單張卡片 */
+        .favorites-scroll::-webkit-scrollbar{ 
+          display:none;                    /* Chrome/Safari */
+        } 
+  
+          /* 單張卡片 */
         .fav-card{
           box-sizing: border-box;
           border-radius:20px; 
@@ -182,47 +203,95 @@ const Collection = ({ favorites = [], setQuery, removeFavorite, onSelect }) => {
           backdrop-filter:blur(10px); 
           border:1px solid rgba(255,255,255,.3);
           transition:all .25s ease;
+          scroll-snap-align:start; 
         }
         .fav-card:hover{
           border-color: rgba(59,130,246,.5);
           transform: translateY(-2px);
         }
         .fav-card-top{
-          display:flex; align-items:center; justify-content:space-between;
+          display:flex; 
+          align-items:center; 
+          justify-content:space-between;
         }
-        .fav-icon{ width:44px; height:44px; display:flex; align-items:center; justify-content:center; }
+        .fav-icon{ 
+          width:44px; 
+          height:44px; 
+          display:flex; 
+          align-items:center; 
+          justify-content:center; 
+        }
         .fav-remove{
-          width:28px; height:28px; border-radius:999px; line-height:1; font-size:16px; font-weight:800;
-          display:inline-flex; align-items:center; justify-content:center;
-          color:hsl(220, 9%, 70%); background: rgba(255,255,255,.85);
+          width:28px; 
+          height:28px; 
+          border-radius:999px; 
+          line-height:1; 
+          font-size:16px; 
+          font-weight:800;
+          display:inline-flex; 
+          align-items:center; 
+          justify-content:center;
+          color:hsl(220, 9%, 70%); 
+          background: rgba(255,255,255,.85);
           border:1px solid rgba(0,0,0,.06);
           cursor:pointer; transition: all .15s ease;
         }
-        .fav-remove:hover{ color:#fff; background:#ef4444; border-color:#ef4444; transform: translateY(-1px); }
+        .fav-remove:hover{ 
+          color:#fff; 
+          background:#ef4444; 
+          border-color:#ef4444; 
+          transform: translateY(-1px); 
+        }
 
         .fav-city{
           margin-top:10px;
-          font-size:15px; font-weight:800; color:hsl(220, 9%, 80%);
-          white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+          font-size:15px; 
+          font-weight:800; 
+          color:hsl(220, 9%, 80%);
+          white-space:nowrap;
+          overflow:hidden; 
+          text-overflow:ellipsis;
         }
         .fav-temp{
-          display:flex; align-items:baseline; gap:4px; margin-top:10px;
+          display:flex; 
+          align-items:baseline; 
+          gap:4px; 
+          margin-top:10px;
         }
-        .fav-temp-val{ font-size:28px; font-weight:800; color:hsl(220, 10%, 90%); line-height:1; }
-        .fav-temp-unit{ font-size:14px; color:hsl(220, 9%, 70%); line-height:1; }
+        .fav-temp-val{ 
+          font-size:28px; 
+          font-weight:800; 
+          color:hsl(220, 10%, 90%); 
+          line-height:1; 
+        }
+        .fav-temp-unit{ 
+          font-size:14px; 
+          color:hsl(220, 9%, 70%); 
+          line-height:1;
+        }
 
         .fav-desc{
-          margin-top:10px; text-align:left;
+          margin-top:10px; 
+          text-align:left;
           margin-bottom: 0px;
-          font-size:12px; color:hsl(220, 9%, 70%); text-transform:capitalize;
+          font-size:12px; color:hsl(220, 9%, 70%); 
+          text-transform:capitalize;
         }
 
         /* 空狀態 */
         .favorites-empty{
           padding:28px 12px; text-align:center;
         }
-        .favorites-empty p{ margin:0 0 6px 0; font-size:15px; font-weight:700; color:#374151; }
-        .favorites-empty small{ font-size:12px; color:#6b7280; }
+        .favorites-empty p{ 
+          margin:0 0 6px 0; 
+          font-size:15px; 
+          font-weight:700; 
+          color:hsl(220, 9%, 70%); 
+        }
+        .favorites-empty small{ 
+          font-size:12px; 
+          color:hsl(220, 9%, 60%); 
+        }
       `}</style>
 
       <div className="favorites-header">

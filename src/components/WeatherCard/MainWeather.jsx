@@ -8,14 +8,40 @@ const MW_CSS = `
     backdrop-filter: blur(10px);
     border-radius: 16px;
     padding: 24px;
-    display:flex; align-items:center; justify-content:space-between;
+    display:flex; 
+    align-items:center; 
+    justify-content:space-between;
   }
-  .mw-left{ display:flex; flex-direction:column; gap:6px; }
-  .mw-temp{ font-size: clamp(44px, 7vw, 72px); font-weight:300; color:hsl(220, 10%, 90%); line-height:1; }
-  .mw-today{ font-size:20px; color:hsl(220, 9%, 80%); margin-top:4px; }
-  .mw-desc{ font-size:16px; color:hsl(220, 9%, 70%); text-transform:capitalize; }
-  .mw-city{ font-size:13px; color:hsl(220, 9%, 60%); }
-  .mw-icon{ font-size: clamp(54px, 10vw, 96px); display:flex; align-items:center; }
+  .mw-left{ 
+    display:flex; 
+    flex-direction:column; 
+    gap:6px; 
+  }
+  .mw-temp{ 
+    font-size: clamp(44px, 7vw, 72px); 
+    font-weight:300; 
+    color:hsl(220, 10%, 90%); 
+    line-height:1; 
+  }
+  .mw-today{ 
+    font-size:20px; 
+    color:hsl(220, 9%, 80%); 
+    margin-top:4px; 
+  }
+  .mw-desc{ 
+    font-size:16px; 
+    color:hsl(220, 9%, 70%); 
+    text-transform:capitalize; 
+  }
+  .mw-city{ 
+    font-size:13px; 
+    color:hsl(220, 9%, 60%); 
+  }
+  .mw-icon{ 
+    font-size: clamp(54px, 10vw, 96px); 
+    display:flex; 
+    align-items:center; 
+  }
 `;
 
 const toIconType = (main, icon) => {

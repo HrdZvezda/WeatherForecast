@@ -5,36 +5,81 @@ const Forecast5Day_CSS = `
   .f5-row{
     display:grid;
     grid-auto-flow:column;
-    grid-auto-columns: calc((100% - 36px) / 4);
-    gap:10px;
+    grid-auto-columns: calc((100% - 48px) / 4);
+    gap:14px;
     padding: 6px;
     margin: 24px 0px 0px 0px;
     overflow-x:auto;
     -webkit-overflow-scrolling:touch;
     scroll-snap-type:x mandatory;
   }
-  .f5-row::-webkit-scrollbar{display:none}
-  .f5-row::-webkit-scrollbar-thumb{background:rgba(0,0,0,.15);border-radius:6px}
-  .f5-row > .f5-card{scroll-snap-align:start;}
+  .f5-row::-webkit-scrollbar{
+    display:none
+  }
+  .f5-row::-webkit-scrollbar-thumb{
+    background:rgba(0,0,0,.15);
+    border-radius:6px
+  }
+  .f5-row > .f5-card{
+    scroll-snap-align:start;
+  }
 
   .f5-card{ 
     text-align:center;
     padding:16px; 
+    width:100%;
     border-radius:16px;
     backdrop-filter:blur(10px); 
     border:1px solid rgba(255,255,255,.3);
-
     transition:all .25s ease;
   }
   .f5-card:hover{
     border-color: rgba(59,130,246,.5);
     transform: translateY(-2px);
   }
-  .f5-week{ font-size:14px; color:hsl(220, 9%, 70%); margin-bottom:12px; font-weight:500; }
-  .f5-icon{ font-size:32px; display:flex; justify-content:center; margin-bottom:10px; }
-  .f5-tmax{ font-size:18px; font-weight:600; color:hsl(220, 10%, 90%); margin-bottom:4px; }
-  .f5-tmin{ font-size:13px; color:hsl(220, 9%, 60%); margin-bottom:8px; }
-  .f5-desc{ font-size:12px; color:hsl(220, 9%, 60%); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .f5-week{ 
+    font-size:14px; 
+    color:hsl(220, 9%, 70%); 
+    margin-bottom:12px; 
+    font-weight:500; 
+  }
+  .f5-icon{ 
+    font-size:32px; 
+    display:flex; 
+    justify-content:center; 
+    margin-bottom:10px;
+  }
+  .f5-tmax{ 
+    font-size:18px; 
+    font-weight:600; 
+    color:hsl(220, 10%, 90%); 
+    margin-bottom:4px; 
+  }
+  .f5-tmin{ 
+    font-size:13px; 
+    color:hsl(220, 9%, 60%); 
+    margin-bottom:8px; 
+  }
+  .f5-desc{ 
+    font-size:12px; 
+    color:hsl(220, 9%, 60%); 
+    white-space:nowrap; 
+    overflow:hidden; 
+    text-overflow:ellipsis; 
+  }
+  
+  @media (max-width: 1500px) {
+    .f5-row {
+      grid-auto-columns: calc((100% - 48px) / 5);
+      gap:14px;
+    }
+  }
+  @media (max-width: 900px) {
+    .f5-row {
+      grid-auto-columns: calc((100% - 36px) / 4);
+    }
+  }
+
 `;
 
 const toIconType = (main, icon) => {

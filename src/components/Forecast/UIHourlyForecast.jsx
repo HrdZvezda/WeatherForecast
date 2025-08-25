@@ -104,7 +104,6 @@ const HourlyForecastDisplay = ({ data, cityName, sunData, airQuality, tzOffsetSe
       overflowX: 'hidden',
       display: 'flex',
       flexDirection: 'column',
-      position: 'absolute',
       boxShadow: '0 4px 16px rgba(0,0,0,.1)', 
       position: 'relative'
     }}>

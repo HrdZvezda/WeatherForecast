@@ -141,7 +141,7 @@ body {
 .search > input[type="text"].open{
   padding: 6px 12px;
   width: 120px;
-  color: #333;  
+  color: #fefefe;  
 }
 
 @media (max-width: 730px) {
