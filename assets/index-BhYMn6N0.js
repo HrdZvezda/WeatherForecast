@@ -57,30 +57,53 @@ Error generating stack: `+e.message+`
 
         /* Header */
         .favorites-header{
-          display:flex; align-items:center; justify-content:space-between;
+          display:flex; 
+          align-items:center; 
+          justify-content:space-between;
           padding:14px 16px;
-          position:sticky; top:0; z-index:1;
+          position:sticky; 
+          top:0; 
+          z-index:1;
           border-bottom:1px solid rgba(255,255,255,.22);
         }
-        .favorites-title{ font-size:18px; font-weight:800; color:hsl(220, 9%, 70%); margin:0; letter-spacing:.2px; }
+        .favorites-title{ 
+          font-size:18px; 
+          font-weight:800; 
+          color:hsl(220, 9%, 70%); 
+          margin:0; 
+          letter-spacing:.2px; 
+        }
         .favorites-count{
-          min-width:42px; height:28px; padding:0 12px;
-          display:inline-flex; align-items:center; justify-content:center;
-          font-size:14px; font-weight:800; color:#111827;
+          min-width:42px; 
+          height:28px; 
+          padding:0 12px;
+          display:inline-flex; 
+          align-items:center; 
+          justify-content:center;
+          font-size:14px; 
+          font-weight:800; 
+          color:#111827;
           background: linear-gradient(180deg,#fff,#f3f4f6);
           border:1px solid rgba(0,0,0,.08);
           border-radius:999px;
         }
         
         .favorites-toggle{
-          font-size:12px; color:hsl(220, 9%, 70%); cursor:pointer; padding:4px 8px; border-radius:8px;
+          font-size:12px; 
+          color:hsl(220, 9%, 70%); 
+          cursor:pointer; 
+          padding:4px 8px; 
+          border-radius:8px;
           transition: background .15s ease;
         }
-        .favorites-toggle:hover{ background: rgba(255,255,255,.1); }
+        .favorites-toggle:hover{ 
+          background: rgba(255,255,255,.1); 
+        }
 
-        .favorites-body{ padding:14px; }
+        .favorites-body{ 
+          padding:14px; 
+        }
 
-        /* 橫向滑動容器（隱藏捲動條） */
         .favorites-scroll{
           display:grid;
           grid-auto-flow: column;
@@ -94,13 +117,11 @@ Error generating stack: `+e.message+`
           scrollbar-width: none;           /* Firefox */
           -ms-overflow-style: none;        /* IE/Edge */
         }
-        .favorites-scroll::-webkit-scrollbar{ display:none; } /* Chrome/Safari */
-        .fav-card{ scroll-snap-align:start; }
-
-        /* 每張卡在滑動時貼齊開頭 */
-        .fav-card{ scroll-snap-align: start; }
-
-        /* 單張卡片 */
+        .favorites-scroll::-webkit-scrollbar{ 
+          display:none;                    /* Chrome/Safari */
+        } 
+  
+          /* 單張卡片 */
         .fav-card{
           box-sizing: border-box;
           border-radius:20px; 
@@ -110,47 +131,95 @@ Error generating stack: `+e.message+`
           backdrop-filter:blur(10px); 
           border:1px solid rgba(255,255,255,.3);
           transition:all .25s ease;
+          scroll-snap-align:start; 
         }
         .fav-card:hover{
           border-color: rgba(59,130,246,.5);
           transform: translateY(-2px);
         }
         .fav-card-top{
-          display:flex; align-items:center; justify-content:space-between;
+          display:flex; 
+          align-items:center; 
+          justify-content:space-between;
         }
-        .fav-icon{ width:44px; height:44px; display:flex; align-items:center; justify-content:center; }
+        .fav-icon{ 
+          width:44px; 
+          height:44px; 
+          display:flex; 
+          align-items:center; 
+          justify-content:center; 
+        }
         .fav-remove{
-          width:28px; height:28px; border-radius:999px; line-height:1; font-size:16px; font-weight:800;
-          display:inline-flex; align-items:center; justify-content:center;
-          color:hsl(220, 9%, 70%); background: rgba(255,255,255,.85);
+          width:28px; 
+          height:28px; 
+          border-radius:999px; 
+          line-height:1; 
+          font-size:16px; 
+          font-weight:800;
+          display:inline-flex; 
+          align-items:center; 
+          justify-content:center;
+          color:hsl(220, 9%, 70%); 
+          background: rgba(255,255,255,.85);
           border:1px solid rgba(0,0,0,.06);
           cursor:pointer; transition: all .15s ease;
         }
-        .fav-remove:hover{ color:#fff; background:#ef4444; border-color:#ef4444; transform: translateY(-1px); }
+        .fav-remove:hover{ 
+          color:#fff; 
+          background:#ef4444; 
+          border-color:#ef4444; 
+          transform: translateY(-1px); 
+        }
 
         .fav-city{
           margin-top:10px;
-          font-size:15px; font-weight:800; color:hsl(220, 9%, 80%);
-          white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+          font-size:15px; 
+          font-weight:800; 
+          color:hsl(220, 9%, 80%);
+          white-space:nowrap;
+          overflow:hidden; 
+          text-overflow:ellipsis;
         }
         .fav-temp{
-          display:flex; align-items:baseline; gap:4px; margin-top:10px;
+          display:flex; 
+          align-items:baseline; 
+          gap:4px; 
+          margin-top:10px;
         }
-        .fav-temp-val{ font-size:28px; font-weight:800; color:hsl(220, 10%, 90%); line-height:1; }
-        .fav-temp-unit{ font-size:14px; color:hsl(220, 9%, 70%); line-height:1; }
+        .fav-temp-val{ 
+          font-size:28px; 
+          font-weight:800; 
+          color:hsl(220, 10%, 90%); 
+          line-height:1; 
+        }
+        .fav-temp-unit{ 
+          font-size:14px; 
+          color:hsl(220, 9%, 70%); 
+          line-height:1;
+        }
 
         .fav-desc{
-          margin-top:10px; text-align:left;
+          margin-top:10px; 
+          text-align:left;
           margin-bottom: 0px;
-          font-size:12px; color:hsl(220, 9%, 70%); text-transform:capitalize;
+          font-size:12px; color:hsl(220, 9%, 70%); 
+          text-transform:capitalize;
         }
 
         /* 空狀態 */
         .favorites-empty{
           padding:28px 12px; text-align:center;
         }
-        .favorites-empty p{ margin:0 0 6px 0; font-size:15px; font-weight:700; color:#374151; }
-        .favorites-empty small{ font-size:12px; color:#6b7280; }
+        .favorites-empty p{ 
+          margin:0 0 6px 0; 
+          font-size:15px; 
+          font-weight:700; 
+          color:hsl(220, 9%, 70%); 
+        }
+        .favorites-empty small{ 
+          font-size:12px; 
+          color:hsl(220, 9%, 60%); 
+        }
       `}),x.jsxs("div",{className:"favorites-header",children:[x.jsx("h3",{className:"favorites-title",children:"City"}),x.jsx("span",{className:"favorites-count","aria-label":"favorites count",children:o.length})]}),x.jsx("div",{className:"favorites-body",children:o.length===0?x.jsxs("div",{className:"favorites-empty",children:[x.jsx("p",{children:"尚未收藏任何地區"}),x.jsx("small",{children:"搜尋並收藏你關心的城市天氣"})]}):x.jsx("div",{className:"favorites-scroll",children:o.map(N=>x.jsx(t1,{city:N,onSelect:E=>b?.(E),onRemove:y},N.name))})})]}),e1=()=>{const[o,b]=Q.useState(new Date);return Q.useEffect(()=>{const y=setInterval(()=>b(new Date),1e3);return()=>clearInterval(y)},[]),o},a1=({className:o="",style:b={},showDate:y=!0})=>{const f=e1(),N=f.toLocaleTimeString("en",{hour:"2-digit",minute:"2-digit",hour12:!0}).replace(/ (AM|PM)$/,""),E=f.toLocaleTimeString("en",{hour:"2-digit",minute:"2-digit",hour12:!0}).match(/AM|PM/)[0],U=f.toLocaleDateString("en",{month:"short"}),j=f.getDate();return f.toLocaleDateString("en",{weekday:"short"}),x.jsxs("div",{className:`time ${o} `,style:b,children:[x.jsxs("h4",{children:[x.jsx("span",{className:"big",children:N}),x.jsxs("span",{className:"small",children:[" ",E]})]}),y&&x.jsx("div",{className:"date-info",children:x.jsxs("span",{className:"date",children:[j," ",U," "]})}),x.jsx("style",{jsx:!0,children:`
         .nav-time {
             display:flex;
@@ -281,7 +350,7 @@ Error generating stack: `+e.message+`
                     transition: all 0.7s;
                 }
 
-            `})]})},n1=({data:o,cityName:b,sunData:y,airQuality:f,tzOffsetSec:N=0})=>{const E=T=>new Date((T+N)*1e3),U=T=>E(T).getUTCHours(),j=T=>{const H=T>=12?"PM":"AM";return`${T%12||12}${H}`},p=(T=>{if(!Array.isArray(o)||o.length===0)return null;const H=Math.floor(Date.now()/1e3),q=U(H),B=[],$=o.filter(z=>z.pop>.3);if($.length>0){const z=U($[0].dt),at=U($[$.length-1].dt);q>at||(q>=z&&q<=at?B.push(`Rain continuing until ${j(at)}.`):z===at?B.push(`Rain expected around ${j(z)}.`):B.push(`Rain expected from ${j(z)} to ${j(at)}.`))}const tt=o.find(z=>z.wind_speed>3);if(tt){const z=Math.round(tt.wind_speed*3.6);B.push(`Wind gusts up to ${z} km/h.`)}if(o.find(z=>z.temp>35)&&B.push("High temperatures expected. Stay hydrated."),o.find(z=>z.temp<5)&&B.push("Low temperatures expected. Dress warmly."),o.find(z=>z.uvi&&z.uvi>7)&&B.push("High UV index. Wear sunscreen."),o.find(z=>z.weather[0].description.toLowerCase().includes("thunder"))&&B.push("Thunderstorms possible. Stay indoors."),o.find(z=>z.weather[0].description.toLowerCase().includes("fog"))&&B.push("Foggy conditions expected. Drive carefully."),o.find(z=>z.weather[0].description.toLowerCase().includes("haze")||z.weather[0].description.toLowerCase().includes("dust"))&&B.push("Dusty or hazy conditions expected. Consider wearing a mask."),T&&T.aqi){const z={1:"Air quality is good.",2:"Air quality is fair.",3:"Moderate air quality. Sensitive individuals should limit outdoor activities.",4:"Poor air quality. Consider reducing time outside.",5:"Very poor air quality. Avoid outdoor exposure."};B.push(z[T.aqi])}return B.length>0?B.join(" "):null})(f);return x.jsxs("section",{style:{borderRadius:"20px",padding:"16px",color:"white",fontFamily:'-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',width:"100%",overflowX:"hidden",display:"flex",flexDirection:"column",position:"absolute",boxShadow:"0 4px 16px rgba(0,0,0,.1)",position:"relative"},children:[Array.isArray(o)&&o.length>0&&p&&x.jsx("div",{style:{fontSize:"14px",marginBottom:"16px",padding:"6px",borderRadius:"12px",backgroundColor:"rgba(255, 255, 255, 0.1)",border:"1px solid rgba(255, 255, 255, 0.2)",color:"#e0e0e0",textAlign:"center"},children:p}),x.jsx("div",{style:{overflowX:"auto",overflowY:"hidden",scrollbarWidth:"none",msOverflowStyle:"none",WebkitOverflowScrolling:"touch",paddingBottom:"8px"},children:x.jsx("div",{style:{display:"flex",gap:"4px",Width:"max-content",paddingRight:"8px"},children:o.slice(0,24).map((T,H)=>{const q=U(T.dt),B=H===0;let $;B?$="Now":q===0?$="12AM":q<12?$=`${q}AM`:q===12?$="12PM":$=`${q-12}PM`;const tt=(yt,xt)=>{if(!xt)return{isSpecial:!1,type:null};const Ct=E(yt),wt=Ct.getUTCHours(),Et=Ct.getUTCMinutes();if(xt.sunrise){const Mt=E(xt.sunrise),Yt=Mt.getUTCHours(),Tt=Mt.getUTCMinutes();if(Math.abs(wt*60+Et-(Yt*60+Tt))<=30)return{isSpecial:!0,type:"sunrise"}}if(xt.sunset){const Mt=E(xt.sunset),Yt=Mt.getUTCHours(),Tt=Mt.getUTCMinutes();if(Math.abs(wt*60+Et-(Yt*60+Tt))<=30)return{isSpecial:!0,type:"sunset"}}return{isSpecial:!1,type:null}},it=yt=>{if(!yt)return"Clear";const xt={"01":"Clear","02":"Sun-shower","03":"Clouds","04":"Clouds","09":"Rain",10:"Rain",11:"Thunderstorm",13:"Snow",50:"Clouds"},Ct=yt.slice(0,2);return xt[Ct]||"Clear"},St=tt(T.dt,y),At=St.isSpecial,et=St.type,F=T.weather[0].icon,Z=it(F),z=Math.round(T.temp),at=T.pop>.3?`${Math.round(T.pop*100)}%`:null;return x.jsxs("div",{className:"forecast-hour-card",style:{textAlign:"center",minWidth:"80px",width:"80px",display:"flex",flexDirection:"column",alignItems:"center",gap:"8px",margin:"4px 4px",padding:"16px 8px",borderRadius:"24px",backgroundColor:B?"rgba(255, 255, 255, 0.15)":"rgba(255, 255, 255, 0.05)",border:B?"2px solid rgba(255, 255, 255, 0.3)":"1px solid rgba(255, 255, 255, 0.1)",transition:"all 0.3s ease",cursor:"pointer",backdropFilter:"blur(10px)"},children:[x.jsx("div",{style:{fontSize:"12px",fontWeight:B?"700":"500",color:B?"#ffffff":"#b0b0b0",letterSpacing:"0.5px",background:"transparent"},children:$}),x.jsxs("div",{style:{position:"relative",display:"flex",alignItems:"center",justifyContent:"center",height:"40px",background:"transparent"},children:[x.jsx(wn,{type:Z,size:"sm",style:{width:"36px",height:"36px",filter:"brightness(1.2) contrast(1.1)",opacity:B?1:.9,background:"transparent"}}),At&&x.jsx("div",{style:{position:"absolute",bottom:"-6px",right:"-6px",fontSize:"14px",background:"transparent",borderRadius:"50%",width:"20px",height:"20px",display:"flex",alignItems:"center",justifyContent:"center"},children:et==="sunset"?"🌅":"🌇"})]}),x.jsx("div",{style:{fontSize:"16px",fontWeight:"600",color:B?"#ffffff":"#e0e0e0",marginTop:"2px",background:"transparent"},children:At?x.jsx("span",{style:{fontSize:"12px",color:et==="sunrise"?"#ffa500":"#ff6b6b",background:"transparent"},children:et==="sunrise"?"Sunrise":"Sunset"}):`${z}°`}),at&&x.jsxs("div",{style:{fontSize:"11px",color:"#4a9eff",fontWeight:"600",background:"transparent",width:"105%",padding:"2px 6px",borderRadius:"8px",border:"1px solid rgba(74, 158, 255, 0.3)"},children:["💧",at]})]},H)})})}),x.jsx("style",{jsx:!0,children:`
+            `})]})},n1=({data:o,cityName:b,sunData:y,airQuality:f,tzOffsetSec:N=0})=>{const E=T=>new Date((T+N)*1e3),U=T=>E(T).getUTCHours(),j=T=>{const H=T>=12?"PM":"AM";return`${T%12||12}${H}`},p=(T=>{if(!Array.isArray(o)||o.length===0)return null;const H=Math.floor(Date.now()/1e3),q=U(H),B=[],$=o.filter(z=>z.pop>.3);if($.length>0){const z=U($[0].dt),at=U($[$.length-1].dt);q>at||(q>=z&&q<=at?B.push(`Rain continuing until ${j(at)}.`):z===at?B.push(`Rain expected around ${j(z)}.`):B.push(`Rain expected from ${j(z)} to ${j(at)}.`))}const tt=o.find(z=>z.wind_speed>3);if(tt){const z=Math.round(tt.wind_speed*3.6);B.push(`Wind gusts up to ${z} km/h.`)}if(o.find(z=>z.temp>35)&&B.push("High temperatures expected. Stay hydrated."),o.find(z=>z.temp<5)&&B.push("Low temperatures expected. Dress warmly."),o.find(z=>z.uvi&&z.uvi>7)&&B.push("High UV index. Wear sunscreen."),o.find(z=>z.weather[0].description.toLowerCase().includes("thunder"))&&B.push("Thunderstorms possible. Stay indoors."),o.find(z=>z.weather[0].description.toLowerCase().includes("fog"))&&B.push("Foggy conditions expected. Drive carefully."),o.find(z=>z.weather[0].description.toLowerCase().includes("haze")||z.weather[0].description.toLowerCase().includes("dust"))&&B.push("Dusty or hazy conditions expected. Consider wearing a mask."),T&&T.aqi){const z={1:"Air quality is good.",2:"Air quality is fair.",3:"Moderate air quality. Sensitive individuals should limit outdoor activities.",4:"Poor air quality. Consider reducing time outside.",5:"Very poor air quality. Avoid outdoor exposure."};B.push(z[T.aqi])}return B.length>0?B.join(" "):null})(f);return x.jsxs("section",{style:{borderRadius:"20px",padding:"16px",color:"white",fontFamily:'-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',width:"100%",overflowX:"hidden",display:"flex",flexDirection:"column",boxShadow:"0 4px 16px rgba(0,0,0,.1)",position:"relative"},children:[Array.isArray(o)&&o.length>0&&p&&x.jsx("div",{style:{fontSize:"14px",marginBottom:"16px",padding:"6px",borderRadius:"12px",backgroundColor:"rgba(255, 255, 255, 0.1)",border:"1px solid rgba(255, 255, 255, 0.2)",color:"#e0e0e0",textAlign:"center"},children:p}),x.jsx("div",{style:{overflowX:"auto",overflowY:"hidden",scrollbarWidth:"none",msOverflowStyle:"none",WebkitOverflowScrolling:"touch",paddingBottom:"8px"},children:x.jsx("div",{style:{display:"flex",gap:"4px",Width:"max-content",paddingRight:"8px"},children:o.slice(0,24).map((T,H)=>{const q=U(T.dt),B=H===0;let $;B?$="Now":q===0?$="12AM":q<12?$=`${q}AM`:q===12?$="12PM":$=`${q-12}PM`;const tt=(yt,xt)=>{if(!xt)return{isSpecial:!1,type:null};const Ct=E(yt),wt=Ct.getUTCHours(),Et=Ct.getUTCMinutes();if(xt.sunrise){const Mt=E(xt.sunrise),Yt=Mt.getUTCHours(),Tt=Mt.getUTCMinutes();if(Math.abs(wt*60+Et-(Yt*60+Tt))<=30)return{isSpecial:!0,type:"sunrise"}}if(xt.sunset){const Mt=E(xt.sunset),Yt=Mt.getUTCHours(),Tt=Mt.getUTCMinutes();if(Math.abs(wt*60+Et-(Yt*60+Tt))<=30)return{isSpecial:!0,type:"sunset"}}return{isSpecial:!1,type:null}},it=yt=>{if(!yt)return"Clear";const xt={"01":"Clear","02":"Sun-shower","03":"Clouds","04":"Clouds","09":"Rain",10:"Rain",11:"Thunderstorm",13:"Snow",50:"Clouds"},Ct=yt.slice(0,2);return xt[Ct]||"Clear"},St=tt(T.dt,y),At=St.isSpecial,et=St.type,F=T.weather[0].icon,Z=it(F),z=Math.round(T.temp),at=T.pop>.3?`${Math.round(T.pop*100)}%`:null;return x.jsxs("div",{className:"forecast-hour-card",style:{textAlign:"center",minWidth:"80px",width:"80px",display:"flex",flexDirection:"column",alignItems:"center",gap:"8px",margin:"4px 4px",padding:"16px 8px",borderRadius:"24px",backgroundColor:B?"rgba(255, 255, 255, 0.15)":"rgba(255, 255, 255, 0.05)",border:B?"2px solid rgba(255, 255, 255, 0.3)":"1px solid rgba(255, 255, 255, 0.1)",transition:"all 0.3s ease",cursor:"pointer",backdropFilter:"blur(10px)"},children:[x.jsx("div",{style:{fontSize:"12px",fontWeight:B?"700":"500",color:B?"#ffffff":"#b0b0b0",letterSpacing:"0.5px",background:"transparent"},children:$}),x.jsxs("div",{style:{position:"relative",display:"flex",alignItems:"center",justifyContent:"center",height:"40px",background:"transparent"},children:[x.jsx(wn,{type:Z,size:"sm",style:{width:"36px",height:"36px",filter:"brightness(1.2) contrast(1.1)",opacity:B?1:.9,background:"transparent"}}),At&&x.jsx("div",{style:{position:"absolute",bottom:"-6px",right:"-6px",fontSize:"14px",background:"transparent",borderRadius:"50%",width:"20px",height:"20px",display:"flex",alignItems:"center",justifyContent:"center"},children:et==="sunset"?"🌅":"🌇"})]}),x.jsx("div",{style:{fontSize:"16px",fontWeight:"600",color:B?"#ffffff":"#e0e0e0",marginTop:"2px",background:"transparent"},children:At?x.jsx("span",{style:{fontSize:"12px",color:et==="sunrise"?"#ffa500":"#ff6b6b",background:"transparent"},children:et==="sunrise"?"Sunrise":"Sunset"}):`${z}°`}),at&&x.jsxs("div",{style:{fontSize:"11px",color:"#4a9eff",fontWeight:"600",background:"transparent",width:"105%",padding:"2px 6px",borderRadius:"8px",border:"1px solid rgba(74, 158, 255, 0.3)"},children:["💧",at]})]},H)})})}),x.jsx("style",{jsx:!0,children:`
         .forecast-hour-card:hover {
           background-color: rgba(255, 255, 255, 0.1);
           transform: scale(1.05);
@@ -292,48 +361,119 @@ Error generating stack: `+e.message+`
     backdrop-filter: blur(10px);
     border-radius: 16px;
     padding: 24px;
-    display:flex; align-items:center; justify-content:space-between;
+    display:flex; 
+    align-items:center; 
+    justify-content:space-between;
   }
-  .mw-left{ display:flex; flex-direction:column; gap:6px; }
-  .mw-temp{ font-size: clamp(44px, 7vw, 72px); font-weight:300; color:hsl(220, 10%, 90%); line-height:1; }
-  .mw-today{ font-size:20px; color:hsl(220, 9%, 80%); margin-top:4px; }
-  .mw-desc{ font-size:16px; color:hsl(220, 9%, 70%); text-transform:capitalize; }
-  .mw-city{ font-size:13px; color:hsl(220, 9%, 60%); }
-  .mw-icon{ font-size: clamp(54px, 10vw, 96px); display:flex; align-items:center; }
+  .mw-left{ 
+    display:flex; 
+    flex-direction:column; 
+    gap:6px; 
+  }
+  .mw-temp{ 
+    font-size: clamp(44px, 7vw, 72px); 
+    font-weight:300; 
+    color:hsl(220, 10%, 90%); 
+    line-height:1; 
+  }
+  .mw-today{ 
+    font-size:20px; 
+    color:hsl(220, 9%, 80%); 
+    margin-top:4px; 
+  }
+  .mw-desc{ 
+    font-size:16px; 
+    color:hsl(220, 9%, 70%); 
+    text-transform:capitalize; 
+  }
+  .mw-city{ 
+    font-size:13px; 
+    color:hsl(220, 9%, 60%); 
+  }
+  .mw-icon{ 
+    font-size: clamp(54px, 10vw, 96px); 
+    display:flex; 
+    align-items:center; 
+  }
 `,c1=(o,b)=>{const y=(o||"").toLowerCase();if(y.includes("thunder"))return"Thunderstorm";if(y.includes("drizzle")||y.includes("rain")){const f=b?.endsWith("d"),N=["02","03","04"].includes(b?.slice(0,2));return f&&N?"Sun-shower":"Rain"}return y.includes("snow")?"Snow":y.includes("cloud")?"Clouds":y.includes("clear")?"Clear":"Clouds"};function f1({weather:o}){if(!o)return null;const b=Math.round(o.main?.temp??0),y=o.weather?.[0]?.description||o.weather?.[0]?.main||"";c1(o.weather?.[0]?.main,o.weather?.[0]?.icon);const f=o.name||"";return x.jsxs(x.Fragment,{children:[x.jsx("style",{children:i1}),x.jsxs("div",{className:"mw-card",children:[x.jsxs("div",{className:"mw-left",children:[x.jsxs("div",{className:"mw-temp",children:[b,"°C"]}),x.jsx("div",{className:"mw-today",children:"Today"}),x.jsx("div",{className:"mw-desc",children:y}),f&&x.jsx("div",{className:"mw-city",children:f})]}),x.jsx("div",{className:"mw-icon",children:x.jsx(wn,{code:o?.weather?.[0]?.icon,alt:o?.weather?.[0]?.description,size:"lg"})})]})]})}const s1=`
   .f5-row{
     display:grid;
     grid-auto-flow:column;
-    grid-auto-columns: calc((100% - 36px) / 4);
-    gap:10px;
+    grid-auto-columns: calc((100% - 48px) / 4);
+    gap:14px;
     padding: 6px;
     margin: 24px 0px 0px 0px;
     overflow-x:auto;
     -webkit-overflow-scrolling:touch;
     scroll-snap-type:x mandatory;
   }
-  .f5-row::-webkit-scrollbar{display:none}
-  .f5-row::-webkit-scrollbar-thumb{background:rgba(0,0,0,.15);border-radius:6px}
-  .f5-row > .f5-card{scroll-snap-align:start;}
+  .f5-row::-webkit-scrollbar{
+    display:none
+  }
+  .f5-row::-webkit-scrollbar-thumb{
+    background:rgba(0,0,0,.15);
+    border-radius:6px
+  }
+  .f5-row > .f5-card{
+    scroll-snap-align:start;
+  }
 
   .f5-card{ 
     text-align:center;
     padding:16px; 
+    width:100%;
     border-radius:16px;
     backdrop-filter:blur(10px); 
     border:1px solid rgba(255,255,255,.3);
-
     transition:all .25s ease;
   }
   .f5-card:hover{
     border-color: rgba(59,130,246,.5);
     transform: translateY(-2px);
   }
-  .f5-week{ font-size:14px; color:hsl(220, 9%, 70%); margin-bottom:12px; font-weight:500; }
-  .f5-icon{ font-size:32px; display:flex; justify-content:center; margin-bottom:10px; }
-  .f5-tmax{ font-size:18px; font-weight:600; color:hsl(220, 10%, 90%); margin-bottom:4px; }
-  .f5-tmin{ font-size:13px; color:hsl(220, 9%, 60%); margin-bottom:8px; }
-  .f5-desc{ font-size:12px; color:hsl(220, 9%, 60%); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .f5-week{ 
+    font-size:14px; 
+    color:hsl(220, 9%, 70%); 
+    margin-bottom:12px; 
+    font-weight:500; 
+  }
+  .f5-icon{ 
+    font-size:32px; 
+    display:flex; 
+    justify-content:center; 
+    margin-bottom:10px;
+  }
+  .f5-tmax{ 
+    font-size:18px; 
+    font-weight:600; 
+    color:hsl(220, 10%, 90%); 
+    margin-bottom:4px; 
+  }
+  .f5-tmin{ 
+    font-size:13px; 
+    color:hsl(220, 9%, 60%); 
+    margin-bottom:8px; 
+  }
+  .f5-desc{ 
+    font-size:12px; 
+    color:hsl(220, 9%, 60%); 
+    white-space:nowrap; 
+    overflow:hidden; 
+    text-overflow:ellipsis; 
+  }
+  
+  @media (max-width: 1500px) {
+    .f5-row {
+      grid-auto-columns: calc((100% - 48px) / 5);
+      gap:14px;
+    }
+  }
+  @media (max-width: 900px) {
+    .f5-row {
+      grid-auto-columns: calc((100% - 36px) / 4);
+    }
+  }
+
 `,o1=o=>["Sunday","Monday","Tuesday","Wedsday","Thursday","Friday","Saturday"][new Date(o*1e3).getDay()],r1=o=>{const b=new Date,y=new Date(b.getFullYear(),b.getMonth(),b.getDate()).getTime()/1e3;return Math.round((o-y)/86400)===1?"Tomorrow":o1(o)},d1=o=>Q.useMemo(()=>{if(!o)return[];const b=Array.isArray(o)?o:o.daily;if(Array.isArray(b)&&b[0]?.temp)return b.slice(1,6).map(E=>({dt:E.dt,max:Math.round(E.temp?.max??E.temp?.day??NaN),min:Math.round(E.temp?.min??E.temp?.night??NaN),main:E.weather?.[0]?.main,icon:E.weather?.[0]?.icon,desc:E.weather?.[0]?.description})).filter(E=>Number.isFinite(E.max)&&Number.isFinite(E.min));const y=o.list??o;if(!Array.isArray(y))return[];const f=new Map;for(const E of y){const U=(typeof E.dt=="number"?E.dt:Date.parse(E.dt_txt)/1e3)||0,j=new Date(U*1e3),D=new Date(j.getFullYear(),j.getMonth(),j.getDate()).getTime()/1e3,p=E?.main?.temp_max??E?.main?.temp,T=E?.main?.temp_min??E?.main?.temp;f.has(D)||f.set(D,{dt:D,max:-1/0,min:1/0,rep:null,repScore:-1e9});const H=f.get(D);Number.isFinite(p)&&(H.max=Math.max(H.max,p)),Number.isFinite(T)&&(H.min=Math.min(H.min,T));const q=new Date(U*1e3).getHours(),B=-Math.abs(12-q);B>H.repScore&&(H.repScore=B,H.rep=E)}const N=new Date(new Date().getFullYear(),new Date().getMonth(),new Date().getDate()).getTime()/1e3;return[...f.values()].sort((E,U)=>E.dt-U.dt).filter(E=>E.dt>N).slice(0,5).map(E=>{const U=E.rep??{};return{dt:E.dt,max:Math.round(E.max),min:Math.round(E.min),main:U.weather?.[0]?.main,icon:U.weather?.[0]?.icon,desc:U.weather?.[0]?.description}}).filter(E=>Number.isFinite(E.max)&&Number.isFinite(E.min))},[o]);function h1({forecast:o}){const b=d1(o);return b.length?x.jsxs(x.Fragment,{children:[x.jsx("style",{children:s1}),x.jsx("div",{className:"w-full mt-8 f5-row",children:b.map((y,f)=>x.jsxs("div",{className:"f5-card",children:[x.jsx("p",{className:"f5-week",children:r1(y.dt)}),x.jsx("div",{className:"f5-icon",children:x.jsx("div",{children:x.jsx(wn,{code:y.icon,size:"lg",alt:y.desc})})}),x.jsxs("p",{className:"f5-tmax",children:[y.max,"°"]}),x.jsxs("p",{className:"f5-tmin",children:[y.min,"°"]}),y.desc&&x.jsx("p",{className:"f5-desc",children:y.desc})]},y.dt||f))})]}):null}const Yn="4f98848c949e6bcf5c3dea5b455e762c";class Bn{static async fetchWeatherByCity(b){const y=`https://api.openweathermap.org/data/2.5/weather?q=${b}&appid=${Yn}&units=metric`;return this.makeRequest(y)}static async fetchWeatherByCoords(b,y){const f=`https://api.openweathermap.org/data/2.5/weather?lat=${b}&lon=${y}&appid=${Yn}&units=metric`;return this.makeRequest(f)}static async fetchAirQualityByCoords(b,y){const f=`https://api.openweathermap.org/data/2.5/air_pollution?lat=${b}&lon=${y}&appid=${Yn}`;return this.makeRequest(f)}static async fetchForecastByCity(b){const y=`https://api.openweathermap.org/data/2.5/forecast?q=${b}&appid=${Yn}&units=metric`;return this.makeRequest(y)}static async makeRequest(b){try{const y=await fetch(b),f=await y.json();if(!y.ok)throw new Error(f.message||"無法獲取天氣資料");return{success:!0,data:f}}catch(y){return{success:!1,error:y.message}}}}/**
  * @license lucide-react v0.540.0 - ISC
  *
@@ -466,12 +606,7 @@ Error generating stack: `+e.message+`
   @media (max-width: 730px) {
     .wh-card {
       height:190px; 
-      // width:135px
     }
-    .wh-card.is-active{
-      box-shadow:0 1px 8px rgba(0,0,0,.2);
-    }
-
   }
     
 
