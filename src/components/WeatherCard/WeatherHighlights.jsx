@@ -6,25 +6,83 @@ const WH_CSS = `
   .wh-card{
     border-radius:20px; 
     padding:20px; 
-    min-height:200px; 
-    min-width:150px;
+    height:200px; 
+    width:150px;
     backdrop-filter:blur(10px); 
     border:1px solid rgba(255,255,255,.3);
-    box-shadow:0 4px 16px rgba(0,0,0,.1); 
+    box-shadow:0 2px 8px rgba(0,0,0,.1); 
     transition:all .25s ease;
   }
   .wh-card.is-active{
     border-color: rgba(59,130,246,.5);
-    box-shadow:0 8px 32px rgba(0,0,0,.2);
+    box-shadow:0 4px 16px rgba(0,0,0,.2);
     transform: translateY(-2px);
   }
-  .wh-grid{ display:grid; grid-template-rows:auto 1fr auto; height:100%; }
-  .wh-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; gap:5px; }
-  .wh-title{ color:hsl(220, 9%, 70%); font-size:14px; font-weight:500; }
-  .wh-mid{ display:flex; align-items:center; justify-content:center; gap:6px; line-height:1; }
-  .wh-val{ font-size:28px; font-weight:700; color:hsl(220, 10%, 90%); }
-  .wh-unit{ font-size:12px; color:hsl(220, 9%, 70%); }
-  .wh-desc{ text-align:center; opacity:.65; padding-bottom:2px; font-size:12px; color:hsl(220, 9%, 70%); }
+  .wh-grid{ 
+    display:grid; 
+    grid-template-rows:auto 1fr auto; 
+    height:100%; 
+  }
+  .wh-head{ 
+    display:flex; 
+    align-items:center; 
+    justify-content:space-between; 
+    margin-bottom:8px; 
+    gap:5px; 
+  }
+  .wh-title{ 
+    color:hsl(220, 9%, 70%); 
+    font-size:14px; 
+    font-weight:500; 
+  }
+  .wh-mid{ 
+    display:flex; 
+    align-items:center; 
+    justify-content:center; 
+    gap:6px; 
+    line-height:1; 
+  }
+  .wh-val{ 
+    font-size:28px; 
+    font-weight:700; 
+    color:hsl(220, 10%, 90%); 
+  }
+  .wh-unit{ 
+    font-size:12px; 
+    color:hsl(220, 9%, 70%); 
+  }
+  .wh-desc{ 
+    text-align:center; 
+    opacity:.65; 
+    padding-bottom:2px; 
+    font-size:12px; 
+    color:hsl(220, 9%, 70%); 
+  }
+
+  @media (max-width: 1500px) {
+    .wh-card {
+      height:200px; 
+      min-width:100%;
+    }
+  }
+  @media (max-width: 900px) {
+    .wh-card {
+      height:190px; 
+    }
+  }
+    
+  @media (max-width: 730px) {
+    .wh-card {
+      height:190px; 
+      // width:135px
+    }
+    .wh-card.is-active{
+      box-shadow:0 1px 8px rgba(0,0,0,.2);
+    }
+
+  }
+    
+
 `;
 
 
@@ -39,10 +97,15 @@ const useFeelsLike = (weather) => {
 };
 
 //RainChance
+// RainChance（只信當前 hourlyData；否則回傳 null）
 const useRainChance = (query, API_KEY, weather, hourlyData) => {
   const [rainChance, setRainChance] = useState(null);
 
   useEffect(() => {
+    // query 變更時先清空，避免殘留上一筆
+    setRainChance(null);
+
+    // 僅在有當前小時資料時計算
     if (Array.isArray(hourlyData) && hourlyData.length) {
       const pops = hourlyData.slice(0, 12).map(h => Number(h.pop) || 0);
       const maxPop = Math.max(...pops);
@@ -50,35 +113,10 @@ const useRainChance = (query, API_KEY, weather, hourlyData) => {
       return;
     }
 
-    async function getRainChance() {
-      try {
-        let result;
-        if (typeof query === "string") {
-          result = await WeatherAPI.fetchForecastByCity(query);
-        } else {
-          setRainChance(null);
-          return;
-        }
-        
-        if (result.success) {
-          const pop = result.data?.list?.[0]?.pop;
-          if (typeof pop === 'number') {
-            setRainChance(Math.round(pop * 100));
-          } else {
-            setRainChance(weather ? Math.round((weather.clouds?.all || 0) / 2) : null);
-          }
-        } else {
-          setRainChance(weather ? Math.round((weather.clouds?.all || 0) / 2) : null);
-        }
-      } catch {
-        setRainChance(weather ? Math.round((weather.clouds?.all || 0) / 2) : null);
-      }
-    }
-    if (!hourlyData && query && API_KEY) {
-      getRainChance();
-    }
-  }, [hourlyData, query, API_KEY, weather]);
-  
+    // 沒資料就不顯示（不要預測/猜）
+    // setRainChance(null);
+  }, [hourlyData, query]);
+
   return rainChance;
 };
 
@@ -246,7 +284,7 @@ const useHumidity = (weather) => {
   }, [weather]);
 };
 
-const WeatherCardSelector = ({ 
+const Weatherhighlights = ({ 
     forecastData = [],
     weather = null,
     query = null,
@@ -415,7 +453,6 @@ const WeatherCardSelector = ({
       <div style={{ 
         padding: '20px 30px',
         width: '100%',
-        maxWidth: '1200px',
         margin: '0 auto',
         boxShadow:'0 10px 30px rgba(0,0,0,.15)',
         borderRadius: '16px',
@@ -429,12 +466,15 @@ const WeatherCardSelector = ({
         }}>Today's Highlights</h2>
         
         {/* 2x4 網格佈局 - 8個卡片 */}
-        <div style={{
+        <div className='wh-container' style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(4, 1fr)',
           gridTemplateRows: 'repeat(2, 1fr)',
           gap: '20px',
+          padding: '24px 8px',
           width: '100%',
+          overflowX: 'scroll',
+          scrollbarWidth: 'none',
         }}>
           {getWeatherData().map((item, index) => (
           <div
@@ -467,4 +507,4 @@ const WeatherCardSelector = ({
   );
 };
 
-export default WeatherCardSelector;
+export default Weatherhighlights;

@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react'
 import './App.css'
 // Components
-import HeaderWithTime from './components/Data/CurrentTime.jsx'
+
 import Search from './components/Navbar/Search.jsx'
 import Collection from './components/WeatherCard/Collection.jsx'
 import NavgationBar from './components/Navbar/NAV.jsx'
 
 import HourlyForecastDisplay from './components/Forecast/UIHourlyForecast.jsx'
-import VerticalWeekdaySelector from './components/Forecast/ForecastFiveDay.jsx'
 import MainCurrentCard from './components/WeatherCard/MainWeather.jsx'
 import ForecastFiveDay from './components/Forecast/ForecastFiveDay.jsx'
+import Weatherhighlights from './components/WeatherCard/WeatherHighlights.jsx'
 
 // Custom Hooks
 import useGetlocation from './components/Data/GetLocation.jsx'
@@ -24,10 +24,7 @@ import { useAutoRefresh } from './components/Data/AutoRefresh.jsx'
 
 // Utils & Config
 import { APP_CONFIG } from './components/Data/Constant.jsx'
-import { formatTemperature } from './components/Data/Helpers.jsx'
-import WeatherIcon from './components/Bg-Icon/WeatherIcon.jsx'
 import { WeatherAPI } from './components/Data/WeatherAPI.jsx'
-import WeatherCardSelector from './components/WeatherCard/WeatherHighlights.jsx'
 
 
 function App() {
@@ -38,6 +35,7 @@ function App() {
   const [hasInitialized, setHasInitialized] = useState(false)
   const [showCollection, setShowCollection] = useState(false)
   const [airQuality, setAirQuality] = useState(null);
+  
 
   // ===== Custom Hooks =====
   // Weather Data Management
@@ -118,32 +116,32 @@ function App() {
   // ===== Effects =====
   // Fetch weather data when query changes
   useEffect(() => {
-    console.log("query 變化，準備獲取天氣:", query)
-    if (query) {
-      fetchWeather(query)
+    if (!query) return;
   
-      const getAQI = async () => {
-        let lat, lon;
-        if (typeof query === 'object') {
-          lat = query.lat;
-          lon = query.lon;
-        } else if (weather?.coord) {
-          lat = weather.coord.lat;
-          lon = weather.coord.lon;
-        }
+    // 先清空，避免上一筆殘留
+    setAirQuality(null);
   
-        if (lat && lon) {
-          const { success, data } = await WeatherAPI.fetchAirQualityByCoords(lat, lon);
-          if (success) {
-            setAirQuality({ aqi: data.list[0].main.aqi });
-          } else {
-            setAirQuality(null);
-          }
-        }
-      };
+    fetchWeather(query);
   
-      getAQI();
-    }
+    const getAQI = async () => {
+      let lat, lon;
+      if (typeof query === 'object') {
+        lat = query.lat;
+        lon = query.lon;
+      } else if (weather?.coord) {
+        lat = weather.coord.lat;
+        lon = weather.coord.lon;
+      }
+  
+      if (lat && lon) {
+        const { success, data } = await WeatherAPI.fetchAirQualityByCoords(lat, lon);
+        setAirQuality(success ? { aqi: data.list[0].main.aqi } : null);
+      } else {
+        setAirQuality(null);
+      }
+    };
+  
+    getAQI();
   }, [query, fetchWeather]);
   
   
@@ -216,35 +214,35 @@ function App() {
 
             {/* 左邊區塊：今日天氣、五天預報、小時預報 */}
             <div className="left-panel">
-              <div className="main-card">
+              <div className="main-card section-current">
                 <MainCurrentCard weather={weather} />
                 <ForecastFiveDay forecast={forecast} />
               </div>  
 
               <div>
-                <div style={{ position: 'relative'}}>
-                  <HourlyForecastDisplay 
-                    data={hourlyForecast} 
-                    cityName={weather?.name} 
-                    sunData={{
-                      sunrise: weather?.sys?.sunrise,
-                      sunset: weather?.sys?.sunset
-                    }}
-                    airQuality={airQuality}
-                  />
-                </div>
+                <HourlyForecastDisplay 
+                  className="section-hourly" 
+                  data={hourlyForecast} 
+                  cityName={weather?.name} 
+                  sunData={{
+                    sunrise: weather?.sys?.sunrise,
+                    sunset: weather?.sys?.sunset
+                  }}
+                  tzOffsetSec={weather?.timezone ?? 0} // ★ 該城市相對 UTC 的秒數（可正可負）
+                  airQuality={airQuality}
+                />
               </div>
             </div>
 
             {/* 右邊區塊：今日重點 + 收藏 */}
             <div className="right-panel">
-              <Collection 
+              <Collection className="section-favorites"
                 favorites={favorites}
                 setQuery={setQuery}
                 removeFavorite={handleRemoveFavorite}
                 onSelect={(cityName) => setQuery(cityName)}
               />
-              <WeatherCardSelector
+              <Weatherhighlights className="section-highlights"
                 forecastData={forecast}
                 weather={weather}
                 query={query}
@@ -252,16 +250,14 @@ function App() {
                 initialDay={0}
                 hourlyData={hourlyForecast}
               />
-
             </div>
-
           </div>
         </section>
 
       </main>
       
       {/* Debug Info (開發時用) */}
-      {process.env.NODE_ENV === 'development' && (
+      {/* {process.env.NODE_ENV === 'development' && (
         <div className="debug-info" style={{ 
           position: 'fixed', 
           bottom: '10px', 
@@ -279,7 +275,7 @@ function App() {
           <div>天氣載入: {weatherLoading ? '載入中' : '完成'}</div>
           <div>錯誤: {locationError || weatherError || '無'}</div>
         </div>
-      )}
+      )} */}
     </div>
   </>
   )

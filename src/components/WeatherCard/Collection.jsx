@@ -124,6 +124,7 @@ const Collection = ({ favorites = [], setQuery, removeFavorite, onSelect }) => {
           border-radius: 16px;
           overflow: hidden;
           box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+          max-width: 100%;
         }
 
         /* Header */
@@ -155,9 +156,10 @@ const Collection = ({ favorites = [], setQuery, removeFavorite, onSelect }) => {
         .favorites-scroll{
           display:grid;
           grid-auto-flow: column;
-          gap:14px;
-          grid-auto-columns: calc((100% - 28px)/3); /* 一次 3 張 */
-          overflow-x:auto;
+          gap:12px;
+          grid-auto-columns: 190px;
+          max-width:100%;
+          overflow-x:scroll;
           padding:2px 8px 4px;
           -webkit-overflow-scrolling: touch;
           scroll-snap-type:x mandatory;
@@ -172,10 +174,11 @@ const Collection = ({ favorites = [], setQuery, removeFavorite, onSelect }) => {
 
         /* 單張卡片 */
         .fav-card{
+          box-sizing: border-box;
           border-radius:20px; 
           padding:20px; 
-          min-height:200px; 
-          min-width:150px;
+          max-height:200px; 
+          max-width:190px;
           backdrop-filter:blur(10px); 
           border:1px solid rgba(255,255,255,.3);
           transition:all .25s ease;

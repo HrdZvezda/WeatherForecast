@@ -2,13 +2,11 @@ import React from "react";
 import WeatherIcon from "../Bg-Icon/WeatherIcon";
 
 
-const HourlyForecastDisplay = ({ data, cityName, sunData, airQuality }) => {
+const HourlyForecastDisplay = ({ data, cityName, sunData, airQuality, tzOffsetSec = 0 }) => {
 
-  // console.log('Hourly forecast data length:', data?.length);
-  // console.log('Hourly forecast data:', data);
-  // console.log('Sun data:', sunData);
+  const toCityDate = (utcSeconds) => new Date((utcSeconds + tzOffsetSec) * 1000);
+  const getCityHour = (utcSeconds) => toCityDate(utcSeconds).getUTCHours();
 
-  // if (!data || data.length === 0) return <p>Loading hourly forecast...</p>;
 
   const formatHour = (hour) => {
     const ampm = hour >= 12 ? 'PM' : 'AM';
@@ -18,15 +16,20 @@ const HourlyForecastDisplay = ({ data, cityName, sunData, airQuality }) => {
 
   // 生成天氣警告訊息
   const generateWeatherAlert = (airQuality) => {
-    const nowHour = new Date().getHours();
+    if (!Array.isArray(data) || data.length === 0) return null;
+
+    const nowUtcSeconds = Math.floor(Date.now() / 1000);
+    const nowHour = getCityHour(nowUtcSeconds);
+    
     const alerts = [];
   
     // ☔ 降雨
     const rainHours = data.filter(hour => hour.pop > 0.3);
     if (rainHours.length > 0) {
-      const start = new Date(rainHours[0].dt * 1000).getHours();
-      const end = new Date(rainHours[rainHours.length - 1].dt * 1000).getHours();
-  
+
+      const start = getCityHour(rainHours[0].dt);
+      const end   = getCityHour(rainHours[rainHours.length - 1].dt);
+      
       if (nowHour > end) {
         // 過期不顯示
       } else if (nowHour >= start && nowHour <= end) {
@@ -102,11 +105,11 @@ const HourlyForecastDisplay = ({ data, cityName, sunData, airQuality }) => {
       display: 'flex',
       flexDirection: 'column',
       position: 'absolute',
-      boxShadow: '0 4px 16px rgba(0,0,0,.1)',
-
+      boxShadow: '0 4px 16px rgba(0,0,0,.1)', 
+      position: 'relative'
     }}>
       {/* 天氣警告訊息 */}
-      {weatherAlert && (
+      {Array.isArray(data) && data.length > 0 && weatherAlert && (
         <div style={{
           fontSize: '14px',
           marginBottom: '16px',
@@ -137,8 +140,7 @@ const HourlyForecastDisplay = ({ data, cityName, sunData, airQuality }) => {
           paddingRight: '8px'
         }}>
           {data.slice(0, 24).map((hour, index) => {
-            const date = new Date(hour.dt * 1000);
-            const hourStr = date.getHours();
+            const hourStr = getCityHour(hour.dt); // ★ 用城市小時
             const isNow = index === 0;
             
             // 格式化時間顯示
@@ -159,14 +161,15 @@ const HourlyForecastDisplay = ({ data, cityName, sunData, airQuality }) => {
             const checkSpecialTime = (timestamp, sunData) => {
               if (!sunData) return { isSpecial: false, type: null };
               
-              const currentTime = new Date(timestamp * 1000);
-              const currentHour = currentTime.getHours();
-              const currentMinute = currentTime.getMinutes();
+              const currentTime = toCityDate(timestamp);
+              const currentHour = currentTime.getUTCHours();
+              const currentMinute = currentTime.getUTCMinutes();
+
               
               if (sunData.sunrise) {
-                const sunriseTime = new Date(sunData.sunrise * 1000);
-                const sunriseHour = sunriseTime.getHours();
-                const sunriseMinute = sunriseTime.getMinutes();
+                const sunriseTime = toCityDate(sunData.sunrise);
+                const sunriseHour = sunriseTime.getUTCHours();
+                const sunriseMinute = sunriseTime.getUTCMinutes();
                 
                 // 檢查是否在日出時間前後30分鐘內
                 if (Math.abs((currentHour * 60 + currentMinute) - (sunriseHour * 60 + sunriseMinute)) <= 30) {
@@ -175,9 +178,10 @@ const HourlyForecastDisplay = ({ data, cityName, sunData, airQuality }) => {
               }
               
               if (sunData.sunset) {
-                const sunsetTime = new Date(sunData.sunset * 1000);
-                const sunsetHour = sunsetTime.getHours();
-                const sunsetMinute = sunsetTime.getMinutes();
+
+                const sunsetTime = toCityDate(sunData.sunset);
+                const sunsetHour = sunsetTime.getUTCHours();
+                const sunsetMinute = sunsetTime.getUTCMinutes();
                 
                 // 檢查是否在日落時間前後30分鐘內
                 if (Math.abs((currentHour * 60 + currentMinute) - (sunsetHour * 60 + sunsetMinute)) <= 30) {
