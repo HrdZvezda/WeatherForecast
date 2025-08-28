@@ -26,7 +26,7 @@ const Forecast5Day_CSS = `
 
   .f5-card{ 
     text-align:center;
-    padding:16px; 
+    padding:16px 10px; 
     width:100%;
     border-radius:16px;
     backdrop-filter:blur(10px); 
@@ -74,13 +74,68 @@ const Forecast5Day_CSS = `
       gap:14px;
     }
   }
-  @media (max-width: 900px) {
+  @media (max-width: 1200px) {
     .f5-row {
       grid-auto-columns: calc((100% - 36px) / 4);
     }
   }
+  @media (max-width: 600px) {
+    .f5-desc{
+      white-space:wrap; 
+    }
+  }
+  @media (max-width: 500px) {
+    .f5-week{
+      font-size: 10px;
+    }
+  }
+  @media (max-width: 400px) {
+    .f5-week{
+      font-size: 8px;
+    }
+    .f5-desc{
+      font-size: 10px;
+    }
+  }
 
 `;
+
+function useBreakpointSizes() {
+  const w600 = "(max-width: 600px)";
+  const w500 = "(max-width: 500px)";
+
+  const [state, setState] = React.useState({
+    lt600: false, lt500: false,
+  });
+
+  React.useEffect(() => {
+    if (typeof window === "undefined" || !window.matchMedia) return;
+    const m600 = window.matchMedia(w600);
+    const m500 = window.matchMedia(w500);
+
+    const apply = () => setState({
+      lt600: m600.matches,
+      lt500: m500.matches,
+    });
+
+    apply();
+    const on600 = () => apply();
+    const on500 = () => apply();
+
+    m600.addEventListener ? m600.addEventListener("change", on600) : m600.addListener(on600);
+    m500.addEventListener ? m500.addEventListener("change", on500) : m500.addListener(on500);
+
+    return () => {
+      m600.removeEventListener ? m600.removeEventListener("change", on600) : m600.removeListener(on600);
+      m500.removeEventListener ? m500.removeEventListener("change", on500) : m500.removeListener(on500);
+    };
+  }, []);
+
+  // 斷點優先順序：最小的優先
+  if (state.lt500) return "sm";
+  if (state.lt600) return "mid";
+  return "lg";
+}
 
 const toIconType = (main, icon) => {
   const m = (main || "").toLowerCase();
@@ -168,6 +223,8 @@ const useFiveDays = (forecast) => useMemo(() => {
 
 export default function ForecastFiveDay({ forecast }) {
   const days = useFiveDays(forecast);
+  const iconSize = useBreakpointSizes();
+
   if (!days.length) return null;
 
   return (
@@ -182,7 +239,7 @@ export default function ForecastFiveDay({ forecast }) {
             <p className="f5-week">{labelFor(d.dt)}</p>
             <div className="f5-icon">
               <div>
-                <WeatherIcon code={d.icon} size="lg" alt={d.desc} />
+                <WeatherIcon code={d.icon} size={iconSize} alt={d.desc} />
               </div>
             </div>
             <p className="f5-tmax">{d.max}°</p>

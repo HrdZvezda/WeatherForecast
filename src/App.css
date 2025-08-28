@@ -143,10 +143,18 @@ body {
   width: 120px;
   color: #fefefe;  
 }
-
-@media (max-width: 730px) {
+@media (max-width: 900px) {
   .search > input[type="text"].open{
-    width: 60px;
+    width: 80px;
   }  
-
+}
+@media (max-width: 820px) {
+  .search > input[type="text"].open{
+    width: 50px;
+  }  
+}
+@media (max-width: 450px) {
+  .search > input[type="text"].open{
+    width: 40px;
+  }  
 }

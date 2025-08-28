@@ -3,6 +3,16 @@ import { WeatherAPI } from '../Data/WeatherAPI';
 import { Thermometer, Wind, CloudRain, Droplets, Sun, Eye, Gauge, BarChart3 } from 'lucide-react';
 
 const WH_CSS = `
+  .wh-container {
+    gap: 20px;
+    padding: 24px 8px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    overflow-x: scroll;
+    scrollbar-width: none;
+  }
   .wh-card{
     border-radius:20px; 
     padding:20px; 
@@ -48,14 +58,14 @@ const WH_CSS = `
     color:hsl(220, 10%, 90%); 
   }
   .wh-unit{ 
-    font-size:12px; 
+    font-size:14px; 
     color:hsl(220, 9%, 70%); 
   }
   .wh-desc{ 
     text-align:center; 
     opacity:.65; 
     padding-bottom:2px; 
-    font-size:12px; 
+    font-size:14px; 
     color:hsl(220, 9%, 70%); 
   }
 
@@ -64,16 +74,36 @@ const WH_CSS = `
       height:200px; 
       min-width:100%;
     }
+    .wh-title{
+      font-size: 18px;
+    }
+    .wh-desc{
+      font-size: 16px;  
+    }
   }
-  @media (max-width: 900px) {
+  @media (max-width: 1200px) {
     .wh-card {
       height:190px; 
     }
+    .wh-title{
+      font-size: 16px;
+    }
+    .wh-desc{
+      font-size: 14px;  
+    }
   }
-    
-  @media (max-width: 730px) {
+  @media (max-width: 900px) {
+    .wh-title{
+      font-size: 14px;
+    }
+    .wh-desc{
+      font-size: 12px;  
+    }
+  }
+
+  @media (max-width: 620px) {
     .wh-card {
-      height:190px; 
+      width:150px;
     }
   }
     
@@ -461,16 +491,7 @@ const Weatherhighlights = ({
         }}>Today's Highlights</h2>
         
         {/* 2x4 網格佈局 - 8個卡片 */}
-        <div className='wh-container' style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(4, 1fr)',
-          gridTemplateRows: 'repeat(2, 1fr)',
-          gap: '20px',
-          padding: '24px 8px',
-          width: '100%',
-          overflowX: 'scroll',
-          scrollbarWidth: 'none',
-        }}>
+        <div className='wh-container'>
           {getWeatherData().map((item, index) => (
           <div
           key={index}

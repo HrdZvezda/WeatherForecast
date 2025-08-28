@@ -46,7 +46,7 @@ const NavgationBar = ({
             <div className="navbar">
                 <div className="navbar-left" ref={menuRef}>
                     <div className="nav-logo">
-                        <i className="fa-regular fa-cloud"></i>
+                        <i className="fa-solid fa-cloud"></i>
                     </div>
                     <p className="nav-title">
                        <i className='title-top'>Weather</i><br />
@@ -65,7 +65,7 @@ const NavgationBar = ({
                             onClick={handleGetLocation}
                             disabled={locationLoading}
                         >
-                            {locationLoading ? " " : <i class="fa-regular fa-compass"></i> }
+                            {locationLoading ? " " : <i className="fa-regular fa-compass"></i> }
                         </button>
                     </div>
 
@@ -75,7 +75,7 @@ const NavgationBar = ({
                         disabled={!weather}
                         title={isFavorite(weather?.name) ? "取消收藏" : "加入收藏"}
                     >
-                        {isFavorite(weather?.name) ? <i class="fa-solid fa-bookmark"></i> : <i class="fa-regular fa-bookmark"></i> }
+                        {isFavorite(weather?.name) ? <i className="fa-solid fa-bookmark"></i> : <i className="fa-regular fa-bookmark"></i> }
                     </button> 
                 </div>
                 
@@ -86,14 +86,14 @@ const NavgationBar = ({
                     top: 12px;
                     left: 50%;
                     transform: translateX(-50%);
-                    width: calc(100% - 64px); 
+                    // width: calc(100% - 64px); 
                     margin: auto;
                     display: flex;
                     justify-content: space-between;
                     align-items: center;
                     padding: 0px 32px;
                     border-radius: 9999px;
-                    max-width: 960px;
+                    width: 70vw;
 
                     background: rgba(255, 255, 255, 0.15);
                     backdrop-filter: blur(20px);
@@ -131,8 +131,8 @@ const NavgationBar = ({
                 }
 
                 .nav-logo {
-                    width: 40px;
-                    height: 40px;
+                    min-width: 40px;
+                    min-height: 40px;
                     display: flex;
                     justify-content: center;
                     align-items: center;
@@ -158,7 +158,7 @@ const NavgationBar = ({
                 }
 
                 .location-btn {
-                    padding: 6px 16px;
+                    padding: 6px 16px;  
                     margin-right: 10px;
                     background: transparent;
                     // border: 1px solid white;
@@ -171,6 +171,50 @@ const NavgationBar = ({
                     background: rgba(255, 255, 255, 0.2);
                     border: none;
                     transition: all 0.7s;
+                }
+
+                @media (max-width: 630px) {
+                    .nav-title{
+                        font-size: 14px
+                    }
+                }  
+                
+                @media (max-width: 600px) {
+                    .nav-title{
+                        display:none
+                    }
+                    .nav-logo{
+                        margin: 6px 0px;
+                        margin-right: 6px;
+                    }
+                }  
+
+                @media (max-width: 550px) {
+                    .navbar{
+                        padding: 0px 28px;
+                    }
+                }
+
+                @media (max-width: 500px) {
+                    .navbar{
+                        padding: 0px 24px;
+                    }
+                }
+
+                @media (max-width: 450px) {
+                    .navbar{
+                        padding: 0px 20px;
+                    }
+                    
+                }
+                    
+                @media (max-width: 400px) {
+                    .navbar{
+                        padding: 0px 16px;
+                    }
+                    .location-btn {
+                        padding: 6px 6px;
+                    }
                 }
 
             `}</style>

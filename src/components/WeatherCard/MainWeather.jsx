@@ -1,6 +1,7 @@
 // src/components/WeatherCard/MainWeather.jsx
 import React from "react";
 import WeatherIcon from "../Bg-Icon/WeatherIcon";
+import HeaderWithTime from '../Data/CurrentTime';
 
 const MW_CSS = `
   .mw-card{
@@ -42,6 +43,9 @@ const MW_CSS = `
     display:flex; 
     align-items:center; 
   }
+  
+
+
 `;
 
 const toIconType = (main, icon) => {
@@ -72,7 +76,12 @@ export default function MainCurrentCard({ weather }) {
       <div className="mw-card">
         <div className="mw-left">
           <div className="mw-temp">{temp}°C</div>
-          <div className="mw-today">Today</div>
+          <div className="mw-today">
+            Today
+          </div>
+          <div className="main-time">
+            <HeaderWithTime />
+          </div>
           <div className="mw-desc">{desc}</div>
           {city && <div className="mw-city">{city}</div>}
         </div>

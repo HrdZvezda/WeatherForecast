@@ -42,28 +42,29 @@ const HeaderWithTime = ({ className = '' , style = {} , showDate = true }) => {
 
   return (
     <div className={`time ${ className } `} style = {style}>
-      <h4>
-        <span className="big">{hourMinute}</span>
-        <span className="small"> {meridiem}</span>
+      <div>
+        <h4>
+          <span className="big">{hourMinute}</span>
+          <span className="small"> {meridiem}</span>
         </h4>
-        {showDate && (
-          <div className="date-info">
-            <span className="date">{day} {month} </span>
-          </div>
-        )}
+      </div>
+      {showDate && (
+        <div className="date-info">
+          <span className="date">{day} {month}</span>
+        </div>
+      )}
 
       <style jsx>{`
         .nav-time {
             display:flex;
             align-items: baseline;
-        }
-        .nav-time h4 {
+            font-weight: 450;
             color:#fff;
             margin: 0;
-            font-weight: 400;
+            padding: 2px 0;
         }
         .nav-time h4 .big {
-            font-size: 20px;
+            font-size: 18px;
         }
         .nav-time h4 .small {
             font-size: 12px;
@@ -76,6 +77,7 @@ const HeaderWithTime = ({ className = '' , style = {} , showDate = true }) => {
           align-items: center;
           gap: 10px;
         }
+
         .date-info {
           display: flex;
           flex-direction: row;
@@ -88,7 +90,56 @@ const HeaderWithTime = ({ className = '' , style = {} , showDate = true }) => {
           font-weight: 400;
           line-height: 1;
         }
-        
+        .main-time{
+          display:none;
+        }
+        @media (max-width: 750px) {
+          .nav-time{
+              display: none;
+          }
+          .main-time{
+            display: flex;
+            color:hsl(220, 9%, 80%); 
+          }
+          .time h4 .big {
+            font-size: 18px;
+          }
+          .time h4 .small {
+            font-size: 12px;
+          }
+          .date{
+            font-size: 16px;
+          }
+        }
+
+        @media (max-width: 630px) {
+          .nav-time h4 .big {
+            font-size: 16px;
+          }
+          .nav-time h4 .small {
+              font-size: 10px;
+          }
+          .date{
+            font-size: 16px;
+          }
+        }
+
+         
+        @media (max-width: 350px) {
+          .time{
+            display: block;
+            line-height: 1.8;
+          }
+          .time h4 .big {
+            font-size: 16px;
+          }
+          .time h4 .small {
+              font-size: 8px;
+          }
+          .date{
+            font-size: 14px;
+          }
+        }
       `}</style>
     </div>
   );
