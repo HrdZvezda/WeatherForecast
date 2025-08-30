@@ -111,7 +111,7 @@ export const useForecast = (query, apiKey) => {
         console.log("5-day Forecast API 回傳：", data);
 
         if (res.ok && Array.isArray(data.list)) {
-          setForecast(data.list);
+          setForecast(data);
         } else {
           console.error("預報 API 錯誤：", data);
           setForecast(null);

@@ -2,6 +2,7 @@
 import React from "react";
 import WeatherIcon from "../Bg-Icon/WeatherIcon";
 import HeaderWithTime from '../Data/CurrentTime';
+import WeatherTempChart from "../WeatherCard/WeatherTempChart.jsx";
 
 const MW_CSS = `
   .mw-card{
@@ -12,6 +13,7 @@ const MW_CSS = `
     display:flex; 
     align-items:center; 
     justify-content:space-between;
+    cursor: pointer;
   }
   .mw-left{ 
     display:flex; 
@@ -62,8 +64,11 @@ const toIconType = (main, icon) => {
   return "Clouds";
 };
 
-export default function MainCurrentCard({ weather }) {
+export default function MainCurrentCard({ weather, forecast }) {
+  const [open, setOpen] = React.useState(false);
+
   if (!weather) return null; 
+  const todayTs = new Date().setHours(0,0,0,0) / 1000;
 
   const temp = Math.round(weather.main?.temp ?? 0);
   const desc = weather.weather?.[0]?.description || weather.weather?.[0]?.main || "";
@@ -73,7 +78,10 @@ export default function MainCurrentCard({ weather }) {
   return (
     <>
       <style>{MW_CSS}</style>
-      <div className="mw-card">
+      <div 
+        className="mw-card"
+        onClick={()=>setOpen(true)}
+      >
         <div className="mw-left">
           <div className="mw-temp">{temp}°C</div>
           <div className="mw-today">
@@ -93,6 +101,14 @@ export default function MainCurrentCard({ weather }) {
           />
         </div>
       </div>
+      {open && (
+        <WeatherTempChart
+          forecast={forecast}
+          dayTs={todayTs}
+          onClose={()=>setOpen(false)}
+        />
+      )}
     </>
   );
 }
+

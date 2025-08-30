@@ -215,7 +215,7 @@ function App() {
             {/* 左邊區塊：今日天氣、五天預報、小時預報 */}
             <div className="left-panel">
               <div className="main-card section-current">
-                <MainCurrentCard weather={weather} />
+                <MainCurrentCard weather={weather} forecast={forecast}/>
                 <ForecastFiveDay forecast={forecast} />
               </div>  
 
@@ -257,7 +257,7 @@ function App() {
       </main>
       
       {/* Debug Info (開發時用) */}
-      {/* {process.env.NODE_ENV === 'development' && (
+      {process.env.NODE_ENV === 'development' && (
         <div className="debug-info" style={{ 
           position: 'fixed', 
           bottom: '10px', 
@@ -275,7 +275,7 @@ function App() {
           <div>天氣載入: {weatherLoading ? '載入中' : '完成'}</div>
           <div>錯誤: {locationError || weatherError || '無'}</div>
         </div>
-      )} */}
+      )}
     </div>
   </>
   )

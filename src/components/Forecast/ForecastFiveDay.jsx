@@ -1,5 +1,7 @@
-import React, { useMemo, useEffect } from "react";
+import React, { useMemo, useEffect, useState } from "react";
 import WeatherIcon from "../Bg-Icon/WeatherIcon.jsx";
+import WeatherTempChart, { build24hSeries } from "../WeatherCard/WeatherTempChart.jsx";
+
 
 const Forecast5Day_CSS = `
   .f5-row{
@@ -32,6 +34,7 @@ const Forecast5Day_CSS = `
     backdrop-filter:blur(10px); 
     border:1px solid rgba(255,255,255,.3);
     transition:all .25s ease;
+    cursor: pointer;
   }
   .f5-card:hover{
     border-color: rgba(59,130,246,.5);
@@ -204,26 +207,35 @@ const useFiveDays = (forecast) => useMemo(() => {
 
   const todayKey = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()).getTime()/1000;
   return [...buckets.values()]
-    .sort((a,b)=>a.dt-b.dt)
-    .filter(d => d.dt > todayKey)
-    .slice(0,5)
-    .map(b => {
-      const rep = b.rep ?? {};
-      return {
-        dt: b.dt,
-        max: Math.round(b.max),
-        min: Math.round(b.min),
-        main: rep.weather?.[0]?.main,
-        icon: rep.weather?.[0]?.icon,
-        desc: rep.weather?.[0]?.description,
-      };
-    })
-    .filter(d => Number.isFinite(d.max) && Number.isFinite(d.min));
+  .sort((a,b)=>a.dt-b.dt)
+  .filter(d => d.dt > todayKey)
+  .slice(0,5)
+  .map(b => {
+    // 用 build24hSeries 算更精確的 min/max
+    const series = build24hSeries(list, b.dt);
+    const temps = series.map(d => d.temp);
+    const minT = Math.round(Math.min(...temps));
+    const maxT = Math.round(Math.max(...temps));
+
+    const rep = b.rep ?? {};
+    return {
+      dt: b.dt,
+      max: maxT,
+      min: minT,
+      main: rep.weather?.[0]?.main,
+      icon: rep.weather?.[0]?.icon,
+      desc: rep.weather?.[0]?.description,
+    };
+  })
+  .filter(d => Number.isFinite(d.max) && Number.isFinite(d.min));
 }, [forecast]);
+
+
 
 export default function ForecastFiveDay({ forecast }) {
   const days = useFiveDays(forecast);
   const iconSize = useBreakpointSizes();
+  const [selectedDay, setSelectedDay] = React.useState(null);
 
   if (!days.length) return null;
 
@@ -235,6 +247,7 @@ export default function ForecastFiveDay({ forecast }) {
           <div
           key={d.dt || i}
           className="f5-card"
+          onClick={() => setSelectedDay(d.dt)}
           >
             <p className="f5-week">{labelFor(d.dt)}</p>
             <div className="f5-icon">
@@ -248,6 +261,14 @@ export default function ForecastFiveDay({ forecast }) {
           </div>
         ))}
       </div>
+      {selectedDay && (
+        <WeatherTempChart
+          forecast={forecast}
+          dayTs={selectedDay}
+          onClose={() => setSelectedDay(null)}
+        />
+      )}
     </>
   );
 }
+
