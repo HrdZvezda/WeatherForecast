@@ -531,9 +531,9 @@ Error generating stack: `+l.message+`
         .sheet-body{
           width:min(720px,97%);
           margin-bottom:12px;
-          background:rgba(38, 60, 111, 0.9);
+          background: rgb(55, 65, 81, .9);
           backdrop-filter:blur(16px);
-          border:1px solid rgba(255,255,255,.12);
+          border:1px solid rgba(255,255,200,.12);
           border-radius:12px;
           padding:16px;
         }
