@@ -44,6 +44,9 @@ const MW_CSS = `
     font-size: clamp(54px, 10vw, 96px); 
     display:flex; 
     align-items:center; 
+    justify-content:center;
+    width: 96px; 
+    height: 96px; 
   }
   
 

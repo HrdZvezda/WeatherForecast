@@ -6,7 +6,6 @@ html,body{
   margin: 0;     /* 去除預設的 margin */
   padding: 0;    /* 去除預設的 padding */
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto ,'Helvetica Neue', sans-serif;
-  color: #333;
 }
 
 body {
@@ -40,9 +39,6 @@ body {
   padding: 0px 24px 32px;
   justify-content: center;
   margin: 90px auto;
-  grid-template-areas:
-  "current   favorites"
-  "hourly    highlights";
 }
 
 .main-card{
@@ -52,17 +48,21 @@ body {
   box-shadow: 0 10px 30px rgba(0,0,0,0.15);
 }
 
-.left-panel, .right-panel {
+.left-panel, .right-panel{
   width: 730px;
   display: flex;
   flex-direction: column;
   gap: 24px;
+  min-height: 560px;
 }
 
-.section-current    { grid-area: current; }
-.section-hourly     { grid-area: hourly; }
-.section-favorites  { grid-area: favorites; }
-.section-highlights { grid-area: highlights; }
+.section-highlights{ 
+  min-height: 260px; 
+}
+.section-favorites{ 
+  min-height: 220px; 
+}
+
 
 @media (max-width: 1500px) {
   .weather-content {

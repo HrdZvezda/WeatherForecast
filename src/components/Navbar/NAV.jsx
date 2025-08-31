@@ -142,6 +142,12 @@ const NavgationBar = ({
                     color: white;
                 }
 
+                .nav-time { 
+                    font-variant-numeric: tabular-nums; 
+                    min-width: 140px; 
+                    line-height: 1; 
+                }
+
                 .nav-btn-outline {
                     padding: 6px 16px;
                     background: transparent;

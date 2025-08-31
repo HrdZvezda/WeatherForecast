@@ -28,7 +28,7 @@ const Forecast5Day_CSS = `
 
   .f5-card{ 
     text-align:center;
-    padding:16px 10px; 
+    padding:16px 0px; 
     width:100%;
     border-radius:16px;
     backdrop-filter:blur(10px); 
@@ -69,6 +69,7 @@ const Forecast5Day_CSS = `
     white-space:nowrap; 
     overflow:hidden; 
     text-overflow:ellipsis; 
+    padding: 0px 4px;
   }
   
   @media (max-width: 1500px) {

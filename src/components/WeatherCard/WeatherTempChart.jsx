@@ -1,6 +1,4 @@
-WeatherTempChart
-
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, Area
 } from "recharts";
@@ -19,6 +17,7 @@ export function build24hSeries(list, dayTs) {
     day.getDate() === today.getDate()
   );
 
+  
   // 起始時間
   const start = isToday
     ? new Date(today.getFullYear(), today.getMonth(), today.getDate(), today.getHours(), 0, 0) // 今天：從現在小時開始
@@ -142,44 +141,50 @@ export default function WeatherTempChart({ forecast, dayTs, onClose }) {
     );
   };
 
-// 產生 X 軸刻度：今天用剩餘小時決定，未來天固定 3 小時一格
-const firstTs = data?.[0]?.ts ? new Date(data[0].ts) : null;
-const now = new Date();
-const isToday =
-  firstTs &&
-  firstTs.getFullYear() === now.getFullYear() &&
-  firstTs.getMonth() === now.getMonth() &&
-  firstTs.getDate() === now.getDate();
+  // 產生 X 軸刻度：今天用剩餘小時決定，未來天固定 3 小時一格
+  const firstTs = data?.[0]?.ts ? new Date(data[0].ts) : null;
+  const now = new Date();
+  const isToday =
+    firstTs &&
+    firstTs.getFullYear() === now.getFullYear() &&
+    firstTs.getMonth() === now.getMonth() &&
+    firstTs.getDate() === now.getDate();
 
-function makeTicksToday() {
-  if (!firstTs) return [];
-  const dayEnd = new Date(firstTs.getFullYear(), firstTs.getMonth(), firstTs.getDate(), 23, 59, 0);
-  const remainingHours = Math.max(1, Math.ceil((dayEnd - now) / 36e5));
-
-  const step =
-    remainingHours <= 6 ? 1 :    // ≤6h → 每 1h 一格
-    remainingHours <= 12 ? 3 : 6; // ≤12h → 每 3h 一格，其他 → 每 6h 一格
-
-  const ticks = [];
-  let h = now.getHours();
-  while (h <= 23) {             
-    ticks.push(`${String(h).padStart(2,"0")}:00`);
-    h += step;
-  }
-  return ticks;
-}
-
-function makeTicksOther(step = 3) {
-  const ticks = [];
-  for (let h = 0; h < 24; h += step) {  
-    ticks.push(`${String(h).padStart(2,"0")}:00`);
-  }
-  return ticks;
-}
-
-const hourTicks = isToday ? makeTicksToday() : makeTicksOther(3);
-
-
+    const [isNarrow, setIsNarrow] = useState(window.innerWidth <= 500);
+    useEffect(() => {
+      const handler = () => {
+        const narrow = window.innerWidth <= 500;
+        setIsNarrow(prev => (prev !== narrow ? narrow : prev));
+      };
+      window.addEventListener("resize", handler);
+      return () => window.removeEventListener("resize", handler);
+    }, []);
+  
+    function makeTicksToday() {
+      if (!firstTs) return [];
+      if (isNarrow) {
+        const ticks = [];
+        let h = now.getHours();
+        while (h <= 23) { ticks.push(`${String(h).padStart(2,"0")}:00`); h += 6; }
+        return ticks;
+      }
+      const dayEnd = new Date(firstTs.getFullYear(), firstTs.getMonth(), firstTs.getDate(), 23, 59, 0);
+      const remainingHours = Math.max(1, Math.ceil((dayEnd - now) / 36e5));
+      const step = remainingHours <= 6 ? 1 : remainingHours <= 12 ? 3 : 6;
+      const ticks = [];
+      let h = now.getHours();
+      while (h <= 23) { ticks.push(`${String(h).padStart(2,"0")}:00`); h += step; }
+      return ticks;
+    }
+  
+    function makeTicksOther() {
+      const step = isNarrow ? 6 : 3;
+      const ticks = [];
+      for (let h = 0; h < 24; h += step) { ticks.push(`${String(h).padStart(2,"0")}:00`); }
+      return ticks;
+    }
+  
+    const hourTicks = isToday ? makeTicksToday() : makeTicksOther();
 
   return (
     <div className="sheet-mask" onClick={onClose}>
@@ -192,9 +197,9 @@ const hourTicks = isToday ? makeTicksToday() : makeTicksOther(3);
           H : {maxT}°C  &nbsp; L : {minT}°C
         </div>
 
-        <div style={{height:300}}>
+        <div style={{height:180}}>
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={data} margin={{ top: 10, right: 12, bottom: 8, left: 8 }}>
+            <LineChart data={data} margin={{ top: 10, right: 12, bottom: 0, left: 8 }}>
               <defs>
                 <linearGradient id="tempFill" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stopColor="#facc15" stopOpacity="0.35"/>
@@ -281,7 +286,7 @@ const hourTicks = isToday ? makeTicksToday() : makeTicksOther(3);
         }
         .sheet-body{
           width:min(720px,97%);
-          margin-bottom:18px;
+          margin-bottom:12px;
           background:rgba(38, 60, 111, 0.9);
           backdrop-filter:blur(16px);
           border:1px solid rgba(255,255,255,.12);
