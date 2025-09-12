@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import './App.css'
 // Components
-
+import { I18nProvider } from './components/i18n/I18nContext.jsx'
 import Search from './components/Navbar/Search.jsx'
 import Collection from './components/WeatherCard/Collection.jsx'
 import NavgationBar from './components/Navbar/NAV.jsx'
@@ -35,7 +35,6 @@ function App() {
   const [hasInitialized, setHasInitialized] = useState(false)
   const [showCollection, setShowCollection] = useState(false)
   const [airQuality, setAirQuality] = useState(null);
-  
 
   // ===== Custom Hooks =====
   // Weather Data Management
@@ -187,96 +186,98 @@ function App() {
   // ===== Main Render =====
   return (
     <>
-    {/* Navigation */}
-    <NavgationBar
-      setQuery={setQuery} 
-      weather={weather}
-      favorites={favorites}
-      isFavorite={isFavorite}
-      handleAddFavorite={handleAddFavorite}
-      handleRemoveFavorite={handleRemoveFavorite}
-      handleGetLocation={handleGetLocation}
-      locationLoading={locationLoading}
-    >
-      <Search 
-        city={city}
-        setCity={setCity}
-        setQuery={setQuery}
-        error={weatherError}
-        />
-    </NavgationBar>
-    <div className="app-wrapper">
-      
-      <main className='main'>  
-       {/* Weather Content */}
-        <section className='weather'>
-          <div className="weather-content">
+    <I18nProvider>
+      {/* Navigation */}
+      <NavgationBar
+        setQuery={setQuery} 
+        weather={weather}
+        favorites={favorites}
+        isFavorite={isFavorite}
+        handleAddFavorite={handleAddFavorite}
+        handleRemoveFavorite={handleRemoveFavorite}
+        handleGetLocation={handleGetLocation}
+        locationLoading={locationLoading}
+      >
+        <Search 
+          city={city}
+          setCity={setCity}
+          setQuery={setQuery}
+          error={weatherError}
+          />
+      </NavgationBar>
+      <div className="app-wrapper">
+        
+        <main className='main'>  
+        {/* Weather Content */}
+          <section className='weather'>
+            <div className="weather-content">
 
-            {/* 左邊區塊：今日天氣、五天預報、小時預報 */}
-            <div className="left-panel">
-              <div className="main-card section-current">
-                <MainCurrentCard weather={weather} forecast={forecast}/>
-                <ForecastFiveDay forecast={forecast} />
-              </div>  
+              {/* 左邊區塊：今日天氣、五天預報、小時預報 */}
+              <div className="left-panel">
+                <div className="main-card section-current">
+                  <MainCurrentCard weather={weather} forecast={forecast}/>
+                  <ForecastFiveDay forecast={forecast} />
+                </div>  
 
-              <div>
-                <HourlyForecastDisplay 
-                  className="section-hourly" 
-                  data={hourlyForecast} 
-                  cityName={weather?.name} 
-                  sunData={{
-                    sunrise: weather?.sys?.sunrise,
-                    sunset: weather?.sys?.sunset
-                  }}
-                  tzOffsetSec={weather?.timezone ?? 0} // ★ 該城市相對 UTC 的秒數（可正可負）
-                  airQuality={airQuality}
+                <div>
+                  <HourlyForecastDisplay 
+                    className="section-hourly" 
+                    data={hourlyForecast} 
+                    cityName={weather?.name} 
+                    sunData={{
+                      sunrise: weather?.sys?.sunrise,
+                      sunset: weather?.sys?.sunset
+                    }}
+                    tzOffsetSec={weather?.timezone ?? 0} // ★ 該城市相對 UTC 的秒數（可正可負）
+                    airQuality={airQuality}
+                  />
+                </div>
+              </div>
+
+              {/* 右邊區塊：今日重點 + 收藏 */}
+              <div className="right-panel">
+                <Collection className="section-favorites"
+                  favorites={favorites}
+                  setQuery={setQuery}
+                  removeFavorite={handleRemoveFavorite}
+                  onSelect={(cityName) => setQuery(cityName)}
+                />
+                <Weatherhighlights className="section-highlights"
+                  forecastData={forecast}
+                  weather={weather}
+                  query={query}
+                  API_KEY={APP_CONFIG.API_KEY}
+                  initialDay={0}
+                  hourlyData={hourlyForecast}
                 />
               </div>
             </div>
+          </section>
 
-            {/* 右邊區塊：今日重點 + 收藏 */}
-            <div className="right-panel">
-              <Collection className="section-favorites"
-                favorites={favorites}
-                setQuery={setQuery}
-                removeFavorite={handleRemoveFavorite}
-                onSelect={(cityName) => setQuery(cityName)}
-              />
-              <Weatherhighlights className="section-highlights"
-                forecastData={forecast}
-                weather={weather}
-                query={query}
-                API_KEY={APP_CONFIG.API_KEY}
-                initialDay={0}
-                hourlyData={hourlyForecast}
-              />
-            </div>
+        </main>
+        
+        {/* Debug Info (開發時用) */}
+        {/* {process.env.NODE_ENV === 'development' && (
+          <div className="debug-info" style={{ 
+            position: 'fixed', 
+            bottom: '10px', 
+            right: '10px', 
+            background: 'rgba(0,0,0,0.8)', 
+            color: 'white', 
+            padding: '10px',
+            borderRadius: '5px',
+            fontSize: '12px'
+          }}>
+            <div>最後更新: {lastUpdate?.toLocaleTimeString() || '未更新'}</div>
+            <div>自動更新: {isAutoRefresh ? '開啟' : '關閉'}</div>
+            <div>收藏數量: {favorites.length}</div>
+            <div>定位狀態: {locationLoading ? '定位中' : location ? '已定位' : '未定位'}</div>
+            <div>天氣載入: {weatherLoading ? '載入中' : '完成'}</div>
+            <div>錯誤: {locationError || weatherError || '無'}</div>
           </div>
-        </section>
-
-      </main>
-      
-      {/* Debug Info (開發時用) */}
-      {process.env.NODE_ENV === 'development' && (
-        <div className="debug-info" style={{ 
-          position: 'fixed', 
-          bottom: '10px', 
-          right: '10px', 
-          background: 'rgba(0,0,0,0.8)', 
-          color: 'white', 
-          padding: '10px',
-          borderRadius: '5px',
-          fontSize: '12px'
-        }}>
-          <div>最後更新: {lastUpdate?.toLocaleTimeString() || '未更新'}</div>
-          <div>自動更新: {isAutoRefresh ? '開啟' : '關閉'}</div>
-          <div>收藏數量: {favorites.length}</div>
-          <div>定位狀態: {locationLoading ? '定位中' : location ? '已定位' : '未定位'}</div>
-          <div>天氣載入: {weatherLoading ? '載入中' : '完成'}</div>
-          <div>錯誤: {locationError || weatherError || '無'}</div>
-        </div>
-      )}
-    </div>
+        )} */}
+      </div>
+    </I18nProvider>
   </>
   )
 }

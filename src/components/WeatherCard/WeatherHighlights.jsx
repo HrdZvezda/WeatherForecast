@@ -1,6 +1,7 @@
 import React, { useState, useRef, useMemo, useEffect } from 'react';
 import { WeatherAPI } from '../Data/WeatherAPI';
 import { Thermometer, Wind, CloudRain, Droplets, Sun, Eye, Gauge, BarChart3 } from 'lucide-react';
+import { useI18n } from '../i18n/I18nContext.jsx';
 
 const WH_CSS = `
   .wh-container {
@@ -106,10 +107,7 @@ const WH_CSS = `
       width:150px;
     }
   }
-    
-
 `;
-
 
 //WeatherCardHooks
 //FeelsLike
@@ -122,24 +120,18 @@ const useFeelsLike = (weather) => {
 };
 
 //RainChance
-// RainChance（只信當前 hourlyData；否則回傳 null）
 const useRainChance = (query, API_KEY, weather, hourlyData) => {
   const [rainChance, setRainChance] = useState(null);
 
   useEffect(() => {
-    // query 變更時先清空，避免殘留上一筆
     setRainChance(null);
 
-    // 僅在有當前小時資料時計算
     if (Array.isArray(hourlyData) && hourlyData.length) {
       const pops = hourlyData.slice(0, 12).map(h => Number(h.pop) || 0);
       const maxPop = Math.max(...pops);
       setRainChance(Math.round(maxPop * 100));
       return;
     }
-
-    // 沒資料就不顯示（不要預測/猜）
-    // setRainChance(null);
   }, [hourlyData, query]);
 
   return rainChance;
@@ -243,7 +235,7 @@ const useUSAQI = (weather, query) => {
         }
 
         const comp = res.data?.list?.[0]?.components || {};
-        // 濃度截尾到規範精度
+        // 濃度截尾到要範精度
         const c_pm25 = trunc(comp.pm2_5, 1);
         const c_pm10 = Math.floor(comp.pm10 ?? 0);
         const c_o3_ppm  = trunc(ugm3_to_ppm(comp.o3 ?? 0,  MW.O3), 3);
@@ -282,7 +274,6 @@ const useUSAQI = (weather, query) => {
   return state;
 };
 
-
 //Visibility
 const useVisibility = (weather) => {
   return useMemo(() => {
@@ -320,6 +311,8 @@ const Weatherhighlights = ({
     backgroundColor = 'transparent',
 }) => {
   const [selectedIndex, setSelectedIndex] = useState(initialDay); 
+  const { t } = useI18n();
+
   // 使用所有的 hooks
   const rainChance = useRainChance(query, API_KEY, weather, hourlyData);
   const uvIndex = useUVIndex(weather);
@@ -333,72 +326,73 @@ const Weatherhighlights = ({
   const handleCardHover = (index) => {
     if (selectedIndex !== index) {
       setSelectedIndex(index);
-      onDayChange(forecastData[index], index); // 不想在 hover 就觸發，可刪這行
+      onDayChange(forecastData[index], index);
     }
   };
 
-  // 動態描述工具
+  // 動態描述工具 - 使用翻譯系統
   const toNum = (v) => (v === null || v === undefined || v === '--' ? null : Number(v));
   const desc = {
     feelsLike(t) {
       if (t == null) return null;
-      if (t >= 33) return 'Scorching';
-      if (t >= 27) return 'Muggy';
-      if (t >= 20) return 'Comfortable';
-      if (t >= 10) return 'Cool';
-      return 'Cold';
+      if (t >= 33) return 'scorching';
+      if (t >= 27) return 'muggy';
+      if (t >= 20) return 'comfortable';
+      if (t >= 10) return 'cool';
+      return 'cold';
     },
     wind(kmh) {
       if (kmh == null) return null;
-      if (kmh < 1) return 'Calm';
-      if (kmh < 12) return 'Light breeze';
-      if (kmh < 29) return 'Gentle breeze';
-      if (kmh < 50) return 'Strong wind';
-      return 'Gale';
+      if (kmh < 1) return 'calm';
+      if (kmh < 12) return 'light';
+      if (kmh < 29) return 'gentle';
+      if (kmh < 50) return 'strong';
+      return 'gale';
     },
     humidity(pct) {
       if (pct == null) return null;
-      if (pct < 30) return 'Dry';
-      if (pct <= 60) return 'Comfortable';
-      if (pct <= 80) return 'Elevated';
-      return 'Humid';
+      if (pct < 30) return 'dry';
+      if (pct <= 60) return 'comfortable';
+      if (pct <= 80) return 'elevated';
+      return 'humid';
     },
     visibility(km) {
       if (km == null) return null;
-      if (km >= 10) return 'Good';
-      if (km >= 5) return 'Fair';
-      if (km >= 1) return 'Poor';
-      return 'Very poor';
+      if (km >= 10) return 'good';
+      if (km >= 5) return 'fair';
+      if (km >= 1) return 'poor';
+      return 'veryPoor';
     },
     pressure(hpa) {
       if (hpa == null) return null;
-      if (hpa < 1000) return 'Low';
-      if (hpa <= 1025) return 'Normal';
-      return 'High';
+      if (hpa < 1000) return 'low';
+      if (hpa <= 1025) return 'normal';
+      return 'high';
     },
     uv(uv) {
       if (uv == null) return null;
-      if (uv <= 2) return 'Low';
-      if (uv <= 5) return 'Moderate';
-      if (uv <= 7) return 'High';
-      if (uv <= 10) return 'Very high';
-      return 'Extreme';
+      if (uv === 0) return 'none';
+      if (uv <= 2) return 'low';
+      if (uv <= 5) return 'moderate';
+      if (uv <= 7) return 'high';
+      if (uv <= 10) return 'veryHigh';
+      return 'extreme';
     },
     rain(pct) {
       if (pct == null) return null;
-      if (pct >= 70) return 'Very likely';
-      if (pct >= 40) return 'Likely';
-      if (pct >= 20) return 'Possible';
-      return 'Unlikely';
+      if (pct >= 70) return 'veryLikely';
+      if (pct >= 40) return 'likely';
+      if (pct >= 20) return 'possible';
+      return 'unlikely';
     },
     aqi(aqi) {
       if (aqi == null) return null;
-      if (aqi <= 50) return 'Good';
-      if (aqi <= 100) return 'Moderate';
-      if (aqi <= 150) return 'Unhealthy for sensitive groups';
-      if (aqi <= 200) return 'Unhealthy';
-      if (aqi <= 300) return 'Very unhealthy';
-      return 'Hazardous';
+      if (aqi <= 50) return 'good';
+      if (aqi <= 100) return 'moderate';
+      if (aqi <= 150) return 'ufsg';
+      if (aqi <= 200) return 'unhealthy';
+      if (aqi <= 300) return 'veryUnhealthy';
+      return 'hazardous';
     },
   };
 
@@ -414,63 +408,62 @@ const Weatherhighlights = ({
   
     return [
       {
-        title: "RainChance",
+        title: t('highlights.rainChance'),
         value: rainChance || "--",
         unit: "%",
-        description: desc.rain(rain),
+        description: desc.rain(rain) ? t(`desc.rain.${desc.rain(rain)}`) : null,
         icon: <CloudRain className="w-6 h-6" color="#074fe9" />
       },
       {
-        title: "FeelsLike",
+        title: t('highlights.feelsLike'),
         value: feelsLike || "--",
         unit: "°C",
-        description: desc.feelsLike(feel),
+        description: desc.feelsLike(feel) ? t(`desc.feelsLike.${desc.feelsLike(feel)}`) : null,
         icon: <Thermometer className="w-6 h-6" color="#f97316"/>
       },
       {
-        title: "UV",
+        title: t('highlights.uv'),
         value: uvIndex || "--",
         unit: "",
-        description: desc.uv(uv),
+        description: desc.uv(uv) ? t(`desc.uv.${desc.uv(uv)}`) : null,
         icon: <Sun className="w-6 h-6" color="#eab308" />
       },
       {
-        title: "AirQuality",
+        title: t('highlights.airQuality'),
         value: usaAqi.value ?? "--", 
-        description: desc.aqi(aqi),   
+        description: desc.aqi(aqi) ? t(`desc.aqi.${desc.aqi(aqi)}`) : null,   
         icon: <BarChart3 className="w-6 h-6" color="#16a34a" />
       },      
       {
-        title: "WindSpeed",
+        title: t('highlights.windSpeed'),
         value: windSpeed || "--",
         unit: " km/h",
-        description: desc.wind(windKmh),
+        description: desc.wind(windKmh) ? t(`desc.wind.${desc.wind(windKmh)}`) : null,
         icon: <Wind className="w-6 h-6" color="#81aaec" />
       },
       {
-        title: "Humidity",
+        title: t('highlights.humidity'),
         value: humidity || "--",
         unit: "%",
-        description: desc.humidity(hum),
+        description: desc.humidity(hum) ? t(`desc.humidity.${desc.humidity(hum)}`) : null,
         icon: <Droplets className="w-6 h-6" color="#3e8ef0"  />
       },
       {
-        title: "Visibility",
+        title: t('highlights.visibility'),
         value: visibility || "--",
         unit: " km",
-        description: desc.visibility(visKm),
+        description: desc.visibility(visKm) ? t(`desc.visibility.${desc.visibility(visKm)}`) : null,
         icon: <Eye className="w-6 h-6" color="#6b7280" />
       },
       {
-        title: "Pressure",
+        title: t('highlights.pressure'),
         value: pressure || "--",
         unit: " hPa",
-        description: desc.pressure(pres),
+        description: desc.pressure(pres) ? t(`desc.pressure.${desc.pressure(pres)}`) : null,
         icon: <Gauge className="w-6 h-6" color="#a855f7" />
       },
     ];
   };
-  
   
   return (
     <>
@@ -488,7 +481,7 @@ const Weatherhighlights = ({
           color: 'hsl(220, 9%, 80%)',
           marginBottom: '16px',
           textAlign: 'start'
-        }}>Today's Highlights</h2>
+        }}>{t('highlights.title')}</h2>
         
         {/* 2x4 網格佈局 - 8個卡片 */}
         <div className='wh-container'>

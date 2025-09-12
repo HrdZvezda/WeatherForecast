@@ -1,5 +1,6 @@
 import React from "react";
 import { useEffect, useState } from "react";
+import { useI18n } from "../i18n/I18nContext";
 
 const useCurrentTime = () => {
   const [time, setTime] = useState(new Date());
@@ -14,26 +15,28 @@ const useCurrentTime = () => {
 
 const HeaderWithTime = ({ className = '' , style = {} , showDate = true }) => {
   const time = useCurrentTime();
+  const { formatDateTime, currentLanguage } = useI18n();
+
   
   // 分開取 hour:minute 與 AM/PM
-  const hourMinute = time.toLocaleTimeString("en", {
+  const hourMinute = formatDateTime(time,{
     hour: "2-digit",
     minute: "2-digit",
     hour12: true,
-  }).replace(/ (AM|PM)$/, '');
+  }).replace(/ (AM|PM)$/, '').replace(/上午|下午/, '');
 
-  const meridiem = time.toLocaleTimeString("en", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: true,
-  }).match(/AM|PM/)[0];
+  const meridiem = formatDateTime(time, {
+    hour: 'numeric',
+    hour12: true
+  }).split(' ')[1] || '';
+
   // 獲取月份和日期
-  const month = time.toLocaleDateString("en", {
-    month: "short", // Jan, Feb, Mar...
-  });
+  const month = formatDateTime(time, { month: "short" });
   const day = time.getDate();
   
-  const dateString = ` ${day} ${month}`;
+  const dateString = currentLanguage === 'zh' 
+  ? `${month}${day}日` 
+  : `${day} ${month}`;
 
   // 獲取星期幾（英文）
   const weekday = time.toLocaleDateString("en", {
@@ -44,13 +47,16 @@ const HeaderWithTime = ({ className = '' , style = {} , showDate = true }) => {
     <div className={`time ${ className } `} style = {style}>
       <div>
         <h4>
+          {/* 中文時，將上下午放在前面 */}
+          {currentLanguage === 'zh' && <span className="small">{meridiem} </span>}
           <span className="big">{hourMinute}</span>
-          <span className="small"> {meridiem}</span>
+          {/* 英文時，將 AM/PM 放在後面 */}
+          {currentLanguage !== 'zh' && <span className="small"> {meridiem}</span>}
         </h4>
       </div>
       {showDate && (
         <div className="date-info">
-          <span className="date">{day} {month}</span>
+          <span className="date">{dateString}</span>
         </div>
       )}
 
@@ -93,7 +99,7 @@ const HeaderWithTime = ({ className = '' , style = {} , showDate = true }) => {
         .main-time{
           display:none;
         }
-        @media (max-width: 750px) {
+        @media (max-width: 760px) {
           .nav-time{
               display: none;
           }

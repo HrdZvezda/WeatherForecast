@@ -1,17 +1,25 @@
 import React from "react";
 import WeatherIcon from "../Bg-Icon/WeatherIcon";
-
+import { useI18n } from "../i18n/I18nContext.jsx";
 
 const HourlyForecastDisplay = ({ data, cityName, sunData, airQuality, tzOffsetSec = 0 }) => {
-
+  const { t, translateWeather, currentLanguage } = useI18n();
   const toCityDate = (utcSeconds) => new Date((utcSeconds + tzOffsetSec) * 1000);
   const getCityHour = (utcSeconds) => toCityDate(utcSeconds).getUTCHours();
 
 
   const formatHour = (hour) => {
-    const ampm = hour >= 12 ? 'PM' : 'AM';
-    const hour12 = hour % 12 || 12; // 0 -> 12AM, 13 -> 1PM
-    return `${hour12}${ampm}`;
+    if (currentLanguage === 'zh') {
+      // 中文時間格式：上午/下午
+      const period = hour >= 12 ? '下午' : '上午';
+      const hour12 = hour % 12 || 12;
+      return `${period}${hour12}點`;
+    } else {
+      // 英文時間格式：AM/PM
+      const ampm = hour >= 12 ? 'PM' : 'AM';
+      const hour12 = hour % 12 || 12;
+      return `${hour12}${ampm}`;
+    }
   };
 
   // 生成天氣警告訊息
@@ -23,7 +31,7 @@ const HourlyForecastDisplay = ({ data, cityName, sunData, airQuality, tzOffsetSe
     
     const alerts = [];
   
-    // ☔ 降雨
+    // 降雨
     const rainHours = data.filter(hour => hour.pop > 0.3);
     if (rainHours.length > 0) {
 
@@ -33,11 +41,11 @@ const HourlyForecastDisplay = ({ data, cityName, sunData, airQuality, tzOffsetSe
       if (nowHour > end) {
         // 過期不顯示
       } else if (nowHour >= start && nowHour <= end) {
-        alerts.push(`Rain continuing until ${formatHour(end)}.`);
+        alerts.push(t('alert.rain.continue', { time: formatHour(end) }));
       } else if (start === end) {
-        alerts.push(`Rain expected around ${formatHour(start)}.`);
+        alerts.push(t('alert.rain.single', { time: formatHour(start) }));
       } else {
-        alerts.push(`Rain expected from ${formatHour(start)} to ${formatHour(end)}.`);
+        alerts.push(t('alert.rain.range', { start: formatHour(start), end: formatHour(end) }));
       }
     }
   
@@ -45,46 +53,47 @@ const HourlyForecastDisplay = ({ data, cityName, sunData, airQuality, tzOffsetSe
     const highWind = data.find(hour => hour.wind_speed > 3);
     if (highWind) {
       const windSpeed = Math.round(highWind.wind_speed * 3.6);
-      alerts.push(`Wind gusts up to ${windSpeed} km/h.`);
+      alerts.push(t('alert.wind', { speed: windSpeed }));
     }
   
     // 🔥 高溫 > 35°C
     const hot = data.find(hour => hour.temp > 35);
-    if (hot) alerts.push(`High temperatures expected. Stay hydrated.`);
+    if (hot) alerts.push(t('alert.hot'));
   
     // ❄️ 低溫 < 5°C
     const cold = data.find(hour => hour.temp < 5);
-    if (cold) alerts.push(`Low temperatures expected. Dress warmly.`);
+    if (cold) alerts.push(t('alert.cold'));
   
     // ☀️ 高紫外線
     const uv = data.find(hour => hour.uvi && hour.uvi > 7);
-    if (uv) alerts.push(`High UV index. Wear sunscreen.`);
+    if (uv) alerts.push(t('alert.uv'));
   
     // ⛈️ 雷暴
     const thunder = data.find(hour => hour.weather[0].description.toLowerCase().includes("thunder"));
-    if (thunder) alerts.push(`Thunderstorms possible. Stay indoors.`);
+    if (thunder) alerts.push(t('alert.thunder'));
   
     // 🌫️ 濃霧
     const fog = data.find(hour => hour.weather[0].description.toLowerCase().includes("fog"));
-    if (fog) alerts.push(`Foggy conditions expected. Drive carefully.`);
+    if (fog) alerts.push(t('alert.fog'));
   
     // 🌫️ 沙塵或霾
     const dust = data.find(hour =>
       hour.weather[0].description.toLowerCase().includes("haze") ||
       hour.weather[0].description.toLowerCase().includes("dust")
     );
-    if (dust) alerts.push(`Dusty or hazy conditions expected. Consider wearing a mask.`);
+    if (dust) alerts.push(t('alert.dust'));
   
     // 😷 空氣品質（傳入 AQI）
     if (airQuality && airQuality.aqi) {
-      const aqiLevel = {
-        1: "Air quality is good.",
-        2: "Air quality is fair.",
-        3: "Moderate air quality. Sensitive individuals should limit outdoor activities.",
-        4: "Poor air quality. Consider reducing time outside.",
-        5: "Very poor air quality. Avoid outdoor exposure."
+      const aqiKeys = {
+        1: "aqi.good",
+        2: "aqi.fair", 
+        3: "aqi.moderate",
+        4: "aqi.poor",
+        5: "aqi.veryPoor"
       };
-      alerts.push(aqiLevel[airQuality.aqi]);
+      const aqiKey = aqiKeys[airQuality.aqi];
+      if (aqiKey) alerts.push(t(aqiKey));
     }
   
     return alerts.length > 0 ? alerts.join(" ") : null;
@@ -145,15 +154,9 @@ const HourlyForecastDisplay = ({ data, cityName, sunData, airQuality, tzOffsetSe
             // 格式化時間顯示
             let timeDisplay;
             if (isNow) {
-              timeDisplay = "Now";
-            } else if (hourStr === 0) {
-              timeDisplay = "12AM";
-            } else if (hourStr < 12) {
-              timeDisplay = `${hourStr}AM`;
-            } else if (hourStr === 12) {
-              timeDisplay = "12PM";
+              timeDisplay = t('hourly.now');
             } else {
-              timeDisplay = `${hourStr - 12}PM`;
+              timeDisplay = formatHour(hourStr);
             }
             
             // 檢查是否為日出或日落時間（基於實際API數據）
@@ -216,7 +219,7 @@ const HourlyForecastDisplay = ({ data, cityName, sunData, airQuality, tzOffsetSe
             const weatherType = iconCodeToType(icon);
             const temp = Math.round(hour.temp);
             const pop = hour.pop > 0.3 ? `${Math.round(hour.pop * 100)}%` : null;
-            // console.log(`Hour ${index}: POP = ${hour.pop},Display = ${pop}`);
+
             
             return (
               <div
@@ -303,7 +306,7 @@ const HourlyForecastDisplay = ({ data, cityName, sunData, airQuality, tzOffsetSe
                       color: specialType === 'sunrise' ? '#ffa500' : '#ff6b6b',
                       background: 'transparent'
                     }}>
-                      {specialType === 'sunrise' ? 'Sunrise' : 'Sunset'}
+                      {t(`hourly.${specialType}`)}
                     </span>
                   ) : (
                     `${temp}°`

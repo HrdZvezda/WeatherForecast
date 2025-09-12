@@ -1,6 +1,8 @@
 import { React, useState, useEffect, useRef } from "react";
 import Search from "./Search";
 import HeaderWithTime from '../Data/CurrentTime';
+import LanguageSwitcher from "../i18n/LanguageSwitcher";
+import { useI18n } from "../i18n/I18nContext";
 
 const NavgationBar = ({
     children,
@@ -18,6 +20,7 @@ const NavgationBar = ({
     const [shake, setShake] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     const menuRef = useRef(null);
+    const { t } = useI18n(); 
 
     const handleFavoriteToggle = () => {
         if (!weather) return;
@@ -59,6 +62,7 @@ const NavgationBar = ({
 
                 <div className="navbar-right">
                     {children}
+
                     <div className='btn'>
                         <button 
                             className={` location-btn ${locationLoading ? 'loading' : ''}`} 
@@ -79,6 +83,7 @@ const NavgationBar = ({
                     </button> 
                 </div>
                 
+                <LanguageSwitcher />
             </div>
             <style>{`
                 .navbar {
@@ -149,7 +154,6 @@ const NavgationBar = ({
                 }
 
                 .nav-btn-outline {
-                    padding: 6px 16px;
                     background: transparent;
                     // border: 1px solid white;
                     border-radius: 9999px;
@@ -164,8 +168,6 @@ const NavgationBar = ({
                 }
 
                 .location-btn {
-                    padding: 6px 16px;  
-                    margin-right: 10px;
                     background: transparent;
                     // border: 1px solid white;
                     border-radius: 9999px;
@@ -180,12 +182,18 @@ const NavgationBar = ({
                 }
 
                 @media (max-width: 630px) {
+                    .navbar{
+                        padding: 0px 28px;
+                    }
                     .nav-title{
                         font-size: 14px
                     }
                 }  
                 
                 @media (max-width: 600px) {
+                    .navbar{
+                        padding: 0px 24px;
+                    }
                     .nav-title{
                         display:none
                     }
@@ -197,26 +205,26 @@ const NavgationBar = ({
 
                 @media (max-width: 550px) {
                     .navbar{
-                        padding: 0px 28px;
+                        padding: 0px 20px;
                     }
                 }
 
                 @media (max-width: 500px) {
                     .navbar{
-                        padding: 0px 24px;
+                        padding: 0px 16px;
                     }
                 }
 
                 @media (max-width: 450px) {
                     .navbar{
-                        padding: 0px 20px;
+                        padding: 0px 14px;
                     }
                     
                 }
                     
                 @media (max-width: 400px) {
                     .navbar{
-                        padding: 0px 16px;
+                        padding: 0px 10px;
                     }
                     .location-btn {
                         padding: 6px 6px;

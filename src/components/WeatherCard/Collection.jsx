@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import WeatherIcon from '../Bg-Icon/WeatherIcon.jsx';
 import { LocalStorageManager } from '../Data/LocalStorage.jsx';
 import { APP_CONFIG } from '../Data/Constant.jsx';
+import { useI18n } from '../i18n/I18nContext.jsx';
 
 const API_KEY = import.meta.env.VITE_WEATHER_API_KEY || '';
 
@@ -74,6 +75,7 @@ export function useFavorites() {
 /** 單張卡片 */
 const FavoriteCard = ({ city, onSelect, onRemove }) => {
   const { temp, desc, icon } = useCityWeatherBrief(city.name, API_KEY);
+  const { translateWeather } = useI18n();
 
   const handleSelect = (e) => {
     if (e.target.closest('button')) return; // 點到按鈕不觸發切換
@@ -85,7 +87,7 @@ const FavoriteCard = ({ city, onSelect, onRemove }) => {
   };
 
   const showTemp = Math.round((temp ?? city.temp) || 0);
-  const textDesc = (desc || '').toLowerCase();
+  const textDesc = translateWeather(desc || '').toLowerCase();
 
   return (
     <div className="fav-card" onClick={handleSelect} title={city.name}>
@@ -305,8 +307,10 @@ const Collection = ({ favorites = [], setQuery, removeFavorite, onSelect }) => {
         <div className="favorites-body">
           {favorites.length === 0 ? (
             <div className="favorites-empty">
-              <p>尚未收藏任何地區</p>
-              <small>搜尋並收藏你關心的城市天氣</small>
+              {/* <p>尚未收藏任何地區</p>
+              <small>搜尋並收藏你關心的城市天氣</small> */}
+              <p>No locations saved</p>
+              <small>Search and bookmark cities you care about</small>
             </div>
           ) : (
             <div className="favorites-scroll">

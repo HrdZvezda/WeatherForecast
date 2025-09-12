@@ -1,13 +1,14 @@
 import { useState, useCallback, useEffect} from 'react'
 import { WeatherAPI } from './WeatherAPI'
 import { APP_CONFIG } from './Constant'
+import { useI18n } from '../i18n/I18nContext'
 
 export const useWeatherData = () => {
   const [weather, setWeather] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [lastUpdate, setLastUpdate] = useState(null)
-  
+  const { getApiLanguage } = useI18n()
   
   const fetchWeather = useCallback(async (query) => {
     if (!query) {
@@ -21,14 +22,15 @@ export const useWeatherData = () => {
     
     try {
       let result
-      
+      const lang = getApiLanguage() // 取得當前語言
+
       // 檢查 query 是否為坐標對象
       if (typeof query === 'object' && query !== null && 'lat' in query && 'lon' in query) {
-        console.log('使用坐標獲取天氣:', query.lat, query.lon)
-        result = await WeatherAPI.fetchWeatherByCoords(query.lat, query.lon)
+        console.log('使用坐標獲取天氣:', query.lat, query.lon, lang)
+        result = await WeatherAPI.fetchWeatherByCoords(query.lat, query.lon, lang)
       } else if (typeof query === 'string') {
         console.log('使用城市名稱獲取天氣:', query)
-        result = await WeatherAPI.fetchWeatherByCity(query)
+        result = await WeatherAPI.fetchWeatherByCity(query, lang)
       } else {
         throw new Error('無效的查詢格式')
       }
@@ -51,7 +53,7 @@ export const useWeatherData = () => {
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [getApiLanguage])
   
   const clearError = () => setError('')
   
@@ -68,10 +70,12 @@ export const useWeatherData = () => {
 //Current Temperature Hook
 export const useCurrentTemp = (city, apiKey) => {
   const [temp, setTemp] = useState(null);
+  const { getApiLanguage } = useI18n();
 
   useEffect(() => {
     const fetchTemp = async () => {
       try {
+        const lang = getApiLanguage();
         const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`);
         const data = await res.json();
         if (res.ok) setTemp(data.main.temp);
@@ -81,7 +85,7 @@ export const useCurrentTemp = (city, apiKey) => {
     };
 
     fetchTemp();
-  }, [city, apiKey]);
+  }, [city, apiKey, getApiLanguage]);
 
   return temp;
 };
@@ -89,21 +93,23 @@ export const useCurrentTemp = (city, apiKey) => {
 // Forecast Hook
 export const useForecast = (query, apiKey) => {
   const [forecast, setForecast] = useState(null);
+  const { getApiLanguage } = useI18n();
 
   useEffect(() => {
     const fetchForecast = async () => {
       if (!query) return;
 
       try {
+        const lang = getApiLanguage();
         let url = "";
         
         // 根據 query 類型構建 URL - 使用 5-day forecast API
         if (typeof query === "string") {
-          url = `https://api.openweathermap.org/data/2.5/forecast?q=${query}&appid=${apiKey}&units=metric`;
+          url = `https://api.openweathermap.org/data/2.5/forecast?q=${query}&appid=${apiKey}&units=metric&lang=${lang}`;
         } else {
           // 如果是座標對象
           const { lat, lon } = query;
-          url = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
+          url = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric&lang=${lang}`;
         }
 
         const res = await fetch(url);
@@ -123,7 +129,7 @@ export const useForecast = (query, apiKey) => {
     };
 
     fetchForecast();
-  }, [query, apiKey]);
+  }, [query, apiKey, getApiLanguage]);
 
   return forecast;
 };
@@ -131,12 +137,14 @@ export const useForecast = (query, apiKey) => {
 // Hourly Forecast Hook
 export const useHourlyForecast = (query, apiKey) => {
   const [hourlyData, setHourlyData] = useState([]);
+  const { getApiLanguage } = useI18n();
 
   useEffect(() => {
     const fetchHourly = async () => {
       if (!query) return;
       try {
         let lat, lon;
+        const lang = getApiLanguage();
 
         if (typeof query === 'string') {
           const geoRes = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${query}&appid=${apiKey}`);
@@ -150,7 +158,7 @@ export const useHourlyForecast = (query, apiKey) => {
         }
 
         // 使用 5 Day Weather Forecast API（免費版本）
-        const res = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`);
+        const res = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric&lang=${lang}`);
         const data = await res.json();
 
         if (res.ok && data.list) {
@@ -237,7 +245,7 @@ export const useHourlyForecast = (query, apiKey) => {
     };
 
     fetchHourly();
-  }, [query, apiKey]);
+  }, [query, apiKey, getApiLanguage]);
         
   return hourlyData;
 };

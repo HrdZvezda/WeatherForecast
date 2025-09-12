@@ -3,13 +3,13 @@ import React from "react"
 const API_KEY = import.meta.env.VITE_WEATHER_API_KEY
 
 export class WeatherAPI {
-  static async fetchWeatherByCity(city) {
-    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`
+  static async fetchWeatherByCity(city, lang='en') {
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric&lang=en`
     return this.makeRequest(url)
   }
   
-  static async fetchWeatherByCoords(lat, lon) {
-    const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`
+  static async fetchWeatherByCoords(lat, lon, lang='en') {
+    const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric&lang=en`
     return this.makeRequest(url)
   }
   
@@ -18,8 +18,13 @@ export class WeatherAPI {
     return this.makeRequest(url);
   }
 
-  static async fetchForecastByCity(city) {
-    const url = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${API_KEY}&units=metric`;
+  static async fetchForecastByCity(city, lang='en') {
+    const url = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${API_KEY}&units=metric&lang=en`;
+    return this.makeRequest(url);
+  }
+
+  static async fetchForecastByCoords(lat, lon, lang = 'en') {
+    const url = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric&lang=en`;
     return this.makeRequest(url);
   }
 

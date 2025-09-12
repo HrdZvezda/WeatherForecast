@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-
+import { useI18n } from '../i18n/I18nContext';
 
 const Search = ({ city, setCity, setQuery,  error }) => {
 
   const [searchStart, setSearchStart] = useState(false);
+  const { t } = useI18n();
 
   const handleSearch = () => {
     if (!city || city.trim() === '') return;
@@ -19,7 +20,7 @@ const Search = ({ city, setCity, setQuery,  error }) => {
       <input
         className={`${searchStart ? 'open' : ''} ${error ? 'input-error' : ''}`}
         type='text'
-        placeholder='Search'
+        placeholder={t('search.placeholder')}
         value={city}
         onChange={(e) => setCity(e.target.value)}
         onKeyDown={(e) => {

@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import {
   ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, Area
 } from "recharts";
+import { useI18n } from "../i18n/I18nContext";
 
 /** 把 /forecast.list（3h 一筆）轉成指定日期 0~23 每分鐘資料
  *  - 溫度 temp：線性插值/雙點外插（回傳小數，畫面更平滑）
@@ -89,6 +90,8 @@ export function build24hSeries(list, dayTs) {
 
 
 export default function WeatherTempChart({ forecast, dayTs, onClose }) {
+  const { t, currentLanguage, formatDateTime } = useI18n();
+
   const list = Array.isArray(forecast?.list) ? forecast.list
               : Array.isArray(forecast) ? forecast : null;
   if (!list || !dayTs) return null;
@@ -116,7 +119,7 @@ export default function WeatherTempChart({ forecast, dayTs, onClose }) {
   };
 
   const dayDate = new Date(dayTs * 1000);
-  const title = dayDate.toLocaleDateString(undefined, {
+  const title = formatDateTime(dayDate, {
     year: "numeric", month: "long", day: "numeric", weekday: "long"
   });
 
@@ -135,8 +138,8 @@ export default function WeatherTempChart({ forecast, dayTs, onClose }) {
         fontSize:12
       }}>
         <div style={{opacity:.85, marginBottom:4}}>{label}</div>
-        {tempItem && <div style={{color:"#facc15"}}>Temp : {Math.round(tempItem.value)}°C</div>}
-        {rainItem && <div style={{color:"#93c5fd"}}>Rain : {Math.round(rainItem.value)}%</div>}
+        {tempItem && <div style={{color:"#facc15"}}>{t('chart.temp', 'Temperature')} : {Math.round(tempItem.value)}°C</div>}
+        {rainItem && <div style={{color:"#93c5fd"}}>{t('highlights.rainChance', 'Rain Chance')} : {Math.round(rainItem.value)}%</div>}
       </div>
     );
   };
@@ -191,10 +194,10 @@ export default function WeatherTempChart({ forecast, dayTs, onClose }) {
       <div className="sheet-body" onClick={(e)=>e.stopPropagation()}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}}>
           <h3 style={{color:"#e5e7eb", fontWeight:600, fontSize:16}}>{title}</h3>
-          <button onClick={onClose} className="sheet-close">close</button>
+          <button onClick={onClose} className="sheet-close">{t('close', 'close')}</button>
         </div>
         <div style={{color:"#cbd5e1", fontSize:12, marginBottom:4}}>
-          H : {maxT}°C  &nbsp; L : {minT}°C
+          {t('chart.high', 'H')} : {maxT}°C  &nbsp; {t('chart.low', 'L')} : {minT}°C
         </div>
 
         <div style={{height:180}}>
@@ -229,6 +232,7 @@ export default function WeatherTempChart({ forecast, dayTs, onClose }) {
                 yAxisId="right"
                 orientation="right"
                 domain={[0, 100]}
+                ticks={[0, 25, 50, 75, 100]}
                 tick={{fill:"#93c5fd", fontSize:12}}
                 width={34}
                 tickFormatter={(v)=>`${v}%`}
@@ -273,12 +277,42 @@ export default function WeatherTempChart({ forecast, dayTs, onClose }) {
             </LineChart>
           </ResponsiveContainer>
         </div>
+
+        {/* 新增圖例 */}
+        <div style={{
+          display: "flex",
+          justifyContent: "center",
+          gap: 20,
+          paddingTop: 8,
+        }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <div style={{
+              width: 12,
+              height: 3,
+              background: "linear-gradient(90deg, #fbbf24, #f59e0b)",
+              borderRadius: 2
+            }}></div>
+            <span style={{ color: "#cbd5e1", fontSize: 12, fontWeight: 500 }}>{t('chart.temp', 'Temperature')}</span>
+          </div>
+          
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <div style={{
+              width: 12,
+              height: 3,
+              background: "#60a5fa",
+              borderRadius: 2
+            }}></div>
+              <span style={{ color: "#cbd5e1", fontSize: 12, fontWeight: 500 }}>{t('highlights.rainChance', 'Rain Chance')}</span>
+            </div>
+        </div>
+
       </div>
 
       <style>{`
         .sheet-mask{
           position:fixed;
           inset:0;
+          width:100%;
           display:flex;
           justify-content:center;
           align-items:flex-end;
@@ -287,21 +321,32 @@ export default function WeatherTempChart({ forecast, dayTs, onClose }) {
         .sheet-body{
           width:min(720px,97%);
           margin-bottom:12px;
-          background: rgb(55, 65, 81, .9);
-          backdrop-filter:blur(16px);
-          border:1px solid rgba(255,255,200,.12);
-          border-radius:12px;
-          padding:16px;
+          background: linear-gradient(135deg, rgba(30,58,138,0.9) 0%, rgba(55,65,81,0.9) 50%, rgba(15,23,42,0.9) 100%);
+          backdrop-filter:blur(20px);
+          border-radius:16px;
+          padding:18px;
+          box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
         .sheet-close{
-          background:transparent;
-          border:1px solid rgba(255,255,255,.2);
-          color:#e5e7eb;
-          border-radius:10px;
-          padding:4px 10px;
-          cursor:pointer
+          background: rgba(255,255,255,0.1);
+          border: 1px solid rgba(255,255,255,0.2);
+          color: #f1f5f9;
+          border-radius: 12px;
+          padding: 6px 10px;
+          cursor: pointer;
+          font-size: 14px;
+          font-weight: 500;
+          transition: all 0.2s ease;
+          min-width: 32px;
+          height: 32px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
-        .sheet-close:hover{ background:rgba(255,255,255,.08) }
+        .sheet-close:hover{ 
+          background: rgba(255,255,255,0.15);
+          transform: scale(1.05);
+        }
 
         .recharts-wrapper:focus,
         .recharts-surface:focus,
@@ -312,7 +357,6 @@ export default function WeatherTempChart({ forecast, dayTs, onClose }) {
         circle:focus {
             outline: none !important;
         }
-
       `}</style>
     </div>
   );

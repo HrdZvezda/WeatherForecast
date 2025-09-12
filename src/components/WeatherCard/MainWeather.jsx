@@ -1,8 +1,9 @@
 // src/components/WeatherCard/MainWeather.jsx
-import React from "react";
+import React, { useState }from "react";
 import WeatherIcon from "../Bg-Icon/WeatherIcon";
 import HeaderWithTime from '../Data/CurrentTime';
 import WeatherTempChart from "../WeatherCard/WeatherTempChart.jsx";
+import { useI18n } from "../i18n/I18nContext";
 
 const MW_CSS = `
   .mw-card{
@@ -53,42 +54,50 @@ const MW_CSS = `
 
 `;
 
-const toIconType = (main, icon) => {
-  const m = (main || "").toLowerCase();
-  if (m.includes("thunder")) return "Thunderstorm";
-  if (m.includes("drizzle") || m.includes("rain")) {
-    const isDay = icon?.endsWith("d");
-    const isCloudy = ["02","03","04"].includes(icon?.slice(0,2));
-    return isDay && isCloudy ? "Sun-shower" : "Rain";
-  }
-  if (m.includes("snow")) return "Snow";
-  if (m.includes("cloud")) return "Clouds";
-  if (m.includes("clear")) return "Clear";
-  return "Clouds";
-};
+// const toIconType = (main, icon) => {
+//   const m = (main || "").toLowerCase();
+//   if (m.includes("thunder")) return "Thunderstorm";
+//   if (m.includes("drizzle") || m.includes("rain")) {
+//     const isDay = icon?.endsWith("d");
+//     const isCloudy = ["02","03","04"].includes(icon?.slice(0,2));
+//     return isDay && isCloudy ? "Sun-shower" : "Rain";
+//   }
+//   if (m.includes("snow")) return "Snow";
+//   if (m.includes("cloud")) return "Clouds";
+//   if (m.includes("clear")) return "Clear";
+//   return "Clouds";
+// };
 
 export default function MainCurrentCard({ weather, forecast }) {
   const [open, setOpen] = React.useState(false);
+  const [anchorRect, setAnchorRect] = useState(null);
+  const { t, translateWeather } = useI18n(); // 新增 translateWeather
 
   if (!weather) return null; 
   const todayTs = new Date().setHours(0,0,0,0) / 1000;
 
   const temp = Math.round(weather.main?.temp ?? 0);
-  const desc = weather.weather?.[0]?.description || weather.weather?.[0]?.main || "";
-  const iconType = toIconType(weather.weather?.[0]?.main, weather.weather?.[0]?.icon);
+  const desc = translateWeather(weather.weather?.[0]?.description || weather.weather?.[0]?.main || "");
   const city = weather.name || "";
+  // const iconType = toIconType(weather.weather?.[0]?.main, weather.weather?.[0]?.icon);
 
   return (
     <>
       <style>{MW_CSS}</style>
       <div 
         className="mw-card"
-        onClick={()=>setOpen(true)}
+        onClick={(e) => {
+          setOpen(true)
+          setAnchorRect({
+            ...e.currentTarget.getBoundingClientRect(),
+            isToday: true
+          });
+        }}
       >
         <div className="mw-left">
           <div className="mw-temp">{temp}°C</div>
           <div className="mw-today">
-            Today
+            {t('today')}
           </div>
           <div className="main-time">
             <HeaderWithTime />
@@ -99,7 +108,7 @@ export default function MainCurrentCard({ weather, forecast }) {
         <div className="mw-icon">
           <WeatherIcon
             code={weather?.weather?.[0]?.icon}
-            alt={weather?.weather?.[0]?.description}
+            alt={desc} 
             size="lg"
           />
         </div>
@@ -108,6 +117,7 @@ export default function MainCurrentCard({ weather, forecast }) {
         <WeatherTempChart
           forecast={forecast}
           dayTs={todayTs}
+          anchorRect={anchorRect}
           onClose={()=>setOpen(false)}
         />
       )}

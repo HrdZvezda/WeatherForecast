@@ -1,7 +1,7 @@
 import React, { useMemo, useEffect, useState } from "react";
 import WeatherIcon from "../Bg-Icon/WeatherIcon.jsx";
 import WeatherTempChart, { build24hSeries } from "../WeatherCard/WeatherTempChart.jsx";
-
+import { useI18n } from "../i18n/I18nContext.jsx";
 
 const Forecast5Day_CSS = `
   .f5-row{
@@ -101,7 +101,6 @@ const Forecast5Day_CSS = `
       font-size: 10px;
     }
   }
-
 `;
 
 function useBreakpointSizes() {
@@ -153,16 +152,6 @@ const toIconType = (main, icon) => {
   if (m.includes("cloud")) return "Clouds";
   if (m.includes("clear")) return "Clear";
   return "Clouds";
-};
-
-const Weeks  = (ts) => ["Sunday","Monday","Tuesday","Wedsday","Thursday","Friday","Saturday"][new Date(ts*1000).getDay()];
-
-/* 明天/星期 標籤 */
-const labelFor = (ts) => {
-  const now = new Date();
-  const today0 = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime() / 1000;
-  const diff = Math.round((ts - today0) / 86400);
-  return diff === 1 ? "Tomorrow" : Weeks (ts);
 };
 
 /* 把 /forecast 的 list[] 依天聚合並算 max/min */
@@ -231,45 +220,65 @@ const useFiveDays = (forecast) => useMemo(() => {
   .filter(d => Number.isFinite(d.max) && Number.isFinite(d.min));
 }, [forecast]);
 
-
-
 export default function ForecastFiveDay({ forecast }) {
   const days = useFiveDays(forecast);
   const iconSize = useBreakpointSizes();
   const [selectedDay, setSelectedDay] = React.useState(null);
-
+  const [anchorRect, setAnchorRect] = useState(null);
+  const { t, getWeekday, currentLanguage, translateWeather } = useI18n();
+  
+  // 計算今天的時間戳，用於判斷是否為明天
+  const todayTs = useMemo(() => {
+    const now = new Date();
+    return new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime() / 1000;
+  }, []);
+  
   if (!days.length) return null;
 
   return (
     <>
       <style>{Forecast5Day_CSS}</style>
       <div className="w-full mt-8 f5-row">
-        {days.map((d, i) => (
-          <div
-          key={d.dt || i}
-          className="f5-card"
-          onClick={() => setSelectedDay(d.dt)}
-          >
-            <p className="f5-week">{labelFor(d.dt)}</p>
-            <div className="f5-icon">
-              <div>
-                <WeatherIcon code={d.icon} size={iconSize} alt={d.desc} />
+        {days.map((d, i) => {
+          // 判斷是明天還是星期幾
+          const diff = Math.round((d.dt - todayTs) / 86400);
+          const dayLabel = diff === 1 
+            ? t('tomorrow') 
+            : t(`week.${new Date(d.dt * 1000).getDay()}`);
+
+          return (
+            <div
+              key={d.dt || i}
+              className="f5-card"
+              onClick={(e) => {
+                setSelectedDay(d.dt);
+                setAnchorRect({
+                  ...e.currentTarget.getBoundingClientRect(),
+                  index: i
+                });
+              }}
+            >
+              <p className="f5-week">{dayLabel}</p>
+              <div className="f5-icon">
+                <div>
+                  <WeatherIcon code={d.icon} size={iconSize} alt={translateWeather(d.desc)} />
+                </div>
               </div>
+              <p className="f5-tmax">{d.max}°</p>
+              <p className="f5-tmin">{d.min}°</p>
+              {d.desc && <p className="f5-desc">{translateWeather(d.desc)}</p>}
             </div>
-            <p className="f5-tmax">{d.max}°</p>
-            <p className="f5-tmin">{d.min}°</p>
-            {d.desc && <p className="f5-desc">{d.desc}</p>}
-          </div>
-        ))}
+          );
+        })}
       </div>
       {selectedDay && (
         <WeatherTempChart
           forecast={forecast}
           dayTs={selectedDay}
+          anchorRect={anchorRect}
           onClose={() => setSelectedDay(null)}
         />
       )}
     </>
   );
 }
-
