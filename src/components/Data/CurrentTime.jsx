@@ -23,7 +23,7 @@ const HeaderWithTime = ({ className = '' , style = {} , showDate = true }) => {
     hour: "2-digit",
     minute: "2-digit",
     hour12: true,
-  }).replace(/ (AM|PM)$/, '').replace(/上午|下午/, '');
+  }).replace(/ (AM|PM)$/, '');
 
   const meridiem = formatDateTime(time, {
     hour: 'numeric',
@@ -48,10 +48,10 @@ const HeaderWithTime = ({ className = '' , style = {} , showDate = true }) => {
       <div>
         <h4>
           {/* 中文時，將上下午放在前面 */}
-          {currentLanguage === 'zh' && <span className="small">{meridiem} </span>}
-          <span className="big">{hourMinute}</span>
+          {currentLanguage === 'zh' && <span className="small"> {meridiem} </span>}
+          <span className="big"> {hourMinute}</span>
           {/* 英文時，將 AM/PM 放在後面 */}
-          {currentLanguage !== 'zh' && <span className="small"> {meridiem}</span>}
+          {currentLanguage !== 'zh' && <span className="small"> {meridiem} </span>}
         </h4>
       </div>
       {showDate && (

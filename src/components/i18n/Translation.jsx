@@ -7,6 +7,7 @@ export const translations = {
     search: {
       placeholder: "Search",
     },
+    city:'City', 
     today: "Today",
     tomorrow: "Tomorrow",
     hourly: {
@@ -195,6 +196,7 @@ export const translations = {
     search: {
       placeholder: "搜尋",
     },
+    city:'城市',
     today: "今天",
     tomorrow: "明天",
     hourly: {

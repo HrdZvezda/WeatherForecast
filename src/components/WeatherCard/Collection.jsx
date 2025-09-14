@@ -116,6 +116,7 @@ const Collection = ({ favorites = [], setQuery, removeFavorite, onSelect }) => {
     setQuery?.(name);
     onSelect?.(name);
   };
+  const { t } = useI18n();
 
   return (
     <div className="favorites-wrap">
@@ -297,7 +298,7 @@ const Collection = ({ favorites = [], setQuery, removeFavorite, onSelect }) => {
       `}</style>
 
       <div className="favorites-header">
-        <h3 className="favorites-title">City</h3>
+        <h3 className="favorites-title">{t('city', 'City')}</h3>
         <span className="favorites-count" aria-label="favorites count">
           {favorites.length}
         </span>
